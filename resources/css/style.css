@@ -1,0 +1,55 @@
+/* Include the palette file */
+@import url("palette.css");
+
+body{
+    background-color: var(--primary);
+}
+/* #mainBackground{
+    background-color: aqua;
+}
+#titleCard, #table{
+    background-color: grey;
+    color: red;
+}
+
+Give the cells a red border and make them square
+td{
+    border: 1px solid red;
+    width: 150px;
+    height: 150px;
+}
+
+Give the table a green border
+table{
+    border: 1px solid green;
+} */
+
+.containers{
+    width: calc(var(--resolution) * var(--columnCount));
+    border: 1px solid black;
+    margin: 10px;
+    /* center the container */
+    margin-left: auto;
+    margin-right: auto;
+    /* Remove spacing between elements in the container*/
+    display: flex;
+    flex-wrap: wrap;
+
+}
+
+/* Give each container a border and uniform size */
+#container1, #container2, #container3, #container4, #container5 {
+    height: var(--resolution);
+  }
+/* Make the bottom container where all images begin larger */
+#containerImages {
+    height: calc(var(--resolution) * 2);
+}
+
+/* Resize all images to be uniform squares */
+.rankingImage {
+    width: var(--resolution);
+    height: var(--resolution)
+    /* FIXME: This currently stretches the image. */
+    /* In future we should crop them instead. */
+}
