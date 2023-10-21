@@ -1,22 +1,33 @@
-// window.onload = function () {
-//     var table = document.getElementById("mainTable")
-//     // Start the table with 3 rows and 2 columns
-//     var rows = 5
-//     var cols = 5
-//     for (var i = 0; i < rows; i++) {
-//         var row = table.insertRow(i)
-//         for (var j = 0; j < cols + 1; j++) {
-//             var cell = row.insertCell(j)
-//             if (j == 0) {
-//                 cell.innerHTML = "row " + i
-//                 // Give these cells a class name of rowHeader so we can style them later
-//                 cell.className = "rowHeader"
-//             }
-//             else
-//                 cell.innerHTML = "cell " + i + "," + (j - 1)
-//         }
-//     }
-// }
+class RankRow {
+    // TODO: Rework this class to be a row made up of a rowHeader, rowBody, and a rowTab.
+    // TODO: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
+    // TODO: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
+    // TODO: rowBody will be the element that contains the row's ranking images.
+    constructor(id) {
+        this.element = document.createElement("div");
+        this.element.id = id;
+        this.element.className = "RankRow Container";
+        // this.element.onmouseover = () => showPlusButton();
+        // On mouseover pass which button was hovered over to the showPlusButton function
+        this.element.onmouseover = () => showPlusButton(this.element);
+        this.element.onmouseout = () => hidePlusButton();
+        this.element.ondrop = (event) => drop(event);
+        this.element.ondragover = (event) => allowDrop(event);
+        this.element.ondragend = (event) => dragEnd(event);
+
+        // Add this new row to the rowContainer
+        const rowContainer = document.getElementById("rowList");
+        rowContainer.appendChild(this.element);
+
+        // Add a custom event listener that logs all the events fired on the element
+        this.element.addEventListener('all', (event) => console.log(event.type));
+    }
+}
+
+startingRowCount = 5;
+for (i = 0; i < startingRowCount; i++) {
+    new RankRow("row" + (i + 1));
+}
 
 function allowDrop(ev) {
     ev.preventDefault();
@@ -41,3 +52,18 @@ function drop(ev) {
 function dragEnd(ev) {
     // ev.target.style.visibility = "visible";
 }
+
+// function showPlusButton(element) {
+//     const plusButton = document.createElement("div");
+//     plusButton.className = "plusButton";
+//     plusButton.innerHTML = "+";
+//     // plusButton.onclick = () => addRow();
+//     // Add the button to the container
+//     const rowContainer = document.getElementById("rowList");
+
+// }
+
+// function hidePlusButton() {
+//     const plusButton = document.getElementsByClassName("plusButton")[0];
+//     plusButton.remove();
+// }

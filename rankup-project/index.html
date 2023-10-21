@@ -6,69 +6,30 @@
     <link rel="stylesheet" href="../resources/css/style.css" />
     <!-- Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Javascript Source Files -->
-    <script src="../resources/js/rankup.js"></script>
     <!-- Tab Title -->
     <title>Rank Up</title>
   </head>
 
   <body>
-    <!-- <div id="mainBackground">
-      Title Card
-      <div class="card" id="titleCard" align="center" style="display: block">
-        <h1>Rank Up</h1>
-      </div>
-      Table Card
-      <div class="card" id="tableCard" align="center" style="display: block">
-        <table id="mainTable"></table>
-      </div>
-    </div> -->
-
     <div
-      id="container1"
-      class="containers"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-      ondragend="dragEnd(event)"
-    ></div>
+      id="rowList"
+    >
+    </div>
     <div
-      id="container2"
-      class="containers"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-      ondragend="dragEnd(event)"
-    ></div>
-    <div
-      id="container3"
-      class="containers"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-      ondragend="dragEnd(event)"
-    ></div>
-    <div
-      id="container4"
-      class="containers"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-      ondragend="dragEnd(event)"
-    ></div>
-    <div
-      id="container5"
-      class="containers"
-      ondrop="drop(event)"
-      ondragover="allowDrop(event)"
-      ondragend="dragEnd(event)"
-    ></div>
-    <div
-      id="containerImages"
-      class="containers"
-      draggable="true"
+      id="imageContainer"
+      class="Container"
       ondrop="drop(event)"
       ondragover="allowDrop(event)"
       ondragend="dragEnd(event)"
     >
       <img
         id="img1"
+        class="rankingImage"
+        src="../resources/images/bird.png"
+        ondragstart="dragStart(event)"
+      />
+      <img
+        id="imgX"
         class="rankingImage"
         src="../resources/images/bird.png"
         ondragstart="dragStart(event)"
@@ -116,5 +77,7 @@
         ondragstart="dragStart(event)"
       />
     </div>
+    <!-- Javascript Source Files -->
+    <script src="../resources/js/rankup.js"></script>
   </body>
 </html>

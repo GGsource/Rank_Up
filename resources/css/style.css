@@ -4,45 +4,26 @@
 body{
     background-color: var(--primary);
 }
-/* #mainBackground{
-    background-color: aqua;
-}
-#titleCard, #table{
-    background-color: grey;
-    color: red;
-}
 
-Give the cells a red border and make them square
-td{
-    border: 1px solid red;
-    width: 150px;
-    height: 150px;
-}
 
-Give the table a green border
-table{
-    border: 1px solid green;
-} */
-
-.containers{
-    width: calc(var(--resolution) * var(--columnCount));
+.Container {
     border: 1px solid black;
-    margin: 10px;
+    width: calc(var(--resolution) * var(--columnCount));
     /* center the container */
     margin-left: auto;
     margin-right: auto;
     /* Remove spacing between elements in the container*/
     display: flex;
     flex-wrap: wrap;
-
 }
 
-/* Give each container a border and uniform size */
-#container1, #container2, #container3, #container4, #container5 {
-    height: var(--resolution);
-  }
+.RankRow{
+    height: var(--resolution); /* Sets the height of the rows to be 1 image tall*/
+    margin-bottom: 10px; /* Adds spacing between rows */
+}
 /* Make the bottom container where all images begin larger */
-#containerImages {
+#imageContainer {
+    /* Make it start off at least 2 images tall */
     height: calc(var(--resolution) * 2);
 }
 
@@ -53,3 +34,11 @@ table{
     /* FIXME: This currently stretches the image. */
     /* In future we should crop them instead. */
 }
+
+/* TODO: Make sure rowTab's draggable section extends the full
+length available after the addRowAbove and addRowBelow buttons
+are accounted for. This way, even if the row has a ton of images
+and the row is 10 images tall, the draggable section will grow to match */
+
+/* TODO: Make sure the number of dots on the draggable section
+grows proportionally to its height size. */
