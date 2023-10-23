@@ -5,26 +5,138 @@ body{
     background-color: var(--primary);
 }
 
-
-.Container {
-    border: 1px solid black;
-    width: calc(var(--resolution) * var(--columnCount));
+/* Make the bottom container where all images begin larger */
+#imageContainer {
+    width: calc(var(--rowWidth) + var(--resolution));
     /* center the container */
     margin-left: auto;
     margin-right: auto;
     /* Remove spacing between elements in the container*/
     display: flex;
     flex-wrap: wrap;
-}
-
-.RankRow{
-    height: var(--resolution); /* Sets the height of the rows to be 1 image tall*/
-    margin-bottom: 10px; /* Adds spacing between rows */
-}
-/* Make the bottom container where all images begin larger */
-#imageContainer {
     /* Make it start off at least 2 images tall */
     height: calc(var(--resolution) * 2);
+    /* DELETEME: this should adapt to how many imgs we actually have later on */
+
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 0, 0.4) 6px
+    )
+}
+/* 
+- FullRow
+-       rowTab
+-               addRowAboveButton
+-               dragHandle
+-               addRowBelowButton
+-       mainRow
+-               rowHeader
+-                       rowTitle
+-                       resetDeleteContainer
+-                               resetButton
+-                               emptyDiv
+-                               deleteButton
+-               rowBody
+*/
+.FullRow {
+    margin-bottom: 10px; /* Adds spacing between rows */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* Center */
+    align-items: center;
+    text-align: center;
+}
+.inLineWrapper {
+    position: relative;
+    display: inline-block;
+    height: var(--resolution); /* Sets the height of the rows to be 1 image tall*/
+}
+
+.rowTab {
+    /* Take up the full vertical space alotted by parent */
+    height: 100%;
+    /* DELETEME: This width is temporary, in future tab's width should be determined by children's need for space */
+    width: calc(var(--resolution) / 2);
+    position: absolute;
+    top: 0; left: 0;
+    transform:translateX(-100%);
+    /* Round the top left and bottom left corners to look more like a tab */
+    border-top-left-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+    /* Center the children */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: repeating-linear-gradient(
+        290deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 255, 0, 0.4) 5px
+    )
+    
+}
+.tabButton {
+    background: repeating-linear-gradient(
+        30deg,
+        rgba(0, 0, 0, 0),
+        rgba(255, 0, 127, 0.4) 5px
+    );
+    border: 1px solid rgba(60,0, 20, 0.6);
+}
+
+.mainRow{
+    /* Take up full vertical space allotted by parent */
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0),
+        rgba(182, 24, 182, 0.4) 60px
+    )
+    
+}
+.rowHeader {
+    /* Make the header be a square */
+    width: var(--resolution);
+    /* Make its contents be listed horizontally */
+    display: flex;
+    flex-direction: row;
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0),
+        rgba(255, 0, 0, 0.4) 40px
+    );
+}
+.rowBody {
+    /* Make the rowBody take up the remaining space in the rowTab */
+    width: var(--rowWidth);
+    background: repeating-linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0),
+        rgba(0, 0, 255, 0.4) 40px
+    );
+    /* Align items within to the left */
+    display: flex;
+    flex-direction: row;
+    
+
+}
+
+.addRowButton {
+    /* Make these buttons take up the same flex size */
+    flex-grow: 1;
+}
+.dragHandle {
+    /* Make this section take up the remaining space not occupied by the addrow buttons */
+    flex-grow: 100;
+    /* Center it */
+    display: flex;
+    align-items: center;
 }
 
 /* Resize all images to be uniform squares */

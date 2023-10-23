@@ -2,4 +2,6 @@
     --primary: yellow;
     --resolution: 150px;
     --columnCount: 8;
+    --rowWidth: calc(var(--resolution) * var(--columnCount));
+    --radius: 30px
 }

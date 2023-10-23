@@ -1,8 +1,4 @@
 class RankRow {
-    // TODO: Rework this class to be a row made up of a rowHeader, rowBody, and a rowTab.
-    // TODO: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
-    // TODO: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
-    // TODO: rowBody will be the element that contains the row's ranking images.
     constructor(id) {
         this.element = document.createElement("div");
         this.element.id = id;
@@ -18,15 +14,100 @@ class RankRow {
         // Add this new row to the rowContainer
         const rowContainer = document.getElementById("rowList");
         rowContainer.appendChild(this.element);
+    }
+}
 
-        // Add a custom event listener that logs all the events fired on the element
-        this.element.addEventListener('all', (event) => console.log(event.type));
+class FullRow {
+    constructor(id) {
+        // TODO: Rework this class to be a row made up of a rowHeader, rowBody, and a rowTab. MainRow contains header and body, and rowTab is outside of MainRow inside FullRow.
+        let FullRow = document.createElement("div");
+        FullRow.className = "FullRow";
+        FullRow.id = "FullRow" + id;
+        // Create inbetween wrapper
+        let inLineWrapper = document.createElement("div");
+        inLineWrapper.className = "inLineWrapper";
+        inLineWrapper.id = "inLineWrapper" + id;
+        // TODO: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
+        // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
+        let rowTab = document.createElement("div");
+        rowTab.className = "rowTab rowPiece";
+        rowTab.id = "rowTab" + id;
+        // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
+        let addRowAboveButton = document.createElement("div");
+        addRowAboveButton.className = "addRowAboveButton addRowButton tabButton";
+        addRowAboveButton.innerHTML = "+";
+        let dragHandle = document.createElement("div");
+        dragHandle.className = "dragHandle tabButton";
+        dragHandle.innerHTML = "|||";
+        let addRowBelowButton = document.createElement("div");
+        addRowBelowButton.className = "addRowBelowButton addRowButton tabButton";
+        addRowBelowButton.innerHTML = "+";
+        rowTab.appendChild(addRowAboveButton);
+        rowTab.appendChild(dragHandle);
+        rowTab.appendChild(addRowBelowButton);
+        // Add the rowTab to the wrapper, outside the mainRow
+        inLineWrapper.appendChild(rowTab);
+        // TODO: mainRow will be the element that contains the rowHeader and rowBody.
+        let MainRow = document.createElement("div");
+        MainRow.className = "mainRow";
+        MainRow.id = "FullRow" + id;
+        MainRow.onmouseover = () => showPlusButton();
+        MainRow.onmouseout = () => hidePlusButton();
+        // TODO: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
+        // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
+        let rowHeader = document.createElement("div");
+        rowHeader.className = "rowHeader rowPiece";
+        rowHeader.id = "rowHeader" + id;
+        // Add the title to the rowHeader
+        let rowTitle = document.createElement("div");
+        rowTitle.className = "rowTitle";
+        rowTitle.id = "rowTitle" + id;
+        rowTitle.innerHTML = "Row " + id;
+        // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
+        let resetDeleteContainer = document.createElement("div");
+        resetDeleteContainer.className = "resetDeleteContainer";
+        resetDeleteContainer.id = "resetDeleteContainer" + id;
+        let resetButton = document.createElement("div");
+        resetButton.className = "resetButton resetDeleteButton";
+        resetButton.id = "resetButton" + id;
+        resetButton.innerHTML = "♻️";
+        let emptyDiv = document.createElement("div");
+        emptyDiv.className = "resetDeleteButton";
+        let deleteButton = document.createElement("div");
+        deleteButton.className = "deleteButton resetDeleteButton";
+        deleteButton.id = "deleteButton" + id;
+        deleteButton.innerHTML = "🗑️";
+        resetDeleteContainer.appendChild(resetButton);
+        resetDeleteContainer.appendChild(emptyDiv);
+        resetDeleteContainer.appendChild(deleteButton);
+        // Add the rowTitle and the resetDeleteContainer to the rowHeader
+        rowHeader.appendChild(rowTitle);
+        rowHeader.appendChild(resetDeleteContainer);
+        // Add the rowHeader to the mainRow
+        MainRow.appendChild(rowHeader);
+        // TODO: rowBody will be the element that contains the row's ranking images.
+        // rowBody is the container the user will drag the images into to rank them.
+        let rowBody = document.createElement("div");
+        rowBody.className = "rowBody rowPiece";
+        rowBody.id = "rowBody" + id;
+        rowBody.ondrop = (event) => drop(event);
+        rowBody.ondragover = (event) => allowDrop(event);
+        rowBody.ondragend = (event) => dragEnd(event);
+        // Add the rowBody to the mainRow
+        MainRow.appendChild(rowBody);
+
+        // Add the mainRow to the rowWrapper
+        inLineWrapper.appendChild(MainRow);
+        // Add the rowWrapper to the FullRow
+        FullRow.appendChild(inLineWrapper);
+        let rowContainer = document.getElementById("rowList");
+        rowContainer.appendChild(FullRow);
     }
 }
 
 startingRowCount = 5;
 for (i = 0; i < startingRowCount; i++) {
-    new RankRow("row" + (i + 1));
+    new FullRow(i);
 }
 
 function allowDrop(ev) {
