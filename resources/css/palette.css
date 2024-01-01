@@ -1,5 +1,5 @@
 :root {
-    --primary: grey;
+    --primary: rgb(70, 70, 70);
     --resolution: 150px;
     --columnCount: 8;
     --rowWidth: calc(var(--resolution) * var(--columnCount));
