@@ -73,6 +73,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 5px;
 
     background: repeating-linear-gradient(
         290deg,
@@ -167,6 +168,9 @@ body {
 
 .resetDeleteImage {
     width: calc(var(--resolution) / 3);
+}
+.addRowButtonImage {
+    width: 100%;
 }
 
 /* TODO: Make sure rowTab's draggable section extends the full

@@ -33,18 +33,18 @@ class rowFull {
         rowTab.className = "rowTab rowPiece";
         rowTab.id = "rowTab" + id;
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-        let addRowAboveButton = document.createElement("div");
-        addRowAboveButton.className = "addRowAboveButton addRowButton tabButton";
-        addRowAboveButton.innerHTML = "+";
+        let addRowAboveButtonImage = document.createElement("img");
+        addRowAboveButtonImage.src = "/resources/images/addRowAboveIcon.png";
+        addRowAboveButtonImage.className = "addRowButtonImage addRowButton tabButton";
         let dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
         dragHandle.innerHTML = "|||";
-        let addRowBelowButton = document.createElement("div");
-        addRowBelowButton.className = "addRowBelowButton addRowButton tabButton";
-        addRowBelowButton.innerHTML = "+";
-        rowTab.appendChild(addRowAboveButton);
+        let addRowBelowButtonImage = document.createElement("img");
+        addRowBelowButtonImage.src = "/resources/images/addRowBelowIcon.png";
+        addRowBelowButtonImage.className = "addRowButtonImage addRowButton tabButton";
+        rowTab.appendChild(addRowAboveButtonImage);
         rowTab.appendChild(dragHandle);
-        rowTab.appendChild(addRowBelowButton);
+        rowTab.appendChild(addRowBelowButtonImage);
         // Add the rowTab to the wrapper, outside the mainRow
         inLineWrapper.appendChild(rowTab);
         // DONE: mainRow will be the element that contains the rowHeader and rowBody.
