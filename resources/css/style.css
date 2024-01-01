@@ -152,6 +152,8 @@ body {
     justify-content: center;
     align-items: center;
     display: flex;
+    font: 2em "Alice", sans-serif;
+    color: white;
 }
 
 .resetDeleteContainer {

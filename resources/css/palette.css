@@ -1,3 +1,10 @@
+@font-face {
+    font-family: "Alice";
+    src: url("/resources/fonts/AliceYotsubaInc-Ea7Zj.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
 :root {
     --primary: rgb(70, 70, 70);
     --resolution: 150px;
