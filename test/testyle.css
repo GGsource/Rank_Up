@@ -1,0 +1,29 @@
+body {
+    background-color: gray;
+    /* Center */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    height: 200px;
+    background: repeating-linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0),
+        rgba(255, 0, 0, 0.4) 20px
+    );
+    border: 1px solid black;
+}
+.wide {
+    width: 100%;
+}
+.tall {
+    flex-grow: 1;
+    min-height: 0;
+    border: 1px solid black;
+}

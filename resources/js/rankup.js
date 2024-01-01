@@ -23,30 +23,26 @@ class rowFull {
         let rowFull = document.createElement("div");
         rowFull.className = "rowFull";
         rowFull.id = "rowFull" + id;
-        // Create inbetween wrapper
-        let inLineWrapper = document.createElement("div");
-        inLineWrapper.className = "inLineWrapper";
-        inLineWrapper.id = "inLineWrapper" + id;
         // DONE: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         let rowTab = document.createElement("div");
         rowTab.className = "rowTab rowPiece";
         rowTab.id = "rowTab" + id;
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-        let addRowAboveButtonImage = document.createElement("img");
-        addRowAboveButtonImage.src = "/resources/images/addRowAboveIcon.png";
-        addRowAboveButtonImage.className = "addRowButtonImage addRowButton tabButton";
-        let dragHandle = document.createElement("div");
+        let addRowAboveButton = document.createElement("img");
+        addRowAboveButton.className = "addRowButton tabButton";
+        addRowAboveButton.src = "/resources/images/addRowAboveIcon.png";
+        let dragHandle = document.createElement("img");
         dragHandle.className = "dragHandle tabButton";
-        dragHandle.innerHTML = "|||";
-        let addRowBelowButtonImage = document.createElement("img");
-        addRowBelowButtonImage.src = "/resources/images/addRowBelowIcon.png";
-        addRowBelowButtonImage.className = "addRowButtonImage addRowButton tabButton";
-        rowTab.appendChild(addRowAboveButtonImage);
+        dragHandle.src = "/resources/images/DragHandleIcon.png";
+        let addRowBelowButton = document.createElement("img");
+        addRowBelowButton.className = "addRowButton tabButton";
+        addRowBelowButton.src = "/resources/images/addRowBelowIcon.png";
+        rowTab.appendChild(addRowAboveButton);
         rowTab.appendChild(dragHandle);
-        rowTab.appendChild(addRowBelowButtonImage);
-        // Add the rowTab to the wrapper, outside the mainRow
-        inLineWrapper.appendChild(rowTab);
+        rowTab.appendChild(addRowBelowButton);
+        // Add the rowTab to the full row
+        rowFull.appendChild(rowTab);
         // DONE: mainRow will be the element that contains the rowHeader and rowBody.
         let MainRow = document.createElement("div");
         MainRow.className = "mainRow";
@@ -105,9 +101,7 @@ class rowFull {
         MainRow.appendChild(rowBody);
 
         // Add the mainRow to the rowWrapper
-        inLineWrapper.appendChild(MainRow);
-        // Add the rowWrapper to the rowFull
-        rowFull.appendChild(inLineWrapper);
+        rowFull.appendChild(MainRow);
         let rowContainer = document.getElementById("rowList");
         rowContainer.appendChild(rowFull);
     }
