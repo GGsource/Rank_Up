@@ -52,7 +52,8 @@ body {
     display: flex;
     flex-direction: row;
     height: var(--resolution);
-    margin-bottom: 50px; /* Adds spacing between rows */
+    margin-bottom: calc(var(--resolution) / 10);
+    /* DEBUGGING: This margin may not be needed later. */
 }
 .rowTab {
     /* Size it to parent height and half the width and list children as column */
@@ -68,7 +69,7 @@ body {
     transform: translateX(-100%);
 
     /* Add padding without altering size */
-    padding: 0 5px 0 10px;
+    padding: 5px 5px 5px 10px;
     box-sizing: border-box;
     gap: 10px;
 
