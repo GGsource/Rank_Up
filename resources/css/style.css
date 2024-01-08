@@ -54,13 +54,6 @@ body {
     height: var(--resolution);
     margin-bottom: 50px; /* Adds spacing between rows */
 }
-.rowTabWrapper {
-    background: repeating-linear-gradient(
-        320deg,
-        rgba(0, 0, 0, 0),
-        rgba(255, 255, 0, 0.4) 5px
-    );
-}
 .rowTab {
     /* Size it to parent height and half the width and list children as column */
     height: 100%;
@@ -77,7 +70,7 @@ body {
     /* Add padding without altering size */
     padding: 0 5px 0 10px;
     box-sizing: border-box;
-    gap: 10px; /* Space between buttons */
+    gap: 10px;
 
     /* Round corners off left side */
     border-radius: var(--radius) 0 0 var(--radius);
@@ -89,7 +82,7 @@ body {
         rgba(0, 255, 0, 0.4) 5px
     );
     /* TESTME: Hide overflow so the user cannot click on the rounded corners and activate the child buttons */
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 /* .tabButton {
     background: repeating-linear-gradient(
@@ -176,6 +169,8 @@ body {
     /* Make this section take up the remaining space not occupied by the addrow buttons */
     flex-grow: 1;
     min-height: 0;
+    object-fit: contain;
+
     /* FIXME: This image stretched to full width of its parent rowTab, it should not do this and maintain aspect ratio instead */
 }
 

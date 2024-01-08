@@ -100,7 +100,7 @@ class rowFull {
         // Add the rowBody to the mainRow
         MainRow.appendChild(rowBody);
 
-        // Add the mainRow to the rowWrapper
+        // Add the mainRow to the rowFull
         rowFull.appendChild(MainRow);
         let rowContainer = document.getElementById("rowList");
         rowContainer.appendChild(rowFull);
