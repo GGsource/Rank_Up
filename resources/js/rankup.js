@@ -3,10 +3,6 @@ class RankRow {
         this.element = document.createElement("div");
         this.element.id = id;
         this.element.className = "RankRow Container";
-        // this.element.onmouseover = () => showPlusButton();
-        // On mouseover pass which button was hovered over to the showPlusButton function
-        this.element.onmouseover = () => showPlusButton(this.element);
-        this.element.onmouseout = () => hidePlusButton();
         this.element.ondrop = (event) => drop(event);
         this.element.ondragover = (event) => allowDrop(event);
         this.element.ondragend = (event) => dragEnd(event);
@@ -28,6 +24,7 @@ class rowFull {
         let rowTab = document.createElement("div");
         rowTab.className = "rowTab rowPiece";
         rowTab.id = "rowTab" + id;
+        rowTab.style.visibility = "hidden";
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         let addRowAboveButton = document.createElement("img");
         addRowAboveButton.className = "addRowButton tabButton";
@@ -47,13 +44,13 @@ class rowFull {
         let MainRow = document.createElement("div");
         MainRow.className = "mainRow";
         MainRow.id = "rowFull" + id;
-        // MainRow.onmouseover = () => showPlusButton(); TODO: Make these show the rowTab and hide the rowTab when the mouse is over the rowTab
-        // MainRow.onmouseout = () => hidePlusButton();
         // DONE: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         let rowHeader = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
         rowHeader.id = "rowHeader" + id;
+        rowHeader.onmouseover = () => showRowTab(rowHeader);
+        rowHeader.onmouseout = () => hideRowTab(rowHeader);
         // Add the title to the rowHeader
         let rowTitle = document.createElement("div");
         rowTitle.className = "rowTitle";
@@ -136,17 +133,13 @@ function dragEnd(ev) {
     // ev.target.style.visibility = "visible";
 }
 
-// function showPlusButton(element) {
-//     const plusButton = document.createElement("div");
-//     plusButton.className = "plusButton";
-//     plusButton.innerHTML = "+";
-//     // plusButton.onclick = () => addRow();
-//     // Add the button to the container
-//     const rowContainer = document.getElementById("rowList");
+function showRowTab(element) {
+    rowTab = element.parentElement.parentElement.getElementsByClassName("rowTab")[0];
+    rowTab.style.visibility = "visible";
 
-// }
+}
 
-// function hidePlusButton() {
-//     const plusButton = document.getElementsByClassName("plusButton")[0];
-//     plusButton.remove();
-// }
+function hideRowTab(element) {
+    rowTab = element.parentElement.parentElement.getElementsByClassName("rowTab")[0];
+    rowTab.style.visibility = "hidden";
+}
