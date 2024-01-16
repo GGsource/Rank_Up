@@ -5,7 +5,7 @@ class RankRow {
         this.element.className = "RankRow Container";
         this.element.ondrop = (event) => drop(event);
         this.element.ondragover = (event) => allowDrop(event);
-        this.element.ondragend = (event) => dragEnd(event);
+        // this.element.ondragend = (event) => dragEnd(event);
 
         // Add this new row to the rowContainer
         const rowContainer = document.getElementById("rowList");
@@ -38,8 +38,6 @@ class rowFull {
         rowTab.appendChild(addRowAboveButton);
         rowTab.appendChild(dragHandle);
         rowTab.appendChild(addRowBelowButton);
-        // Add the rowTab to the full row
-        rowFull.appendChild(rowTab);
         // DONE: mainRow will be the element that contains the rowHeader and rowBody.
         let MainRow = document.createElement("div");
         MainRow.className = "mainRow";
@@ -82,6 +80,7 @@ class rowFull {
         resetDeleteContainer.appendChild(emptyDiv);
         resetDeleteContainer.appendChild(deleteButton);
         // Add the rowTitle and the resetDeleteContainer to the rowHeader
+        rowHeader.appendChild(rowTab);
         rowHeader.appendChild(rowTitle);
         rowHeader.appendChild(resetDeleteContainer);
         // Add the rowHeader to the mainRow
@@ -129,9 +128,9 @@ function drop(ev) {
     }
 }
 
-function dragEnd(ev) {
-    // ev.target.style.visibility = "visible";
-}
+// function dragEnd(ev) {
+//     ev.target.style.visibility = "visible";
+// }
 
 function showRowTab(element) {
     rowTab = element.parentElement.parentElement.getElementsByClassName("rowTab")[0];
