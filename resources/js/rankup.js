@@ -147,3 +147,5 @@ function deleteRow(row) {
 function addRow(row, above = true) {
     // TODO: Implement adding a row above or below the specified row.
 }
+
+// TODO: Make reset, delete, drag, and addRow images not selectable by the user.
