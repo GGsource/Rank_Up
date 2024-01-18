@@ -75,7 +75,7 @@ class rowFull {
         let deleteButtonImage = document.createElement("img");
         deleteButtonImage.src = "/resources/images/RowHeaderDelete.png";
         deleteButtonImage.className = "deleteButtonImage resetDeleteImage";
-        deleteButtonImage.onclick = () => rowFull.remove();
+        deleteButtonImage.onclick = () => rowFull.remove(); //TESTME: Does this also delete any images added to the row? If so, make sure they're moved back to the original container before deleting the row.
         deleteButton.appendChild(deleteButtonImage);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(emptyDiv);
