@@ -75,6 +75,7 @@ class rowFull {
         let deleteButtonImage = document.createElement("img");
         deleteButtonImage.src = "/resources/images/RowHeaderDelete.png";
         deleteButtonImage.className = "deleteButtonImage resetDeleteImage";
+        deleteButtonImage.onclick = () => rowFull.remove();
         deleteButton.appendChild(deleteButtonImage);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(emptyDiv);
@@ -92,7 +93,7 @@ class rowFull {
         rowBody.id = "rowBody" + id;
         rowBody.ondrop = (event) => drop(event);
         rowBody.ondragover = (event) => allowDrop(event);
-        rowBody.ondragend = (event) => dragEnd(event);
+        // rowBody.ondragend = (event) => dragEnd(event);
         // Add the rowBody to the mainRow
         MainRow.appendChild(rowBody);
 
@@ -122,8 +123,6 @@ function drop(ev) {
     ev.preventDefault();
     if (ev.target.className != "rankingImage") {
         var data = ev.dataTransfer.getData("text");
-        console.log(data);
-        console.log(document.getElementById(data));
         ev.target.appendChild(document.getElementById(data));
     }
 }
