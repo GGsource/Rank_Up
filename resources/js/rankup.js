@@ -32,7 +32,7 @@ class rowFull {
         rowTab.id = "rowTab" + id;
         rowTab.style.visibility = "hidden";
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-        let addRowAboveButton = document.createElement("img");
+        let addRowAboveButton = document.createElement("img"); //TODO: turn this into div with background image
         addRowAboveButton.className = "addRowButton tabButton";
         addRowAboveButton.src = "/resources/images/addRowAboveIcon.png";
         let dragHandle = document.createElement("img");
@@ -157,4 +157,5 @@ function addRow(row, above = true) {
     // TODO: Implement adding a row above or below the specified row.
 }
 
-// TODO: Make reset, delete, drag, and addRow images not selectable by the user.
+// DONE: Make Reset & Delete no longer selectable or draggable.
+// TODO: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
