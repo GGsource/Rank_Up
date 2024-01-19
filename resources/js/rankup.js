@@ -2,9 +2,9 @@ class RankRow {
     constructor(id) {
         this.element = document.createElement("div");
         this.element.id = id;
-        this.element.className = "RankRow Container";
-        this.element.ondrop = (event) => drop(event);
-        this.element.ondragover = (event) => allowDrop(event);
+        this.element.className = "RankRow";
+        this.element.ondrop = (event) => dropImageIn(event);
+        this.element.ondragover = (event) => dragImageOver(event);
 
         // Add this new row to the rowContainer
         const rowContainer = document.getElementById("rowList");
@@ -56,22 +56,16 @@ class rowFull {
         let resetButton = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
         resetButton.id = "resetButton" + id;
-        // Add image to reset button
-        let resetButtonImage = document.createElement("img");
-        resetButtonImage.src = "/resources/images/RowHeaderClear.png";
-        resetButtonImage.className = "resetButtonImage resetDeleteImage";
-        resetButton.appendChild(resetButtonImage);
+        resetButton.style.backgroundImage = "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
+        resetButton.style.backgroundSize = "contain"; // set image to fit the button
         let emptyDiv = document.createElement("div");
         emptyDiv.className = "resetDeleteButton";
         let deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.id = "deleteButton" + id;
-        // Add image to delete button
-        let deleteButtonImage = document.createElement("img");
-        deleteButtonImage.src = "/resources/images/RowHeaderDelete.png";
-        deleteButtonImage.className = "deleteButtonImage resetDeleteImage";
-        deleteButtonImage.onclick = () => deleteRow(rowFull);
-        deleteButton.appendChild(deleteButtonImage);
+        deleteButton.style.backgroundImage = "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
+        deleteButton.style.backgroundSize = "contain"; // set image to fit the button
+        deleteButton.onclick = () => deleteRow(rowFull);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(emptyDiv);
         resetDeleteContainer.appendChild(deleteButton);
@@ -84,10 +78,10 @@ class rowFull {
         // DONE: rowBody will be the element that contains the row's ranking images.
         // rowBody is the container the user will drag the images into to rank them.
         let rowBody = document.createElement("div");
-        rowBody.className = "rowBody rowPiece";
+        rowBody.className = "rowBody rowPiece Container";
         rowBody.id = "rowBody" + id;
-        rowBody.ondrop = (event) => drop(event);
-        rowBody.ondragover = (event) => allowDrop(event);
+        rowBody.ondrop = (event) => dropImageIn(event);
+        rowBody.ondragover = (event) => dragImageOver(event);
         // Add the rowBody to the mainRow
         rowFull.appendChild(rowBody);
         // Add the full row to the rowContainer
@@ -96,33 +90,48 @@ class rowFull {
     }
 }
 
+// Create the initial rows
 startingRowCount = 5;
 for (i = 0; i < startingRowCount; i++) {
     new rowFull(i);
 }
 
-function allowDrop(ev) {
+// 
+function dragImageOver(ev) {
     ev.preventDefault();
 }
 
 function dragStart(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
-    // Make the element semi transparent
-
 }
 
-function drop(ev) {
+function dropImageIn(ev) {
+    sourceId = ev.dataTransfer.getData("text");
+    source = document.getElementById(sourceId);
+    if (source == null) {
+        console.log("Dropped in something that isn't an image! Blegh!") //DEBUGGING: This should never happen, but if it does, we should know about it.
+        return;
+    }
     ev.preventDefault();
-    if (ev.target.className != "rankingImage") {
-        var data = ev.dataTransfer.getData("text");
-        ev.target.appendChild(document.getElementById(data));
+    if (ev.target.classList.contains("Container")) {
+        ev.target.appendChild(source);
+    } else if (ev.target.classList.contains("rankingImage")) {
+        // The user dragged an image onto another image, place the image next to the target image in its parent.
+        // Check if the image was dragged to the left or right of the target image
+        let targetImageRect = ev.target.getBoundingClientRect();
+        let targetImageCenter = targetImageRect.left + (targetImageRect.width / 2);
+        // If the user dragged the image to the left of the target image, insert the image before the target image
+        if (ev.clientX < targetImageCenter) {
+            ev.target.insertAdjacentElement("beforebegin", source);
+        } else {
+            ev.target.insertAdjacentElement("afterend", source);
+        }
     }
 }
 
 function showRowTab(element) {
     rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
     rowTab.style.visibility = "visible";
-
 }
 
 function hideRowTab(element) {

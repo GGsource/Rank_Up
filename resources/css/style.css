@@ -85,14 +85,6 @@ body {
     /* TESTME: Hide overflow so the user cannot click on the rounded corners and activate the child buttons */
     /* overflow: hidden; */
 }
-/* .tabButton {
-    background: repeating-linear-gradient(
-        30deg,
-        rgba(0, 0, 0, 0),
-        rgba(255, 0, 127, 0.4) 5px
-    );
-    border: 1px solid rgba(60, 0, 20, 0.6);
-} */
 
 .mainRow {
     /* Take up full vertical space allotted by parent */
@@ -158,8 +150,9 @@ body {
     right: 0;
 }
 
-.resetDeleteImage {
+.resetDeleteButton {
     width: calc(var(--resolution) / 3);
+    height: calc(var(--resolution) / 3);
 }
 
 .addRowButton {
