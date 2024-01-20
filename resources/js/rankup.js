@@ -1,17 +1,3 @@
-class RankRow {
-    constructor(id) {
-        this.element = document.createElement("div");
-        this.element.id = id;
-        this.element.className = "RankRow";
-        this.element.ondrop = (event) => dropImageIn(event);
-        this.element.ondragover = (event) => dragImageOver(event);
-
-        // Add this new row to the rowContainer
-        const rowContainer = document.getElementById("rowList");
-        rowContainer.appendChild(this.element);
-    }
-}
-
 class rowFull {
     constructor(id) {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
@@ -32,15 +18,23 @@ class rowFull {
         rowTab.id = "rowTab" + id;
         rowTab.style.visibility = "hidden";
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-        let addRowAboveButton = document.createElement("img"); //TODO: turn this into div with background image
+        let addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
-        addRowAboveButton.src = "/resources/images/addRowAboveIcon.png";
-        let dragHandle = document.createElement("img");
+        addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
+        addRowAboveButton.style.backgroundSize = "contain";
+        let dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
-        dragHandle.src = "/resources/images/DragHandleIcon.png";
-        let addRowBelowButton = document.createElement("img");
+        dragHandle.style.backgroundImage = "url('/resources/images/DragHandleIcon.png')";
+        dragHandle.style.backgroundSize = "contain"; // set image to fit the button
+        dragHandle.style.backgroundRepeat = "no-repeat"; // don't repeat the image
+        dragHandle.style.backgroundPosition = "center"; // center it
+        let addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
-        addRowBelowButton.src = "/resources/images/addRowBelowIcon.png";
+        addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
+        addRowBelowButton.style.backgroundSize = "contain";
+        // Set the row adding buttons to the proper height
+        inflateAddRowButtons(addRowAboveButton, addRowBelowButton)
+        // Add the buttons to the rowTab
         rowTab.appendChild(addRowAboveButton);
         rowTab.appendChild(dragHandle);
         rowTab.appendChild(addRowBelowButton);
@@ -82,6 +76,7 @@ class rowFull {
         rowBody.id = "rowBody" + id;
         rowBody.ondrop = (event) => dropImageIn(event);
         rowBody.ondragover = (event) => dragImageOver(event);
+        rowBody.ondragend = (event) => dragEnd(event);
         // Add the rowBody to the mainRow
         rowFull.appendChild(rowBody);
         // Add the full row to the rowContainer
@@ -98,11 +93,16 @@ for (i = 0; i < startingRowCount; i++) {
 
 // 
 function dragImageOver(ev) {
+    let source = document.querySelector("[data-dragging]");
+    if (source == null) {
+        return;
+    }
     ev.preventDefault();
 }
 
 function dragStart(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
+    ev.target.setAttribute("data-dragging", "true");
 }
 
 function dropImageIn(ev) {
@@ -127,6 +127,10 @@ function dropImageIn(ev) {
             ev.target.insertAdjacentElement("afterend", source);
         }
     }
+}
+
+function dragEnd(ev) {
+    ev.target.removeAttribute("data-dragging");
 }
 
 function showRowTab(element) {
@@ -157,5 +161,21 @@ function addRow(row, above = true) {
     // TODO: Implement adding a row above or below the specified row.
 }
 
+function inflateAddRowButtons(topButton, btmButton) {
+    let btnImage = new Image();
+    btnImage.src = "/resources/images/addRowAboveIcon.png";
+    btnImage.onload = () => {
+        // Calculate the aspect ratio
+        let aspectRatio = btnImage.width / btnImage.height;
+        // Set the padding bottom of the top button to the aspect ratio
+        let paddingBottom = (1 / aspectRatio) * 100;
+        topButton.style.paddingBottom = paddingBottom + "%";
+        btmButton.style.paddingBottom = paddingBottom + "%";
+    }
+}
+
 // DONE: Make Reset & Delete no longer selectable or draggable.
-// TODO: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
+// DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
+// DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
+// TODO: Make multiple images selectable at once to drag at the same time.
+// TODO: Make image preview snap to column when image is dragged over it but not yet dropped.

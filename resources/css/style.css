@@ -155,10 +155,6 @@ body {
     height: calc(var(--resolution) / 3);
 }
 
-.addRowButton {
-    width: 100%;
-}
-
 .dragHandle {
     /* Make this section take up the remaining space not occupied by the addrow buttons */
     flex-grow: 1;
