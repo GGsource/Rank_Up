@@ -160,8 +160,6 @@ body {
     flex-grow: 1;
     min-height: 0;
     object-fit: contain;
-
-    /* FIXME: This image stretched to full width of its parent rowTab, it should not do this and maintain aspect ratio instead */
 }
 
 /* TODO: Make sure rowTab's draggable section extends the full
