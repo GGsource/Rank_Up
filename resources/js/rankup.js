@@ -1,27 +1,29 @@
-class rowFull {
-    constructor(id) {
+class Row {
+    static count = 1; // Keep track of number of rows created
+    constructor(isNewRow = false) {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
-        let rowFull = document.createElement("div");
-        rowFull.className = "rowFull";
-        rowFull.id = "rowFull" + id;
+        this.rowFull = document.createElement("div");
+        this.rowFull.className = "rowFull";
+        this.rowFull.id = "rowFull" + Row.count;
         // DONE: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         let rowHeader = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
-        rowHeader.id = "rowHeader" + id;
+        rowHeader.id = "rowHeader" + Row.count;
         rowHeader.onmouseover = () => showRowTab(rowHeader);
         rowHeader.onmouseout = () => hideRowTab(rowHeader);
         // DONE: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         let rowTab = document.createElement("div");
         rowTab.className = "rowTab rowPiece";
-        rowTab.id = "rowTab" + id;
+        rowTab.id = "rowTab" + Row.count;
         rowTab.style.visibility = "hidden";
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         let addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
         addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
         addRowAboveButton.style.backgroundSize = "contain";
+        addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         let dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
         dragHandle.style.backgroundImage = "url('/resources/images/DragHandleIcon.png')";
@@ -32,6 +34,7 @@ class rowFull {
         addRowBelowButton.className = "addRowButton tabButton";
         addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
         addRowBelowButton.style.backgroundSize = "contain";
+        addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         // Set the row adding buttons to the proper height
         inflateAddRowButtons(addRowAboveButton, addRowBelowButton)
         // Add the buttons to the rowTab
@@ -41,25 +44,25 @@ class rowFull {
         // Add the title to the rowHeader
         let rowTitle = document.createElement("div");
         rowTitle.className = "rowTitle";
-        rowTitle.id = "rowTitle" + id;
-        rowTitle.innerHTML = "Row " + id;
+        rowTitle.id = "rowTitle" + Row.count;
+        rowTitle.innerHTML = isNewRow ? "New Row" : "Row " + Row.count;
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         let resetDeleteContainer = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
-        resetDeleteContainer.id = "resetDeleteContainer" + id;
+        resetDeleteContainer.id = "resetDeleteContainer" + Row.count;
         let resetButton = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
-        resetButton.id = "resetButton" + id;
+        resetButton.id = "resetButton" + Row.count;
         resetButton.style.backgroundImage = "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.style.backgroundSize = "contain"; // set image to fit the button
         let emptyDiv = document.createElement("div");
         emptyDiv.className = "resetDeleteButton";
         let deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
-        deleteButton.id = "deleteButton" + id;
+        deleteButton.id = "deleteButton" + Row.count;
         deleteButton.style.backgroundImage = "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.style.backgroundSize = "contain"; // set image to fit the button
-        deleteButton.onclick = () => deleteRow(rowFull);
+        deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(emptyDiv);
         resetDeleteContainer.appendChild(deleteButton);
@@ -68,27 +71,29 @@ class rowFull {
         rowHeader.appendChild(rowTitle);
         rowHeader.appendChild(resetDeleteContainer);
         // Add the rowHeader to the full row
-        rowFull.appendChild(rowHeader);
+        this.rowFull.appendChild(rowHeader);
         // DONE: rowBody will be the element that contains the row's ranking images.
-        // rowBody is the container the user will drag the images into to rank them.
         let rowBody = document.createElement("div");
         rowBody.className = "rowBody rowPiece Container";
-        rowBody.id = "rowBody" + id;
+        rowBody.id = "rowBody" + Row.count;
         rowBody.ondrop = (event) => dropImageIn(event);
         rowBody.ondragover = (event) => dragImageOver(event);
         rowBody.ondragend = (event) => dragEnd(event);
         // Add the rowBody to the mainRow
-        rowFull.appendChild(rowBody);
-        // Add the full row to the rowContainer
-        let rowContainer = document.getElementById("rowList");
-        rowContainer.appendChild(rowFull);
+        this.rowFull.appendChild(rowBody);
+        Row.count++;
+    }
+    // Function for appending this row to a parent element
+    appendTo(parent) {
+        parent.appendChild(this.rowFull);
     }
 }
 
 // Create the initial rows
 startingRowCount = 5;
+let rowContainer = document.getElementById("rowList");
 for (i = 0; i < startingRowCount; i++) {
-    new rowFull(i);
+    new Row().appendTo(rowContainer);
 }
 
 // 
@@ -157,8 +162,11 @@ function deleteRow(row) {
 }
 
 // AddRow - Adds a new row above or below the specified row.
-function addRow(row, above = true) {
-    // TODO: Implement adding a row above or below the specified row.
+function addRow(row, isAbove) {
+    if (isAbove)
+        row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
+    else
+        row.insertAdjacentElement("afterend", new Row(true).rowFull);
 }
 
 function inflateAddRowButtons(topButton, btmButton) {
@@ -177,5 +185,8 @@ function inflateAddRowButtons(topButton, btmButton) {
 // DONE: Make Reset & Delete no longer selectable or draggable.
 // DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
-// TODO: Make multiple images selectable at once to drag at the same time.
-// TODO: Make image preview snap to column when image is dragged over it but not yet dropped.
+// IDEA: Make multiple images selectable at once to drag at the same time.
+// IDEA: Make image preview snap to column when image is dragged over it but not yet dropped.
+//FIXME: If there is only one row remaining disable the delete button and make it look disabled.
+//IDEA: Make buttons brighten up slightly when hovered over
+//IDEA: Make buttons brighten up even more when clicked
