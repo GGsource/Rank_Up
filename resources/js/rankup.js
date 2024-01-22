@@ -201,9 +201,9 @@ function inflateAddRowButtons(topButton, btmButton) {
 // DONE: Make Reset & Delete no longer selectable or draggable.
 // DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
+// DONE: If there is only one row remaining disable the delete button and make it look disabled.
 // IDEA: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make image preview snap to column when image is dragged over it but not yet dropped.
-// FIXME: If there is only one row remaining disable the delete button and make it look disabled.
 // IDEA: Make buttons brighten up slightly when hovered over
 // IDEA: Make buttons brighten up even more when clicked
 // IDEA: Animate tab showing up and disappearing
