@@ -208,3 +208,5 @@ function inflateAddRowButtons(topButton, btmButton) {
 // IDEA: Make buttons brighten up even more when clicked
 // IDEA: Animate tab showing up and disappearing
 // IDEA: Make the tab linger for a second or two after the mouse leaves it before disappearing
+// TODO: Make README.md for github page
+// TODO: Setup this on its own webpage
