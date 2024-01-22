@@ -159,10 +159,26 @@ function deleteRow(row) {
         }
     }
     row.remove();
+
+    // If there is only one row remaining disable the delete button and make it look disabled.
+    let rowList = document.getElementById("rowList");
+    if (rowList.childElementCount == 1) {
+        let deleteButton = rowList.getElementsByClassName("deleteButton")[0];
+        deleteButton.style.pointerEvents = "none";
+        deleteButton.style.opacity = "0.5";
+    }
 }
 
 // AddRow - Adds a new row above or below the specified row.
 function addRow(row, isAbove) {
+    // First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
+    let rowList = document.getElementById("rowList");
+    if (rowList.childElementCount == 1) {
+        let deleteButton = rowList.getElementsByClassName("deleteButton")[0];
+        deleteButton.style.pointerEvents = "auto";
+        deleteButton.style.opacity = "1";
+    }
+    // Create the new row
     if (isAbove)
         row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
     else
@@ -187,6 +203,8 @@ function inflateAddRowButtons(topButton, btmButton) {
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
 // IDEA: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make image preview snap to column when image is dragged over it but not yet dropped.
-//FIXME: If there is only one row remaining disable the delete button and make it look disabled.
-//IDEA: Make buttons brighten up slightly when hovered over
-//IDEA: Make buttons brighten up even more when clicked
+// FIXME: If there is only one row remaining disable the delete button and make it look disabled.
+// IDEA: Make buttons brighten up slightly when hovered over
+// IDEA: Make buttons brighten up even more when clicked
+// IDEA: Animate tab showing up and disappearing
+// IDEA: Make the tab linger for a second or two after the mouse leaves it before disappearing
