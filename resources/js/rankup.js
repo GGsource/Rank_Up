@@ -46,6 +46,7 @@ class Row {
         rowTitle.className = "rowTitle";
         rowTitle.id = "rowTitle" + Row.count;
         rowTitle.innerHTML = isNewRow ? "New Row" : "Row " + Row.count;
+        rowTitle.contentEditable = true;
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         let resetDeleteContainer = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
@@ -55,6 +56,7 @@ class Row {
         resetButton.id = "resetButton" + Row.count;
         resetButton.style.backgroundImage = "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.style.backgroundSize = "contain"; // set image to fit the button
+        resetButton.onclick = () => resetRow(this.rowBody);
         let emptyDiv = document.createElement("div");
         emptyDiv.className = "resetDeleteButton";
         let deleteButton = document.createElement("div");
@@ -79,6 +81,7 @@ class Row {
         rowBody.ondrop = (event) => dropImageIn(event);
         rowBody.ondragover = (event) => dragImageOver(event);
         rowBody.ondragend = (event) => dragEnd(event);
+        resetButton.onclick = () => resetRow(rowBody);
         // Add the rowBody to the mainRow
         this.rowFull.appendChild(rowBody);
         Row.count++;
@@ -148,16 +151,22 @@ function hideRowTab(element) {
     rowTab.style.visibility = "hidden";
 }
 
-// DeleteRow - Deletes a specified row and moves any contents to the imageContainer at the bottom of the page.
-function deleteRow(row) {
-    // First check if this row had any images in it, if so, move them to the imageContainer
-    let rowBody = row.getElementsByClassName("rowBody")[0];
+// ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
+function resetRow(rowBody) {
     if (rowBody.hasChildNodes()) {
         let imageContainer = document.getElementById("imageContainer");
         while (rowBody.hasChildNodes()) {
             imageContainer.appendChild(rowBody.firstChild);
         }
     }
+}
+
+// DeleteRow - Deletes a specified row and moves any contents to the imageContainer at the bottom of the page.
+function deleteRow(row) {
+    // First check if this row had any images in it, if so, move them to the imageContainer
+    rowBody = row.getElementsByClassName("rowBody")[0];
+    resetRow(rowBody);
+    // Remove the row from the rowList
     row.remove();
 
     // If there is only one row remaining disable the delete button and make it look disabled.
