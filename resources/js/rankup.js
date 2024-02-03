@@ -16,8 +16,8 @@ class Row {
         rowTab.className = "rowTab rowPiece closed";
         rowTab.id = "rowTab" + Row.count;
         // rowTab.style.visibility = "hidden";
-        rowHeader.onmouseover = () => rowTab.classList.remove("closed"); // remove closed from rowtab classes to show it
-        rowHeader.onmouseout = () => rowTab.classList.add("closed"); // add closed to rowtab classes to hide it
+        rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
+        rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         let addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
@@ -145,9 +145,6 @@ function dragEnd(ev) {
     ev.target.removeAttribute("data-dragging");
 }
 
-var timeoutIds = {};
-var previousShownRowTab = null;
-
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
 function resetRow(rowBody) {
     if (rowBody.hasChildNodes()) {
@@ -202,6 +199,24 @@ function inflateAddRowButtons(topButton, btmButton) {
         topButton.style.paddingBottom = paddingBottom + "%";
         btmButton.style.paddingBottom = paddingBottom + "%";
     }
+}
+
+timeoutIds = {};
+lastHiddenTab = null;
+
+function showTab(tab) {
+    if (lastHiddenTab != null && lastHiddenTab != tab) hideTab(lastHiddenTab, false);
+    clearTimeout(timeoutIds[tab.id]);
+    tab.classList.remove("closed");
+    lastHiddenTab = tab;
+}
+
+function hideTab(tab, useDelay = true) {
+    if (timeoutIds[tab.id]) clearTimeout(timeoutIds[tab.id]); // Clear any existing timeout
+    let delayMS = useDelay ? 300 : 0;
+    timeoutIds[tab.id] = setTimeout(() => {
+        tab.classList.add("closed");
+    }, delayMS);
 }
 
 // DONE: Make Reset & Delete no longer selectable or draggable.
