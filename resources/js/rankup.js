@@ -224,11 +224,11 @@ function hideTab(tab, useDelay = true) {
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
 // DONE: If there is only one row remaining disable the delete button and make it look disabled.
 // DONE: Animate tab showing up and disappearing
+// DONE: Make the tab linger for a second or two after the mouse leaves it before disappearing
 // IDEA: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make image preview snap to column when image is dragged over it but not yet dropped.
-// IDEA: Make buttons brighten up slightly when hovered over
+// IDEA: Make buttons brighten up slightly when hovered over // Look into doing this programmatically without new images
 // IDEA: Make buttons brighten up even more when clicked
-// IDEA: Make the tab linger for a second or two after the mouse leaves it before disappearing
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
 // TODO: Make the rows themselves draggable with the drag handle
