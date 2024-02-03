@@ -10,14 +10,14 @@ class Row {
         let rowHeader = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
         rowHeader.id = "rowHeader" + Row.count;
-        rowHeader.onmouseover = () => showRowTab(rowHeader);
-        rowHeader.onmouseout = () => hideRowTab(rowHeader);
         // DONE: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         let rowTab = document.createElement("div");
-        rowTab.className = "rowTab rowPiece";
+        rowTab.className = "rowTab rowPiece closed";
         rowTab.id = "rowTab" + Row.count;
-        rowTab.style.visibility = "hidden";
+        // rowTab.style.visibility = "hidden";
+        rowHeader.onmouseover = () => rowTab.classList.remove("closed"); // remove closed from rowtab classes to show it
+        rowHeader.onmouseout = () => rowTab.classList.add("closed"); // add closed to rowtab classes to hide it
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         let addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
@@ -143,25 +143,6 @@ function dragEnd(ev) {
 
 var timeoutIds = {};
 var previousShownRowTab = null;
-
-function showRowTab(element) {
-    if (previousShownRowTab != null && previousShownRowTab != element)
-        hideRowTab(previousShownRowTab, false); //Hide the last tab without delay
-    clearTimeout(timeoutIds[element.id]); // Clear any existing timeout for this element
-    let rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
-    rowTab.style.visibility = "visible";
-    previousShownRowTab = element; // Update what the last shown tab was
-}
-
-
-function hideRowTab(element, useDelay = true) {
-    if (timeoutIds[element.id]) clearTimeout(timeoutIds[element.id])
-    let delay = useDelay ? 500 : 0;
-    timeoutIds[element.id] = setTimeout(() => {
-        let rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
-        rowTab.style.visibility = "hidden";
-    }, delay); // Delay hiding the rowTab for 1 second
-}
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
 function resetRow(rowBody) {

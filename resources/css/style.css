@@ -59,6 +59,8 @@ body {
     /* Size it to parent height and half the width and list children as column */
     height: 100%;
     width: calc(var(--resolution) / 2);
+    transition: width var(--animMS), padding var(--animMS),
+        border-radius var(--animMS);
     display: flex;
     flex-direction: column;
 
@@ -84,6 +86,11 @@ body {
     );
     /* TESTME: Hide overflow so the user cannot click on the rounded corners and activate the child buttons */
     /* overflow: hidden; */
+}
+.rowTab.closed {
+    width: 0;
+    padding: 0;
+    border-radius: 0;
 }
 
 .mainRow {
