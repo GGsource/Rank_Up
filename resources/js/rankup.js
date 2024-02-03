@@ -22,6 +22,8 @@ class Row {
         let addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
         addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
+        addRowAboveButton.style.backgroundRepeat = "no-repeat";
+        addRowAboveButton.style.backgroundPosition = "center";
         addRowAboveButton.style.backgroundSize = "contain";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         let dragHandle = document.createElement("div");
@@ -33,6 +35,8 @@ class Row {
         let addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
         addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
+        addRowBelowButton.style.backgroundRepeat = "no-repeat";
+        addRowBelowButton.style.backgroundPosition = "center";
         addRowBelowButton.style.backgroundSize = "contain";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         // Set the row adding buttons to the proper height
@@ -204,11 +208,12 @@ function inflateAddRowButtons(topButton, btmButton) {
 // DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
 // DONE: If there is only one row remaining disable the delete button and make it look disabled.
+// DONE: Animate tab showing up and disappearing
 // IDEA: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make image preview snap to column when image is dragged over it but not yet dropped.
 // IDEA: Make buttons brighten up slightly when hovered over
 // IDEA: Make buttons brighten up even more when clicked
-// IDEA: Animate tab showing up and disappearing
 // IDEA: Make the tab linger for a second or two after the mouse leaves it before disappearing
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
+// TODO: Make the rows themselves draggable with the drag handle
