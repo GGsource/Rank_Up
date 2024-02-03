@@ -141,14 +141,26 @@ function dragEnd(ev) {
     ev.target.removeAttribute("data-dragging");
 }
 
+var timeoutIds = {};
+var previousShownRowTab = null;
+
 function showRowTab(element) {
-    rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
+    if (previousShownRowTab != null && previousShownRowTab != element)
+        hideRowTab(previousShownRowTab, false); //Hide the last tab without delay
+    clearTimeout(timeoutIds[element.id]); // Clear any existing timeout for this element
+    let rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
     rowTab.style.visibility = "visible";
+    previousShownRowTab = element; // Update what the last shown tab was
 }
 
-function hideRowTab(element) {
-    rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
-    rowTab.style.visibility = "hidden";
+
+function hideRowTab(element, useDelay = true) {
+    if (timeoutIds[element.id]) clearTimeout(timeoutIds[element.id])
+    let delay = useDelay ? 500 : 0;
+    timeoutIds[element.id] = setTimeout(() => {
+        let rowTab = element.parentElement.getElementsByClassName("rowTab")[0];
+        rowTab.style.visibility = "hidden";
+    }, delay); // Delay hiding the rowTab for 1 second
 }
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
