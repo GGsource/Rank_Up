@@ -138,7 +138,9 @@ body {
     /* FIXME: This currently stretches the image. */
     /* In future we should crop them instead. */
 
-    transition: opacity var(--animMS);
+    transition: opacity var(--animMS), border var(--animMS),
+        background-color var(--animMS);
+    box-sizing: border-box;
 }
 
 .rowTitle {

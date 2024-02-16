@@ -85,6 +85,7 @@ class Row {
         rowBody.ondrop = (event) => dropImageIn(event);
         rowBody.ondragover = (event) => dragImageOver(event);
         rowBody.ondragend = (event) => dragEnd(event);
+        rowBody.onclick = (event) => clickContainer(event);
         resetButton.onclick = () => resetRow(rowBody);
         // Add the rowBody to the mainRow
         this.rowFull.appendChild(rowBody);
@@ -131,6 +132,8 @@ function dragImageOver(ev) {
 function dragStart(ev) {
     // ev.dataTransfer.setData("text", ev.target.id);
     ev.target.setAttribute("data-dragging", "true");
+    if (!selectedImages.has(ev.target))
+        clickImage(ev);
 }
 
 function dropImageIn(ev) {
@@ -219,6 +222,69 @@ function hideTab(tab, useDelay = true) {
     }, delayMS);
 }
 
+var selectedImages = new Set();
+var lastSelectedImage = null;
+
+window.addEventListener("keydown", function (ev) {
+    if (ev.key == "Control" || ev.key == "Shift")
+        ev.preventDefault();
+});
+
+function clickImage(ev) {
+    var image = ev.target
+    var container = ev.target.parentNode;
+    var images = Array.from(container.children);
+    var index = images.indexOf(image);
+
+    if (ev.ctrlKey)
+        toggleSelection(image);
+    else if (ev.shiftKey && lastSelectedImage != null) {
+        var lastIndex = images.indexOf(lastSelectedImage)
+        if (lastIndex !== -1) {
+            var start = Math.min(index, lastIndex);
+            var end = Math.max(index, lastIndex);
+            for (var i = start; i <= end; i++)
+                selectImage(images[i]);
+        } else
+            selectImage(image);
+    } else {
+        clearSelections();
+        selectImage(image);
+    }
+    lastSelectedImage = image;
+}
+
+function selectImage(image) {
+    selectedImages.add(image);
+    image.style.border = "solid 5px #2789f1";
+    image.style.borderRadius = "5px";
+    image.style.backgroundColor = "#2789f163";
+}
+
+function deselectImage(image) {
+    selectedImages.delete(image);
+    image.style.border = "none";
+    image.style.borderRadius = "0px";
+    image.style.backgroundColor = "transparent";
+}
+
+function toggleSelection(image) {
+    if (selectedImages.has(image))
+        deselectImage(image);
+    else
+        selectImage(image);
+}
+
+function clearSelections() {
+    selectedImages.forEach(deselectImage);
+    selectedImages.clear();
+}
+
+function clickContainer(ev) {
+    if (ev.target.classList.contains("Container"))
+        clearSelections();
+}
+
 // DONE: Make Reset & Delete no longer selectable or draggable.
 // DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
@@ -226,6 +292,7 @@ function hideTab(tab, useDelay = true) {
 // DONE: Animate tab showing up and disappearing
 // DONE: Make the tab linger for a second or two after the mouse leaves it before disappearing
 // DONE: Make image preview snap to column when image is dragged over it but not yet dropped.
+// DONE: Make visuals for selecting images
 // IDEA: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make buttons brighten up slightly when hovered over // Look into doing this programmatically without new images
 // IDEA: Make buttons brighten up even more when clicked
