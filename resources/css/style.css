@@ -137,6 +137,8 @@ body {
     height: var(--resolution);
     /* FIXME: This currently stretches the image. */
     /* In future we should crop them instead. */
+
+    transition: opacity var(--animMS);
 }
 
 .rowTitle {

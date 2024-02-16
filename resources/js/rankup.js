@@ -125,7 +125,7 @@ function dragImageOver(ev) {
             ev.target.insertAdjacentElement("afterend", source);
         }
     }
-    source.style.opacity = 0.5;
+    source.style.opacity = 0.2;
 }
 
 function dragStart(ev) {
