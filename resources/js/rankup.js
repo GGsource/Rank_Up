@@ -87,9 +87,8 @@ class Row {
         var rowBody = document.createElement("div");
         rowBody.className = "rowBody rowPiece Container";
         rowBody.id = "rowBody" + Row.count;
-        rowBody.ondrop = (event) => dropImageIn(event);
         rowBody.ondragover = (event) => dragImageOver(event);
-        rowBody.ondragend = (event) => dragEnd(event);
+        rowBody.ondragend = (event) => dragEnd(event); //TESTME: Should RowBody have this?
         rowBody.onclick = (event) => clickContainer(event);
         resetButton.onclick = () => resetRow(rowBody);
         // Add the rowBody to the mainRow
@@ -109,47 +108,89 @@ for (i = 0; i < startingRowCount; i++) {
     new Row().appendTo(rowContainer);
 }
 
-function dragImageOver(ev) {
-    var source = document.querySelector("[data-dragging]");
-    if (source == null) {
-        console.log("Dropped in something that isn't an image! Blegh!"); //DEBUGGING: This should never happen, but if it does, we should know about it.
-        return;
-    }
-    ev.preventDefault();
-    if (ev.target.classList.contains("Container")) {
-        ev.target.appendChild(source);
-    } else if (ev.target.classList.contains("rankingImage")) {
-        // The user dragged an image onto another image, place the image next to the target image in its parent.
-        // Check if the image was dragged to the left or right of the target image
-        var targetImageRect = ev.target.getBoundingClientRect();
-        var targetImageCenter =
-            targetImageRect.left + targetImageRect.width / 2;
-        // If the user dragged the image to the left of the target image, insert the image before the target image
-        if (ev.clientX < targetImageCenter) {
-            ev.target.insertAdjacentElement("beforebegin", source);
-        } else {
-            ev.target.insertAdjacentElement("afterend", source);
-        }
-    }
-    source.style.opacity = 0.2;
-}
-
+var draggingImageDiv = null;
+// DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev) {
-    // ev.dataTransfer.setData("text", ev.target.id);
-    ev.target.setAttribute("data-dragging", "true");
-    if (!selectedImages.has(ev.target)) clickImage(ev);
+    // ev.preventDefault();
+    var image = ev.target;
+    if (selectedImages.has(image)) {
+        //TODO: pick up all selected image
+        selectedImages.forEach((selectedImage) =>
+            selectedImage.setAttribute("data-dragging", "true")
+        );
+    } else {
+        //TODO: Pick up only current image
+        clickImage(ev);
+        image.setAttribute("data-dragging", "true");
+    }
+    // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
+    // TODO: Convert this styling to a css class styling
+    draggingImageDiv = document.createElement("div");
+    draggingImageDiv.style.position = "absolute";
+    draggingImageDiv.style.zIndex = 1000; //Arbitrarily high, above anything else.
+    draggingImageDiv.style.padding = "10px";
+    draggingImageDiv.style.backgroundColor = "#f0f0f0";
+    draggingImageDiv.style.border = "1px solid #000";
+    draggingImageDiv.style.borderRadius = "10%";
+    draggingImageDiv.style.textAlign = "center";
+    draggingImageDiv.style.lineHeight = "30px";
+    draggingImageDiv.textContent = selectedImages.size;
+    document.body.appendChild(draggingImageDiv);
+    // Update the div position
+    updateDragDivPosition(ev);
 }
 
-function dropImageIn(ev) {
-    // sourceId = ev.dataTransfer.getData("text");
-    // source = document.getElementById(sourceId);
-    // DELETEME: Currently Useless.
+// DragImage - Mouse is being held and dragged.
+function dragImage(ev) {
+    if (draggingImageDiv) updateDragDivPosition(ev);
 }
 
+var lastX = 0;
+// DragImageOver - Mouse is being held and dragged over something
+function dragImageOver(ev) {
+    ev.preventDefault();
+    var sources = document.querySelectorAll("[data-dragging]");
+    sources.forEach((source) => {
+        if (source == null) {
+            console.log("Dropped in something that isn't an image! Blegh!"); //DEBUGGING: This should never happen, but if it does, we should know about it.
+            return;
+        }
+        if (ev.target.classList.contains("Container")) {
+            ev.target.appendChild(source);
+        } else if (ev.target.classList.contains("rankingImage")) {
+            if (selectedImages.has(ev.target)) return;
+            lastX = ev.clientX;
+            // The user dragged an image onto another image, place the image next to the target image in its parent.
+            // Check if the image was dragged to the left or right of the target image
+            var targetImageRect = ev.target.getBoundingClientRect();
+            var targetImageCenter =
+                targetImageRect.left + targetImageRect.width / 2;
+            // If the user dragged the image to the left of the target image, insert the image before the target image
+            if (ev.clientX < targetImageCenter) {
+                ev.target.insertAdjacentElement("beforebegin", source);
+            } else {
+                ev.target.insertAdjacentElement("afterend", source);
+            }
+        }
+        source.style.opacity = 0.2;
+        // TODO: A new image has been dropped into a container. Check if it needs to be made larger to accomodate.
+    });
+}
+
+// DragEnd - Mouse is released.
 function dragEnd(ev) {
-    var source = document.querySelector("[data-dragging]");
-    source.style.opacity = 1.0;
-    ev.target.removeAttribute("data-dragging");
+    var sources = document.querySelectorAll("[data-dragging]");
+    sources.forEach((source) => {
+        source.style.opacity = 1.0;
+        source.removeAttribute("data-dragging");
+    });
+    draggingImageDiv.remove();
+}
+
+// UpdateDragDivPosition - updates where the div should be as mouse moves
+function updateDragDivPosition(ev) {
+    draggingImageDiv.style.left = ev.pageX + "px";
+    draggingImageDiv.style.top = ev.pageY + "px";
 }
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.

@@ -27,18 +27,17 @@ body {
 /* 
 - rowList (contains all rowFulls)
 -       rowFull
--             rowTab
--                     addRowAboveButton
--                     dragHandle
--                     addRowBelowButton
--             mainRow
--                     rowHeader
--                             rowTitle
--                             resetDeleteContainer
--                                     resetButton
--                                     emptyDiv
--                                     deleteButton
--                     rowBody
+-             rowHeader
+-                     rowTab
+-                             addRowAboveButton
+-                             dragHandle
+-                             addRowBelowButton
+-                     rowTitle
+-                     resetDeleteContainer
+-                             resetButton
+-                             emptyDiv
+-                             deleteButton
+-             rowBody
 */
 #rowList {
     /* Center */

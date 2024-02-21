@@ -15,11 +15,11 @@
         <div
             id="imageContainer"
             class="Container"
-            ondrop="dropImageIn(event)"
             ondragover="dragImageOver(event)"
             ondragend="dragEnd(event)"
             onclick="clickContainer(event)"
         >
+            <!-- TESTME: Does the above need dragEnd? -->
             <img
                 id="img1"
                 class="rankingImage"
@@ -27,6 +27,7 @@
                 title="Image #1"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="imgX"
@@ -35,6 +36,7 @@
                 title="Image #X"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img2"
@@ -43,6 +45,7 @@
                 title="Image #2"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img3"
@@ -51,6 +54,7 @@
                 title="Image #3"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img4"
@@ -59,6 +63,7 @@
                 title="Image #4"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img5"
@@ -67,6 +72,7 @@
                 title="Image #5"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img6"
@@ -75,6 +81,7 @@
                 title="Image #6"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img7"
@@ -83,6 +90,7 @@
                 title="Image #7"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
             <img
                 id="img8"
@@ -91,6 +99,7 @@
                 title="Image #8"
                 ondragstart="dragStart(event)"
                 onclick="clickImage(event)"
+                ondrag="dragImage(event)"
             />
         </div>
         <!-- Javascript Source Files -->
