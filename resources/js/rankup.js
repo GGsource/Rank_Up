@@ -194,13 +194,15 @@ function updateDragDivPosition(ev) {
 
 // RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
 function recursiveInsert(image) {
-    var selectedArray = Array.from(selectedImages);
-    _recursiveInsert(image, selectedArray, 0);
+    iterator = selectedImages.values();
+    _recursiveInsert(image, iterator);
 }
-function _recursiveInsert(image, selectedArray, ndx) {
-    if (ndx >= selectedArray.length) return;
-    image.insertAdjacentElement("afterend", selectedArray[ndx]);
-    _recursiveInsert(selectedArray[ndx], selectedArray, ndx + 1);
+function _recursiveInsert(image, iterator) {
+    var nextImg = iterator.next();
+    if (!nextImg.done) {
+        image.insertAdjacentElement("afterend", nextImg.value);
+        _recursiveInsert(nextImg.value, iterator);
+    }
 }
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
