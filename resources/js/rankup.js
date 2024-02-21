@@ -145,7 +145,6 @@ function dragImage(ev) {
     if (draggingImageDiv) updateDragDivPosition(ev);
 }
 
-var lastX = 0;
 // DragImageOver - Mouse is being held and dragged over something
 function dragImageOver(ev) {
     ev.preventDefault();
@@ -169,7 +168,7 @@ function dragImageOver(ev) {
             if (ev.clientX < targetImageCenter) {
                 ev.target.insertAdjacentElement("beforebegin", source);
             } else {
-                ev.target.insertAdjacentElement("afterend", source);
+                recursiveInsert(ev.target);
             }
         }
         source.style.opacity = 0.2;
@@ -191,6 +190,17 @@ function dragEnd(ev) {
 function updateDragDivPosition(ev) {
     draggingImageDiv.style.left = ev.pageX + "px";
     draggingImageDiv.style.top = ev.pageY + "px";
+}
+
+// RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
+function recursiveInsert(image) {
+    var selectedArray = Array.from(selectedImages);
+    _recursiveInsert(image, selectedArray, 0);
+}
+function _recursiveInsert(image, selectedArray, ndx) {
+    if (ndx >= selectedArray.length) return;
+    image.insertAdjacentElement("afterend", selectedArray[ndx]);
+    _recursiveInsert(selectedArray[ndx], selectedArray, ndx + 1);
 }
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
