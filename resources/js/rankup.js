@@ -21,26 +21,29 @@ class Row {
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         var addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
-        addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
+        addRowAboveButton.style.backgroundImage =
+            "url('/resources/images/addRowAboveIcon.png')";
         addRowAboveButton.style.backgroundRepeat = "no-repeat";
         addRowAboveButton.style.backgroundPosition = "center";
         addRowAboveButton.style.backgroundSize = "contain";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         var dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
-        dragHandle.style.backgroundImage = "url('/resources/images/DragHandleIcon.png')";
+        dragHandle.style.backgroundImage =
+            "url('/resources/images/DragHandleIcon.png')";
         dragHandle.style.backgroundSize = "contain"; // set image to fit the button
         dragHandle.style.backgroundRepeat = "no-repeat"; // don't repeat the image
         dragHandle.style.backgroundPosition = "center"; // center it
         var addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
-        addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
+        addRowBelowButton.style.backgroundImage =
+            "url('/resources/images/addRowBelowIcon.png')";
         addRowBelowButton.style.backgroundRepeat = "no-repeat";
         addRowBelowButton.style.backgroundPosition = "center";
         addRowBelowButton.style.backgroundSize = "contain";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         // Set the row adding buttons to the proper height
-        inflateAddRowButtons(addRowAboveButton, addRowBelowButton)
+        inflateAddRowButtons(addRowAboveButton, addRowBelowButton);
         // Add the buttons to the rowTab
         rowTab.appendChild(addRowAboveButton);
         rowTab.appendChild(dragHandle);
@@ -58,7 +61,8 @@ class Row {
         var resetButton = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
         resetButton.id = "resetButton" + Row.count;
-        resetButton.style.backgroundImage = "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
+        resetButton.style.backgroundImage =
+            "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.style.backgroundSize = "contain"; // set image to fit the button
         resetButton.onclick = () => resetRow(this.rowBody);
         var emptyDiv = document.createElement("div");
@@ -66,7 +70,8 @@ class Row {
         var deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.id = "deleteButton" + Row.count;
-        deleteButton.style.backgroundImage = "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
+        deleteButton.style.backgroundImage =
+            "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.style.backgroundSize = "contain"; // set image to fit the button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
@@ -104,11 +109,10 @@ for (i = 0; i < startingRowCount; i++) {
     new Row().appendTo(rowContainer);
 }
 
-// 
 function dragImageOver(ev) {
     var source = document.querySelector("[data-dragging]");
     if (source == null) {
-        console.log("Dropped in something that isn't an image! Blegh!") //DEBUGGING: This should never happen, but if it does, we should know about it.
+        console.log("Dropped in something that isn't an image! Blegh!"); //DEBUGGING: This should never happen, but if it does, we should know about it.
         return;
     }
     ev.preventDefault();
@@ -118,7 +122,8 @@ function dragImageOver(ev) {
         // The user dragged an image onto another image, place the image next to the target image in its parent.
         // Check if the image was dragged to the left or right of the target image
         var targetImageRect = ev.target.getBoundingClientRect();
-        var targetImageCenter = targetImageRect.left + (targetImageRect.width / 2);
+        var targetImageCenter =
+            targetImageRect.left + targetImageRect.width / 2;
         // If the user dragged the image to the left of the target image, insert the image before the target image
         if (ev.clientX < targetImageCenter) {
             ev.target.insertAdjacentElement("beforebegin", source);
@@ -132,8 +137,7 @@ function dragImageOver(ev) {
 function dragStart(ev) {
     // ev.dataTransfer.setData("text", ev.target.id);
     ev.target.setAttribute("data-dragging", "true");
-    if (!selectedImages.has(ev.target))
-        clickImage(ev);
+    if (!selectedImages.has(ev.target)) clickImage(ev);
 }
 
 function dropImageIn(ev) {
@@ -187,8 +191,7 @@ function addRow(row, isAbove) {
     // Create the new row
     if (isAbove)
         row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
-    else
-        row.insertAdjacentElement("afterend", new Row(true).rowFull);
+    else row.insertAdjacentElement("afterend", new Row(true).rowFull);
 }
 
 function inflateAddRowButtons(topButton, btmButton) {
@@ -201,14 +204,15 @@ function inflateAddRowButtons(topButton, btmButton) {
         var paddingBottom = (1 / aspectRatio) * 100;
         topButton.style.paddingBottom = paddingBottom + "%";
         btmButton.style.paddingBottom = paddingBottom + "%";
-    }
+    };
 }
 
 timeoutIds = {};
 lastHiddenTab = null;
 
 function showTab(tab) {
-    if (lastHiddenTab != null && lastHiddenTab != tab) hideTab(lastHiddenTab, false);
+    if (lastHiddenTab != null && lastHiddenTab != tab)
+        hideTab(lastHiddenTab, false);
     clearTimeout(timeoutIds[tab.id]);
     tab.classList.remove("closed");
     lastHiddenTab = tab;
@@ -226,27 +230,26 @@ var selectedImages = new Set();
 var lastSelectedImage = null;
 
 window.addEventListener("keydown", function (ev) {
-    if (ev.key == "Control" || ev.key == "Shift")
-        ev.preventDefault();
+    if (ev.key == "Control" || ev.key == "Shift") ev.preventDefault();
 });
 
 function clickImage(ev) {
-    var image = ev.target
+    var image = ev.target;
     var container = ev.target.parentNode;
     var images = Array.from(container.children);
     var index = images.indexOf(image);
 
     if (ev.ctrlKey)
+        // Ctrl key + click to toggle selected status on an image
         toggleSelection(image);
     else if (ev.shiftKey && lastSelectedImage != null) {
-        var lastIndex = images.indexOf(lastSelectedImage)
+        // Shift key + click selects all images between last and current image
+        var lastIndex = images.indexOf(lastSelectedImage);
         if (lastIndex !== -1) {
             var start = Math.min(index, lastIndex);
             var end = Math.max(index, lastIndex);
-            for (var i = start; i <= end; i++)
-                selectImage(images[i]);
-        } else
-            selectImage(image);
+            for (var i = start; i <= end; i++) selectImage(images[i]);
+        } else selectImage(image);
     } else {
         clearSelections();
         selectImage(image);
@@ -255,6 +258,7 @@ function clickImage(ev) {
 }
 
 function selectImage(image) {
+    // Selects an image
     selectedImages.add(image);
     image.style.border = "solid 5px #2789f1";
     image.style.borderRadius = "5px";
@@ -262,6 +266,7 @@ function selectImage(image) {
 }
 
 function deselectImage(image) {
+    // Unselects an image
     selectedImages.delete(image);
     image.style.border = "none";
     image.style.borderRadius = "0px";
@@ -269,20 +274,20 @@ function deselectImage(image) {
 }
 
 function toggleSelection(image) {
-    if (selectedImages.has(image))
-        deselectImage(image);
-    else
-        selectImage(image);
+    // Flips selected status on a given image
+    if (selectedImages.has(image)) deselectImage(image);
+    else selectImage(image);
 }
 
 function clearSelections() {
+    // Clears the list of currently selected images
     selectedImages.forEach(deselectImage);
     selectedImages.clear();
 }
 
 function clickContainer(ev) {
-    if (ev.target.classList.contains("Container"))
-        clearSelections();
+    // Clears selection when clicking on an empty spot of the container
+    if (ev.target.classList.contains("Container")) clearSelections();
 }
 
 // DONE: Make Reset & Delete no longer selectable or draggable.
@@ -301,3 +306,4 @@ function clickContainer(ev) {
 // TODO: Make the rows themselves draggable with the drag handle
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Images can be dragged into row title
+// TODO: lightly highlight image when hovering over it
