@@ -144,10 +144,10 @@ body {
 
 .rowTitle {
     width: 100%;
-    justify-content: center;
-    align-items: center;
-    display: flex;
+    text-align: center;
     font: 2em "Alice", sans-serif;
+    background-color: transparent;
+    border: none;
     color: white;
 }
 

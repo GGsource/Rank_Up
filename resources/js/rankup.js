@@ -49,11 +49,10 @@ class Row {
         rowTab.appendChild(dragHandle);
         rowTab.appendChild(addRowBelowButton);
         // Add the title to the rowHeader
-        var rowTitle = document.createElement("div");
+        var rowTitle = document.createElement("input");
         rowTitle.className = "rowTitle";
         rowTitle.id = "rowTitle" + Row.count;
-        rowTitle.innerHTML = isNewRow ? "New Row" : "Row " + Row.count;
-        rowTitle.contentEditable = true;
+        rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         var resetDeleteContainer = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
@@ -145,35 +144,44 @@ function dragImage(ev) {
     if (draggingImageDiv) updateDragDivPosition(ev);
 }
 
+var prevTarget = null;
+var prevSideLeft = null;
 // DragImageOver - Mouse is being held and dragged over something
 function dragImageOver(ev) {
+    // FIXME: These calculations are being done over and over hundreds of times. Make it only happen again if necessary.
+    // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
     var sources = document.querySelectorAll("[data-dragging]");
-    sources.forEach((source) => {
-        if (source == null) {
-            console.log("Dropped in something that isn't an image! Blegh!"); //DEBUGGING: This should never happen, but if it does, we should know about it.
-            return;
-        }
-        if (ev.target.classList.contains("Container")) {
+    if (ev.target.classList.contains("Container")) {
+        sources.forEach((source) => {
+            if (prevTarget == ev.target && source.nextElementSibling == null)
+                return; //Same container & position, nothin should change.
             ev.target.appendChild(source);
-        } else if (ev.target.classList.contains("rankingImage")) {
-            if (selectedImages.has(ev.target)) return;
-            lastX = ev.clientX;
-            // The user dragged an image onto another image, place the image next to the target image in its parent.
-            // Check if the image was dragged to the left or right of the target image
-            var targetImageRect = ev.target.getBoundingClientRect();
-            var targetImageCenter =
-                targetImageRect.left + targetImageRect.width / 2;
-            // If the user dragged the image to the left of the target image, insert the image before the target image
-            if (ev.clientX < targetImageCenter) {
-                ev.target.insertAdjacentElement("beforebegin", source);
-            } else {
-                recursiveInsert(ev.target);
-            }
+        });
+    } else if (ev.target.classList.contains("rankingImage")) {
+        // The user dragged an image onto another image, place the image next to the target image in its parent.
+        if (selectedImages.has(ev.target)) return; //Selected imgs need to ignore eachother
+        // Check if the image was dragged to the left or right of the target image
+        var targetImageRect = ev.target.getBoundingClientRect();
+        var targetImageCenter =
+            targetImageRect.left + targetImageRect.width / 2;
+        // If the user dragged the image to the left of the target image, insert the image before the target image
+        if (ev.clientX < targetImageCenter) {
+            curSideLeft = true;
+        } else {
+            curSideLeft = false;
         }
-        source.style.opacity = 0.2;
-        // TODO: A new image has been dropped into a container. Check if it needs to be made larger to accomodate.
-    });
+        if (prevTarget == ev.target && curSideLeft == prevSideLeft) return;
+        sources.forEach((source) => {
+            if (curSideLeft)
+                ev.target.insertAdjacentElement("beforebegin", source);
+            else recursiveInsert(ev.target);
+            source.style.opacity = 0.2;
+        });
+        prevSideLeft = curSideLeft;
+    }
+    // TODO: A new image has been dropped into a container. Check if it needs to be made larger to accomodate.
+    prevTarget = ev.target;
 }
 
 // DragEnd - Mouse is released.
