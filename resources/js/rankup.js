@@ -356,7 +356,6 @@ function clickContainer(ev) {
 
 // DropToHeader - drop function for dragging something onto a row header. Only allow text.
 function dropToHeader(ev) {
-    console.log(ev.dataTransfer.types);
     if (
         ev.dataTransfer.types.length != 1 ||
         ev.dataTransfer.types[0] != "text/plain"
@@ -379,7 +378,9 @@ function dropToHeader(ev) {
 // TODO: Make the rows themselves draggable with the drag handle
 // TODO: lightly highlight image when hovering over it
 // FIXED: Images can be dragged into row title
+// FIXED: Animates image being selected but not deselected
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Dragging image to header still shows symbol implying ability to drop in
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
-// FIXME: Animates image being selected but not deselected
+// IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
+// IDEA: Animate Row being removed or being added (setting height to 0 or full)
