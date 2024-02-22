@@ -53,6 +53,8 @@ class Row {
         rowTitle.className = "rowTitle";
         rowTitle.id = "rowTitle" + Row.count;
         rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
+        rowTitle.ondrop = (event) => dropToHeader(event);
+        rowTitle.onfocus = () => clearSelections();
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         var resetDeleteContainer = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
@@ -351,6 +353,15 @@ function clickContainer(ev) {
     if (ev.target.classList.contains("Container")) clearSelections();
 }
 
+// DropToHeader - drop function for dragging something onto a row header. Only allow text.
+function dropToHeader(ev) {
+    console.log(ev.dataTransfer.types);
+    if (
+        ev.dataTransfer.types.length != 1 ||
+        ev.dataTransfer.types[0] != "text/plain"
+    )
+        ev.preventDefault();
+}
 // DONE: Make Reset & Delete no longer selectable or draggable.
 // DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
 // DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
@@ -366,5 +377,5 @@ function clickContainer(ev) {
 // TODO: Setup this on its own webpage
 // TODO: Make the rows themselves draggable with the drag handle
 // FIXME: Adding more items than row length causes overflow
-// FIXME: Images can be dragged into row title
+// FIXED: Images can be dragged into row title
 // TODO: lightly highlight image when hovering over it
