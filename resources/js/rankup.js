@@ -110,35 +110,36 @@ for (i = 0; i < startingRowCount; i++) {
 }
 
 var draggingImageDiv = null;
+var emptyImg = new Image();
+emptyImg.src = "/resources/images/empty.png";
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev) {
-    // ev.preventDefault();
     var image = ev.target;
-    if (selectedImages.has(image)) {
-        //TODO: pick up all selected image
-        selectedImages.forEach((selectedImage) =>
-            selectedImage.setAttribute("data-dragging", "true")
-        );
-    } else {
-        //TODO: Pick up only current image
-        clickImage(ev);
-        image.setAttribute("data-dragging", "true");
-    }
+    if (!selectedImages.has(image)) clickImage(ev);
+    selectedImages.forEach((selectedImage) =>
+        selectedImage.setAttribute("data-dragging", "true")
+    );
     // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
     // TODO: Convert this styling to a css class styling
+    // TODO: Center properly on cursor
+    // TODO: Center number & make more visually appealing
     draggingImageDiv = document.createElement("div");
     draggingImageDiv.style.position = "absolute";
     draggingImageDiv.style.zIndex = 1000; //Arbitrarily high, above anything else.
-    draggingImageDiv.style.padding = "10px";
-    draggingImageDiv.style.backgroundColor = "#f0f0f0";
+    draggingImageDiv.style.width = image.width + "px";
+    draggingImageDiv.style.height = image.height + "px";
+    draggingImageDiv.style.backgroundColor = "#f0f0f055";
     draggingImageDiv.style.border = "1px solid #000";
     draggingImageDiv.style.borderRadius = "10%";
     draggingImageDiv.style.textAlign = "center";
-    draggingImageDiv.style.lineHeight = "30px";
+    draggingImageDiv.style.font = "2em 'Alice', sans-serif";
     draggingImageDiv.textContent = selectedImages.size;
     document.body.appendChild(draggingImageDiv);
     // Update the div position
     updateDragDivPosition(ev);
+    // Disable the default dragging image
+    ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+    // FIXME: Sometimes an image is not dragged. Why?
 }
 
 // DragImage - Mouse is being held and dragged.
@@ -150,7 +151,6 @@ var prevTarget = null;
 var prevSideLeft = null;
 // DragImageOver - Mouse is being held and dragged over something
 function dragImageOver(ev) {
-    // FIXME: These calculations are being done over and over hundreds of times. Make it only happen again if necessary.
     // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
     var sources = document.querySelectorAll("[data-dragging]");
@@ -159,6 +159,7 @@ function dragImageOver(ev) {
             if (prevTarget == ev.target && source.nextElementSibling == null)
                 return; //Same container & position, nothin should change.
             ev.target.appendChild(source);
+            source.style.opacity = 0.2;
         });
     } else if (ev.target.classList.contains("rankingImage")) {
         // The user dragged an image onto another image, place the image next to the target image in its parent.
@@ -331,8 +332,8 @@ function selectImage(image) {
 function deselectImage(image) {
     // Unselects an image
     selectedImages.delete(image);
-    image.style.border = "none";
-    image.style.borderRadius = "0px";
+    image.style.border = "solid 1px transparent";
+    image.style.borderRadius = "5px";
     image.style.backgroundColor = "transparent";
 }
 
@@ -370,12 +371,15 @@ function dropToHeader(ev) {
 // DONE: Make the tab linger for a second or two after the mouse leaves it before disappearing
 // DONE: Make image preview snap to column when image is dragged over it but not yet dropped.
 // DONE: Make visuals for selecting images
-// IDEA: Make multiple images selectable at once to drag at the same time.
+// DONE: Make multiple images selectable at once to drag at the same time.
 // IDEA: Make buttons brighten up slightly when hovered over // Look into doing this programmatically without new images
 // IDEA: Make buttons brighten up even more when clicked
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
 // TODO: Make the rows themselves draggable with the drag handle
-// FIXME: Adding more items than row length causes overflow
-// FIXED: Images can be dragged into row title
 // TODO: lightly highlight image when hovering over it
+// FIXED: Images can be dragged into row title
+// FIXME: Adding more items than row length causes overflow
+// FIXME: Dragging image to header still shows symbol implying ability to drop in
+// FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
+// FIXME: Animates image being selected but not deselected
