@@ -27,3 +27,21 @@ body {
     min-height: 0;
     border: 1px solid black;
 }
+
+.img {
+    width: 200px;
+    height: 200px;
+    border: dashed 10px darkblue;
+    z-index: 1;
+    position: relative;
+}
+.img::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #ff000075;
+    z-index: 300;
+}
