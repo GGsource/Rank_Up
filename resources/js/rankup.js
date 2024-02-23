@@ -116,9 +116,10 @@ emptyImg.src = "/resources/images/empty.png";
 function dragStart(ev) {
     var image = ev.target;
     if (!selectedImages.has(image)) clickImage(ev);
-    selectedImages.forEach((selectedImage) =>
-        selectedImage.setAttribute("data-dragging", "true")
-    );
+    selectedImages.forEach((selectedImage) => {
+        selectedImage.setAttribute("data-dragging", "true");
+        selectedImage.style.opacity = 0.2;
+    });
     // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
     // TODO: Convert this styling to a css class styling
     // TODO: Center properly on cursor
@@ -139,7 +140,6 @@ function dragStart(ev) {
     updateDragDivPosition(ev);
     // Disable the default dragging image
     ev.dataTransfer.setDragImage(emptyImg, 0, 0);
-    // FIXME: Sometimes an image is not dragged. Why?
 }
 
 // DragImage - Mouse is being held and dragged.
@@ -159,7 +159,6 @@ function dragImageOver(ev) {
             if (prevTarget == ev.target && source.nextElementSibling == null)
                 return; //Same container & position, nothin should change.
             ev.target.appendChild(source);
-            source.style.opacity = 0.2;
         });
     } else if (ev.target.classList.contains("rankingImage")) {
         // The user dragged an image onto another image, place the image next to the target image in its parent.
@@ -179,7 +178,6 @@ function dragImageOver(ev) {
             if (curSideLeft)
                 ev.target.insertAdjacentElement("beforebegin", source);
             else recursiveInsert(ev.target);
-            source.style.opacity = 0.2;
         });
         prevSideLeft = curSideLeft;
     }
@@ -362,23 +360,13 @@ function dropToHeader(ev) {
     )
         ev.preventDefault();
 }
-// DONE: Make Reset & Delete no longer selectable or draggable.
-// DONE: Make the image part of draghandle and addRowAbove/Below not selectable or draggable.
-// DONE: DISALLOW users from dragging anything that isn't an image into the rowBody. Show the little X icon when they try to drag something that isn't an image into the rowBody.
-// DONE: If there is only one row remaining disable the delete button and make it look disabled.
-// DONE: Animate tab showing up and disappearing
-// DONE: Make the tab linger for a second or two after the mouse leaves it before disappearing
-// DONE: Make image preview snap to column when image is dragged over it but not yet dropped.
-// DONE: Make visuals for selecting images
-// DONE: Make multiple images selectable at once to drag at the same time.
+
 // IDEA: Make buttons brighten up slightly when hovered over // Look into doing this programmatically without new images
 // IDEA: Make buttons brighten up even more when clicked
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
 // TODO: Make the rows themselves draggable with the drag handle
 // TODO: lightly highlight image when hovering over it
-// FIXED: Images can be dragged into row title
-// FIXED: Animates image being selected but not deselected
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Dragging image to header still shows symbol implying ability to drop in
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
