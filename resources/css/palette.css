@@ -11,5 +11,6 @@
     --columnCount: 8;
     --rowWidth: calc(var(--resolution) * var(--columnCount));
     --radius: 30px;
-    --animMS: 500ms;
+    --animNormMS: 500ms;
+    --animFastMS: 200ms;
 }

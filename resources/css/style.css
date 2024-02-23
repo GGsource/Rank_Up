@@ -58,8 +58,8 @@ body {
     /* Size it to parent height and half the width and list children as column */
     height: 100%;
     width: calc(var(--resolution) / 2);
-    transition: width var(--animMS), padding var(--animMS),
-        border-radius var(--animMS);
+    transition: width var(--animNormMS), padding var(--animNormMS),
+        border-radius var(--animNormMS);
     display: flex;
     flex-direction: column;
 
@@ -134,12 +134,34 @@ body {
 .rankingImage {
     width: var(--resolution);
     height: var(--resolution);
-    /* FIXME: This currently stretches the image. */
-    /* In future we should crop them instead. */
-
-    transition: opacity var(--animMS), border var(--animMS),
-        background-color var(--animMS);
     box-sizing: border-box;
+    object-position: center;
+    object-fit: cover;
+    border: solid 0px transparent;
+    background-color: transparent;
+    border-radius: 0px;
+    padding: 0px;
+    backdrop-filter: none;
+    transition: border var(--animFastMS), background-color var(--animFastMS),
+        border-radius var(--animFastMS), padding var(--animFastMS),
+        transform var(--animFastMS), backdrop-filter var(--animFastMS);
+}
+body.allow-hover .rankingImage:hover {
+    border-radius: 5px;
+    transform: scale(1.1);
+    z-index: 5;
+}
+body .Container .rankingImage.selectedImage {
+    border: solid 5px rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 0px;
+    backdrop-filter: blur(5px);
+    transform: scale(1);
+    z-index: 1;
+}
+body .Container .rankingImage.draggingImage {
+    padding: 20px;
 }
 
 .rowTitle {

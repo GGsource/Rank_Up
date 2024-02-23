@@ -88,9 +88,9 @@ class Row {
         var rowBody = document.createElement("div");
         rowBody.className = "rowBody rowPiece Container";
         rowBody.id = "rowBody" + Row.count;
-        rowBody.ondragover = (event) => dragImageOver(event);
-        rowBody.ondragend = (event) => dragEnd(event); //TESTME: Should RowBody have this?
         rowBody.onclick = (event) => clickContainer(event);
+        rowBody.ondragover = (event) => dragImageOver(event);
+        rowBody.ondragend = (event) => dragImageEnd(event);
         resetButton.onclick = () => resetRow(rowBody);
         // Add the rowBody to the mainRow
         this.rowFull.appendChild(rowBody);
@@ -102,23 +102,17 @@ class Row {
     }
 }
 
-// Create the initial rows
-startingRowCount = 5;
-var rowContainer = document.getElementById("rowList");
-for (i = 0; i < startingRowCount; i++) {
-    new Row().appendTo(rowContainer);
-}
-
 var draggingImageDiv = null;
 var emptyImg = new Image();
 emptyImg.src = "/resources/images/empty.png";
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev) {
+    document.body.classList.remove("allow-hover");
     var image = ev.target;
     if (!selectedImages.has(image)) clickImage(ev);
     selectedImages.forEach((selectedImage) => {
         selectedImage.setAttribute("data-dragging", "true");
-        selectedImage.style.opacity = 0.2;
+        selectedImage.classList.add("draggingImage");
     });
     // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
     // TODO: Convert this styling to a css class styling
@@ -149,8 +143,9 @@ function dragImage(ev) {
 
 var prevTarget = null;
 var prevSideLeft = null;
-// DragImageOver - Mouse is being held and dragged over something
+// DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
 function dragImageOver(ev) {
+    // TODO: Reintroduce check to make sure item being dragged in is an image
     // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
     var sources = document.querySelectorAll("[data-dragging]");
@@ -185,11 +180,12 @@ function dragImageOver(ev) {
     prevTarget = ev.target;
 }
 
-// DragEnd - Mouse is released.
-function dragEnd(ev) {
+// DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
+function dragImageEnd(ev) {
+    document.body.classList.add("allow-hover");
     var sources = document.querySelectorAll("[data-dragging]");
     sources.forEach((source) => {
-        source.style.opacity = 1.0;
+        source.classList.remove("draggingImage");
         source.removeAttribute("data-dragging");
     });
     draggingImageDiv.remove();
@@ -322,17 +318,13 @@ function clickImage(ev) {
 function selectImage(image) {
     // Selects an image
     selectedImages.add(image);
-    image.style.border = "solid 5px #2789f1";
-    image.style.borderRadius = "5px";
-    image.style.backgroundColor = "#2789f163";
+    image.classList.add("selectedImage");
 }
 
 function deselectImage(image) {
     // Unselects an image
     selectedImages.delete(image);
-    image.style.border = "solid 1px transparent";
-    image.style.borderRadius = "5px";
-    image.style.backgroundColor = "transparent";
+    image.classList.remove("selectedImage");
 }
 
 function toggleSelection(image) {
@@ -372,3 +364,43 @@ function dropToHeader(ev) {
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
 // IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
 // IDEA: Animate Row being removed or being added (setting height to 0 or full)
+// FIXME: selection should also clear when clicking outside of the rows/container.
+// IDEA: Look up drag reorganizing, this has to be a thing already.
+// IDEA: Animate reset button rotating when clicked
+// TODO: Separate Row Class to separate file & perhaps other things.
+// Function to make the rows on the main page
+function populateInitialRows(rowCount) {
+    var rowList = document.getElementById("rowList");
+    for (i = 0; i < rowCount; i++) new Row().appendTo(rowList);
+}
+// Function to add in the placeholder images for debugging
+function populatePlaceholderImages() {
+    var imageNames = [
+        "bird",
+        "bird_evil",
+        "BordBlue",
+        "BordGreen",
+        "BordPink",
+        "BordPorple",
+        "BordRee",
+        "BordWhite",
+        "BordYellow",
+    ];
+    var imageContainer = document.getElementById("imageContainer");
+    imageNames.forEach((name, ndx) => {
+        var image = document.createElement("img");
+        image.id = "img" + (ndx + 1);
+        image.className = "rankingImage";
+        image.src = "/resources/images/" + name + ".png";
+        image.onclick = (event) => clickImage(event);
+        image.ondragstart = (event) => dragStart(event);
+        image.ondrag = (event) => dragImage(event);
+        imageContainer.appendChild(image);
+    });
+}
+
+function main() {
+    populateInitialRows(5); // Make the original starting rows
+    populatePlaceholderImages(); //Put in the placeholders
+}
+main();

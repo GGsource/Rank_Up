@@ -10,97 +10,16 @@
         <title>Rank Up</title>
     </head>
 
-    <body>
+    <body class="allow-hover">
         <div id="rowList"></div>
         <div
             id="imageContainer"
             class="Container"
-            ondragover="dragImageOver(event)"
-            ondragend="dragEnd(event)"
             onclick="clickContainer(event)"
+            ondragover="dragImageOver(event)"
+            ondragend="dragImageEnd(event)"
         >
             <!-- TESTME: Does the above need dragEnd? -->
-            <img
-                id="img1"
-                class="rankingImage"
-                src="/resources/images/bird.png"
-                title="Image #1"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="imgX"
-                class="rankingImage"
-                src="/resources/images/bird_evil.png"
-                title="Image #X"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img2"
-                class="rankingImage"
-                src="/resources/images/BordBlue.png"
-                title="Image #2"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img3"
-                class="rankingImage"
-                src="/resources/images/BordGreen.png"
-                title="Image #3"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img4"
-                class="rankingImage"
-                src="/resources/images/BordPink.png"
-                title="Image #4"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img5"
-                class="rankingImage"
-                src="/resources/images/BordPorple.png"
-                title="Image #5"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img6"
-                class="rankingImage"
-                src="/resources/images/BordRee.png"
-                title="Image #6"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img7"
-                class="rankingImage"
-                src="/resources/images/BordWhite.png"
-                title="Image #7"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
-            <img
-                id="img8"
-                class="rankingImage"
-                src="/resources/images/BordYellow.png"
-                title="Image #8"
-                ondragstart="dragStart(event)"
-                onclick="clickImage(event)"
-                ondrag="dragImage(event)"
-            />
         </div>
         <!-- Javascript Source Files -->
         <script src="/resources/js/rankup.js"></script>
