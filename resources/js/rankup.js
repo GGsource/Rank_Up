@@ -368,6 +368,7 @@ function dropToHeader(ev) {
 // FIXME: Tabs don't linger long enough.
 // TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
+// FIXME: Make it so you can click on the textbox by clicking between the reset and delete buttons. the empty spacer
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
