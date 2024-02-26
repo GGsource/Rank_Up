@@ -367,6 +367,7 @@ function dropToHeader(ev) {
 // TODO: Separate Row Class to separate file & perhaps other things.
 // FIXME: Tabs don't linger long enough.
 // TODO: Disable tabs ability to hide if it is currently being dragged.
+// TODO: Make row title text shrink to fit in its container
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
