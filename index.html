@@ -4,6 +4,10 @@
         <meta charset="UTF-8" />
         <!-- Style Sheet -->
         <link rel="stylesheet" href="/resources/css/style.css" />
+        <!-- JQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <!-- jQuery UI -->
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
         <!-- Viewport -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <!-- Tab Title -->
@@ -23,5 +27,17 @@
         </div>
         <!-- Javascript Source Files -->
         <script src="/resources/js/rankup.js"></script>
+        <!-- JQuery Row Movement -->
+        <script>
+            $(function () {
+                $("#rowList").sortable({
+                    handle: ".dragHandle", // Specify the tab as the handle for dragging
+                    axis: "y", // Allow vertical reordering
+                    update: function (event, ui) {
+                        // react to movement if needed
+                    },
+                });
+            });
+        </script>
     </body>
 </html>

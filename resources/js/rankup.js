@@ -357,17 +357,16 @@ function dropToHeader(ev) {
 // IDEA: Make buttons brighten up even more when clicked
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
-// TODO: Make the rows themselves draggable with the drag handle
-// TODO: lightly highlight image when hovering over it
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Dragging image to header still shows symbol implying ability to drop in
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
 // IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
 // IDEA: Animate Row being removed or being added (setting height to 0 or full)
 // FIXME: selection should also clear when clicking outside of the rows/container.
-// IDEA: Look up drag reorganizing, this has to be a thing already.
 // IDEA: Animate reset button rotating when clicked
 // TODO: Separate Row Class to separate file & perhaps other things.
+// FIXME: Tabs don't linger long enough.
+// TODO: Disable tabs ability to hide if it is currently being dragged.
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
