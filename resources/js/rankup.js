@@ -4,11 +4,9 @@ class Row {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
         this.rowFull = document.createElement("div");
         this.rowFull.className = "rowFull";
-        // DONE: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         var rowHeader = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
-        // DONE: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         var rowTab = document.createElement("div");
         rowTab.className = "rowTab rowPiece closed";
@@ -18,17 +16,14 @@ class Row {
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         var addRowAboveButton = document.createElement("div");
         addRowAboveButton.className = "addRowButton tabButton";
-        addRowAboveButton.style.backgroundImage =
-            "url('/resources/images/addRowAboveIcon.png')";
+        addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         var dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
-        dragHandle.style.backgroundImage =
-            "url('/resources/images/DragHandleIcon.png')";
+        dragHandle.style.backgroundImage = "url('/resources/images/DragHandleIcon.png')";
         var addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
-        addRowBelowButton.style.backgroundImage =
-            "url('/resources/images/addRowBelowIcon.png')";
+        addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         // Set the row adding buttons to the proper height
         inflateAddRowButtons(addRowAboveButton, addRowBelowButton);
@@ -47,13 +42,11 @@ class Row {
         resetDeleteContainer.className = "resetDeleteContainer";
         var resetButton = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
-        resetButton.style.backgroundImage =
-            "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
+        resetButton.style.backgroundImage = "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.onclick = () => resetRow(this.rowBody);
         var deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
-        deleteButton.style.backgroundImage =
-            "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
+        deleteButton.style.backgroundImage = "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(deleteButton);
@@ -63,14 +56,14 @@ class Row {
         rowHeader.appendChild(resetDeleteContainer);
         // Add the rowHeader to the full row
         this.rowFull.appendChild(rowHeader);
-        // DONE: rowBody will be the element that contains the row's ranking images.
+        // rowBody will be the element that contains the row's ranking images.
         var rowBody = document.createElement("div");
         rowBody.className = "rowBody rowPiece Container";
         rowBody.onclick = (event) => clickContainer(event);
         rowBody.ondragover = (event) => dragImageOver(event);
         rowBody.ondragend = (event) => dragImageEnd(event);
         resetButton.onclick = () => resetRow(rowBody);
-        // Add the rowBody to the mainRow
+        // Add the rowBody to the Row
         this.rowFull.appendChild(rowBody);
         Row.count++;
     }
@@ -129,8 +122,7 @@ function dragImageOver(ev) {
     var sources = document.querySelectorAll("[data-dragging]");
     if (ev.target.classList.contains("Container")) {
         sources.forEach((source) => {
-            if (prevTarget == ev.target && source.nextElementSibling == null)
-                return; //Same container & position, nothin should change.
+            if (prevTarget == ev.target && source.nextElementSibling == null) return; //Same container & position, nothin should change.
             ev.target.appendChild(source);
         });
     } else if (ev.target.classList.contains("rankingImage")) {
@@ -138,8 +130,7 @@ function dragImageOver(ev) {
         if (selectedImages.has(ev.target)) return; //Selected imgs need to ignore eachother
         // Check if the image was dragged to the left or right of the target image
         var targetImageRect = ev.target.getBoundingClientRect();
-        var targetImageCenter =
-            targetImageRect.left + targetImageRect.width / 2;
+        var targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
         // If the user dragged the image to the left of the target image, insert the image before the target image
         if (ev.clientX < targetImageCenter) {
             curSideLeft = true;
@@ -148,13 +139,12 @@ function dragImageOver(ev) {
         }
         if (prevTarget == ev.target && curSideLeft == prevSideLeft) return;
         sources.forEach((source) => {
-            if (curSideLeft)
-                ev.target.insertAdjacentElement("beforebegin", source);
+            if (curSideLeft) ev.target.insertAdjacentElement("beforebegin", source);
             else recursiveInsert(ev.target);
         });
         prevSideLeft = curSideLeft;
     }
-    // TODO: A new image has been dropped into a container. Check if it needs to be made larger to accomodate.
+    // TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
     prevTarget = ev.target;
 }
 
@@ -192,9 +182,7 @@ function _recursiveInsert(image, iterator) {
 function resetRow(rowBody) {
     if (rowBody.hasChildNodes()) {
         var imageContainer = document.getElementById("imageContainer");
-        while (rowBody.hasChildNodes()) {
-            imageContainer.appendChild(rowBody.firstChild);
-        }
+        while (rowBody.hasChildNodes()) imageContainer.appendChild(rowBody.firstChild);
     }
 }
 
@@ -205,7 +193,6 @@ function deleteRow(row) {
     resetRow(rowBody);
     // Remove the row from the rowList
     row.remove();
-
     // If there is only one row remaining disable the delete button and make it look disabled.
     var rowList = document.getElementById("rowList");
     if (rowList.childElementCount == 1) {
@@ -225,8 +212,7 @@ function addRow(row, isAbove) {
         deleteButton.style.opacity = 1;
     }
     // Create the new row
-    if (isAbove)
-        row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
+    if (isAbove) row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
     else row.insertAdjacentElement("afterend", new Row(true).rowFull);
 }
 
@@ -247,8 +233,7 @@ timeoutIds = {};
 lastHiddenTab = null;
 
 function showTab(tab) {
-    if (lastHiddenTab != null && lastHiddenTab != tab)
-        hideTab(lastHiddenTab, false);
+    if (lastHiddenTab != null && lastHiddenTab != tab) hideTab(lastHiddenTab, false);
     clearTimeout(timeoutIds[tab.id]);
     tab.classList.remove("closed");
     lastHiddenTab = tab;
@@ -324,11 +309,7 @@ function clickContainer(ev) {
 
 // DropToHeader - drop function for dragging something onto a row header. Only allow text.
 function dropToHeader(ev) {
-    if (
-        ev.dataTransfer.types.length != 1 ||
-        ev.dataTransfer.types[0] != "text/plain"
-    )
-        ev.preventDefault();
+    if (ev.dataTransfer.types.length != 1 || ev.dataTransfer.types[0] != "text/plain") ev.preventDefault();
 }
 
 // TODO: Make README.md for github page
@@ -341,7 +322,6 @@ function dropToHeader(ev) {
 // FIXME: selection should also clear when clicking outside of the rows/container.
 // IDEA: Animate reset button rotating when clicked
 // TODO: Separate Row Class to separate file & perhaps other things.
-// FIXME: Tabs don't linger long enough.
 // TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
 // FIXME: Delete/Reset buttons are currently draggable but shouldn't be.
@@ -355,19 +335,9 @@ function populateInitialRows(rowCount) {
 }
 // Function to add in the placeholder images for debugging
 function populatePlaceholderImages() {
-    var imageNames = [
-        "bird",
-        "bird_evil",
-        "BordBlue",
-        "BordGreen",
-        "BordPink",
-        "BordPorple",
-        "BordRee",
-        "BordWhite",
-        "BordYellow",
-    ];
+    var imageNames = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
     var imageContainer = document.getElementById("imageContainer");
-    imageNames.forEach((name, ndx) => {
+    imageNames.forEach((name) => {
         var image = document.createElement("img");
         image.className = "rankingImage";
         image.src = "/resources/images/" + name + ".png";
