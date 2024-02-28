@@ -233,7 +233,7 @@ function deleteRow(row) {
     if (rowList.childElementCount == 1) {
         var deleteButton = rowList.getElementsByClassName("deleteButton")[0];
         deleteButton.style.pointerEvents = "none";
-        deleteButton.style.opacity = "0.5";
+        deleteButton.style.opacity = 0.2;
     }
 }
 
@@ -244,7 +244,7 @@ function addRow(row, isAbove) {
     if (rowList.childElementCount == 1) {
         var deleteButton = rowList.getElementsByClassName("deleteButton")[0];
         deleteButton.style.pointerEvents = "auto";
-        deleteButton.style.opacity = "1";
+        deleteButton.style.opacity = 1;
     }
     // Create the new row
     if (isAbove)
@@ -278,7 +278,7 @@ function showTab(tab) {
 
 function hideTab(tab, useDelay = true) {
     if (timeoutIds[tab.id]) clearTimeout(timeoutIds[tab.id]); // Clear any existing timeout
-    var delayMS = useDelay ? 300 : 0;
+    var delayMS = useDelay ? 500 : 0;
     timeoutIds[tab.id] = setTimeout(() => {
         tab.classList.add("closed");
     }, delayMS);
@@ -353,8 +353,6 @@ function dropToHeader(ev) {
         ev.preventDefault();
 }
 
-// IDEA: Make buttons brighten up slightly when hovered over // Look into doing this programmatically without new images
-// IDEA: Make buttons brighten up even more when clicked
 // TODO: Make README.md for github page
 // TODO: Setup this on its own webpage
 // FIXME: Adding more items than row length causes overflow
@@ -369,6 +367,8 @@ function dropToHeader(ev) {
 // TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
 // FIXME: Make it so you can click on the textbox by clicking between the reset and delete buttons. the empty spacer
+// FIXME: Delete/Reset buttons are currently draggable but shouldn't be.
+// TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");

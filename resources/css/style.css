@@ -92,6 +92,22 @@ body {
     border-radius: 0;
 }
 
+.resetDeleteButton,
+.tabButton {
+    filter: brightness(60%);
+    transition: transform var(--animFastMS);
+}
+.resetDeleteButton:hover,
+.tabButton:hover {
+    filter: brightness(80%);
+    transform: scale(1.1);
+}
+.resetDeleteButton:active,
+.tabButton:active {
+    filter: brightness(100%);
+    transform: scale(1);
+}
+
 .mainRow {
     /* Take up full vertical space allotted by parent */
     height: 100%;
