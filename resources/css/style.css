@@ -47,7 +47,6 @@ body {
 }
 
 .rowFull {
-    /* position: relative; */ /*TESTME: Removed in order to fix row movement. Any side effects? */
     display: flex;
     flex-direction: row;
     height: var(--resolution);
@@ -83,8 +82,6 @@ body {
         rgba(0, 0, 0, 0),
         rgba(0, 255, 0, 0.4) 5px
     );
-    /* TESTME: Hide overflow so the user cannot click on the rounded corners and activate the child buttons */
-    /* overflow: hidden; */
 }
 .rowTab.closed {
     width: 0;
@@ -214,8 +211,3 @@ body .Container .rankingImage.draggingImage {
     min-height: 0;
     object-fit: contain;
 }
-
-/* TODO: Make sure rowTab's draggable section extends the full
-length available after the addRowAbove and addRowBelow buttons
-are accounted for. This way, even if the row has a ton of images
-and the row is 10 images tall, the draggable section will grow to match */

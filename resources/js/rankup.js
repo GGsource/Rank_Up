@@ -4,18 +4,15 @@ class Row {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
         this.rowFull = document.createElement("div");
         this.rowFull.className = "rowFull";
-        this.rowFull.id = "rowFull" + Row.count;
         // DONE: rowHeader will be the element that contains the row's title and the row's delete and reset buttons.
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         var rowHeader = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
-        rowHeader.id = "rowHeader" + Row.count;
         // DONE: rowTab will be the left-most element that will be used to drag the row up and down, as well as have buttons to add a new row above or below it.
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         var rowTab = document.createElement("div");
         rowTab.className = "rowTab rowPiece closed";
         rowTab.id = "rowTab" + Row.count;
-        // rowTab.style.visibility = "hidden";
         rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
         rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
@@ -42,23 +39,19 @@ class Row {
         // Add the title to the rowHeader
         var rowTitle = document.createElement("input");
         rowTitle.className = "rowTitle";
-        rowTitle.id = "rowTitle" + Row.count;
         rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
         rowTitle.ondrop = (event) => dropToHeader(event);
         rowTitle.onfocus = () => clearSelections();
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         var resetDeleteContainer = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
-        resetDeleteContainer.id = "resetDeleteContainer" + Row.count;
         var resetButton = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
-        resetButton.id = "resetButton" + Row.count;
         resetButton.style.backgroundImage =
             "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.onclick = () => resetRow(this.rowBody);
         var deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
-        deleteButton.id = "deleteButton" + Row.count;
         deleteButton.style.backgroundImage =
             "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.onclick = () => deleteRow(this.rowFull);
@@ -73,7 +66,6 @@ class Row {
         // DONE: rowBody will be the element that contains the row's ranking images.
         var rowBody = document.createElement("div");
         rowBody.className = "rowBody rowPiece Container";
-        rowBody.id = "rowBody" + Row.count;
         rowBody.onclick = (event) => clickContainer(event);
         rowBody.ondragover = (event) => dragImageOver(event);
         rowBody.ondragend = (event) => dragImageEnd(event);
@@ -377,7 +369,6 @@ function populatePlaceholderImages() {
     var imageContainer = document.getElementById("imageContainer");
     imageNames.forEach((name, ndx) => {
         var image = document.createElement("img");
-        image.id = "img" + (ndx + 1);
         image.className = "rankingImage";
         image.src = "/resources/images/" + name + ".png";
         image.onclick = (event) => clickImage(event);
