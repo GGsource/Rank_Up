@@ -95,7 +95,10 @@ body {
 .resetDeleteButton,
 .tabButton {
     filter: brightness(60%);
-    transition: transform var(--animFastMS);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform var(--animInstMS), filter var(--animInstMS);
 }
 .resetDeleteButton:hover,
 .tabButton:hover {

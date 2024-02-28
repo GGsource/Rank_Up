@@ -13,4 +13,5 @@
     --radius: 30px;
     --animNormMS: 500ms;
     --animFastMS: 200ms;
+    --animInstMS: 100ms;
 }

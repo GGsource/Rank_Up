@@ -23,24 +23,15 @@ class Row {
         addRowAboveButton.className = "addRowButton tabButton";
         addRowAboveButton.style.backgroundImage =
             "url('/resources/images/addRowAboveIcon.png')";
-        addRowAboveButton.style.backgroundRepeat = "no-repeat";
-        addRowAboveButton.style.backgroundPosition = "center";
-        addRowAboveButton.style.backgroundSize = "contain";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         var dragHandle = document.createElement("div");
         dragHandle.className = "dragHandle tabButton";
         dragHandle.style.backgroundImage =
             "url('/resources/images/DragHandleIcon.png')";
-        dragHandle.style.backgroundSize = "contain"; // set image to fit the button
-        dragHandle.style.backgroundRepeat = "no-repeat"; // don't repeat the image
-        dragHandle.style.backgroundPosition = "center"; // center it
         var addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
         addRowBelowButton.style.backgroundImage =
             "url('/resources/images/addRowBelowIcon.png')";
-        addRowBelowButton.style.backgroundRepeat = "no-repeat";
-        addRowBelowButton.style.backgroundPosition = "center";
-        addRowBelowButton.style.backgroundSize = "contain";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         // Set the row adding buttons to the proper height
         inflateAddRowButtons(addRowAboveButton, addRowBelowButton);
@@ -64,21 +55,19 @@ class Row {
         resetButton.id = "resetButton" + Row.count;
         resetButton.style.backgroundImage =
             "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
-        resetButton.style.backgroundSize = "contain"; // set image to fit the button
         resetButton.onclick = () => resetRow(this.rowBody);
         var deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.id = "deleteButton" + Row.count;
         deleteButton.style.backgroundImage =
             "url('/resources/images/rowHeaderDelete.png')"; // Set background image for delete button
-        deleteButton.style.backgroundSize = "contain"; // set image to fit the button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(deleteButton);
         // Add the rowTitle and the resetDeleteContainer to the rowHeader
         rowHeader.appendChild(rowTab);
-        rowHeader.appendChild(resetDeleteContainer);
         rowHeader.appendChild(rowTitle);
+        rowHeader.appendChild(resetDeleteContainer);
         // Add the rowHeader to the full row
         this.rowFull.appendChild(rowHeader);
         // DONE: rowBody will be the element that contains the row's ranking images.
@@ -365,6 +354,8 @@ function dropToHeader(ev) {
 // TODO: Make row title text shrink to fit in its container
 // FIXME: Delete/Reset buttons are currently draggable but shouldn't be.
 // TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
+// FIXME: Draghandle growth/shrinking is jittery. Change to plainly having the imgs in the tab be evenly spaced.
+// IDEA: The above may require draghandle to be wrapped in a div that can grow to take up the needed space, with the image in a child div. Maybe just add a child div.
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
