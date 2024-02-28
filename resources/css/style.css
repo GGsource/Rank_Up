@@ -187,6 +187,7 @@ body .Container .rankingImage.draggingImage {
     background-color: transparent;
     border: none;
     color: white;
+    z-index: 2;
 }
 
 .resetDeleteContainer {
@@ -201,6 +202,7 @@ body .Container .rankingImage.draggingImage {
 .resetDeleteButton {
     width: calc(var(--resolution) / 3);
     height: calc(var(--resolution) / 3);
+    z-index: 3;
 }
 
 .dragHandle {

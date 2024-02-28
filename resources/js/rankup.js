@@ -66,8 +66,6 @@ class Row {
             "url('/resources/images/rowHeaderClear.png')"; // Set background image for delete button
         resetButton.style.backgroundSize = "contain"; // set image to fit the button
         resetButton.onclick = () => resetRow(this.rowBody);
-        var emptyDiv = document.createElement("div");
-        emptyDiv.className = "resetDeleteButton";
         var deleteButton = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.id = "deleteButton" + Row.count;
@@ -76,12 +74,11 @@ class Row {
         deleteButton.style.backgroundSize = "contain"; // set image to fit the button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
-        resetDeleteContainer.appendChild(emptyDiv);
         resetDeleteContainer.appendChild(deleteButton);
         // Add the rowTitle and the resetDeleteContainer to the rowHeader
         rowHeader.appendChild(rowTab);
-        rowHeader.appendChild(rowTitle);
         rowHeader.appendChild(resetDeleteContainer);
+        rowHeader.appendChild(rowTitle);
         // Add the rowHeader to the full row
         this.rowFull.appendChild(rowHeader);
         // DONE: rowBody will be the element that contains the row's ranking images.
@@ -366,7 +363,6 @@ function dropToHeader(ev) {
 // FIXME: Tabs don't linger long enough.
 // TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
-// FIXME: Make it so you can click on the textbox by clicking between the reset and delete buttons. the empty spacer
 // FIXME: Delete/Reset buttons are currently draggable but shouldn't be.
 // TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
 // Function to make the rows on the main page
