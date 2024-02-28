@@ -96,7 +96,19 @@ body {
 .resetDeleteButton:active,
 .tabButton:active {
     filter: brightness(100%);
-    transform: scale(1);
+}
+
+.resetDeleteButton.resetButton:active {
+    animation: rotateBtnAnim var(--animInstMS) forwards;
+}
+
+@keyframes rotateBtnAnim {
+    from {
+        transform: rotate(0);
+    }
+    to {
+        transform: rotate(-1turn);
+    }
 }
 
 .mainRow {
@@ -136,8 +148,8 @@ body {
     border-radius: 0px;
     padding: 0px;
     backdrop-filter: none;
-    transition: border var(--animFastMS), background-color var(--animFastMS), border-radius var(--animFastMS),
-        padding var(--animFastMS), transform var(--animFastMS), backdrop-filter var(--animFastMS);
+    transition: border var(--animFastMS), background-color var(--animFastMS), border-radius var(--animFastMS), padding var(--animFastMS),
+        transform var(--animFastMS), backdrop-filter var(--animFastMS);
 }
 
 body.allow-hover .rankingImage:hover {
