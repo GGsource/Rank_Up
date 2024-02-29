@@ -14,12 +14,16 @@ body {
     /* Remove spacing between elements in the container*/
     display: flex;
     flex-wrap: wrap;
-    /* Make it start off at least 2 images tall */
-    height: calc(var(--resolution) * 2);
-    /* DELETEME: this should adapt to how many imgs we actually have later on */
+    height: calc(var(--resolution) * 2); /* Make it start off at least 2 images tall */
     background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
 }
 
+#rowList {
+    /* Center */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 /* 
 - rowList (contains all rowFulls)
 -       rowFull
@@ -34,19 +38,11 @@ body {
 -                             deleteButton
 -             rowBody
 */
-#rowList {
-    /* Center */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .rowFull {
     display: flex;
     flex-direction: row;
     height: var(--resolution);
-    margin-bottom: calc(var(--resolution) / 20);
-    /* DEBUGGING: This margin may not be needed later. */
+    margin-bottom: calc(var(--resolution) / 20); /* DEBUGGING: This margin may not be needed later. */
 }
 
 .rowTab {
@@ -56,28 +52,51 @@ body {
     transition: width var(--animNormMS), padding var(--animNormMS), border-radius var(--animNormMS);
     display: flex;
     flex-direction: column;
-
+    justify-content: space-between;
     /* Make the tab hang off the left side of the parent */
     position: absolute;
     top: 0;
     left: 0;
     transform: translateX(-100%);
-
     /* Add padding without altering size */
-    padding: 5px 5px 5px 10px;
+    padding: 0px 8px;
     box-sizing: border-box;
-    gap: 10px;
-
-    /* Round corners off left side */
-    border-radius: var(--radius) 0 0 var(--radius);
-
-    /* DELETEME: Debugging colors */
+    border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
     background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
 }
 .rowTab.closed {
     width: 0;
     padding: 0;
     border-radius: 0;
+}
+
+.dragContainer {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 0;
+}
+.tabButton {
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.tabButton:hover {
+    z-index: 2;
+}
+.addRowButton {
+    height: calc((var(--resolution) / 2) * var(--ratio));
+}
+.dragHandle {
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    max-width: calc(var(--resolution) / 4);
+    background-image: url("/resources/images/DragHandleIcon.png");
 }
 
 .resetDeleteButton,
@@ -91,31 +110,16 @@ body {
 .resetDeleteButton:hover,
 .tabButton:hover {
     filter: brightness(80%);
-    transform: scale(1.1);
+    transform: scale(1.1) rotate(0);
 }
 .resetDeleteButton:active,
 .tabButton:active {
     filter: brightness(100%);
+    transform: scale(0.9) rotate(0);
 }
 
 .resetDeleteButton.resetButton:active {
-    animation: rotateBtnAnim var(--animInstMS) forwards;
-}
-
-@keyframes rotateBtnAnim {
-    from {
-        transform: rotate(0);
-    }
-    to {
-        transform: rotate(-1turn);
-    }
-}
-
-.mainRow {
-    height: 100%; /* Take up full vertical space allotted by parent */
-    display: flex;
-    flex-direction: row;
-    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(182, 24, 182, 0.4) 60px);
+    transform: scale(0.9) rotate(-1turn);
 }
 
 .rowHeader {
@@ -136,7 +140,6 @@ body {
     flex-direction: row;
 }
 
-/* Resize all images to be uniform squares */
 .rankingImage {
     width: var(--resolution);
     height: var(--resolution);
@@ -193,11 +196,4 @@ body .Container .rankingImage.draggingImage {
     width: calc(var(--resolution) / 3);
     height: calc(var(--resolution) / 3);
     z-index: 3;
-}
-
-.dragHandle {
-    /* Make this section take up the remaining space not occupied by the addrow buttons */
-    flex-grow: 1;
-    min-height: 0;
-    object-fit: contain;
 }

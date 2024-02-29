@@ -12,11 +12,7 @@ body {
     align-items: center;
     width: 100px;
     height: 200px;
-    background: repeating-linear-gradient(
-        45deg,
-        rgba(0, 0, 0, 0),
-        rgba(255, 0, 0, 0.4) 20px
-    );
+    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(255, 0, 0, 0.4) 20px);
     border: 1px solid black;
 }
 .wide {
@@ -44,4 +40,53 @@ body {
     left: 0;
     background: #ff000075;
     z-index: 300;
+}
+
+#addTop {
+    background-image: url("/resources/images/addRowAboveIcon.png");
+}
+#dragger {
+    background-image: url("/resources/images/DragHandleIcon.png");
+}
+#addBtm {
+    background-image: url("/resources/images/addRowBelowIcon.png");
+}
+#dragContainer {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.rowTab {
+    width: calc(var(--res) / 2);
+    height: 400px;
+    background-color: darkcyan;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
+}
+.tabButton {
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    border: solid 1px blue;
+}
+.addRowButton {
+    height: calc((var(--res) / 2) * (186 / 314));
+}
+.dragHandle {
+    height: 100%;
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    max-width: calc(var(--res) / 4);
+    background-color: rgba(160, 81, 45, 0.459);
+}
+
+:root {
+    --res: 200px;
+    --ratio: calc(186 / 314);
 }

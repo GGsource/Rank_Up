@@ -8,6 +8,7 @@
 :root {
     --primary: rgb(70, 70, 70);
     --resolution: 150px;
+    --ratio: calc(186 / 314);
     --columnCount: 8;
     --rowWidth: calc(var(--resolution) * var(--columnCount));
     --radius: 30px;

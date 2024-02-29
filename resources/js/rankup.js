@@ -18,18 +18,19 @@ class Row {
         addRowAboveButton.className = "addRowButton tabButton";
         addRowAboveButton.style.backgroundImage = "url('/resources/images/addRowAboveIcon.png')";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
+        var dragContainer = document.createElement("div");
+        dragContainer.className = "tabButton dragContainer";
         var dragHandle = document.createElement("div");
-        dragHandle.className = "dragHandle tabButton";
+        dragHandle.className = "dragHandle";
         dragHandle.style.backgroundImage = "url('/resources/images/DragHandleIcon.png')";
+        dragContainer.appendChild(dragHandle);
         var addRowBelowButton = document.createElement("div");
         addRowBelowButton.className = "addRowButton tabButton";
         addRowBelowButton.style.backgroundImage = "url('/resources/images/addRowBelowIcon.png')";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
-        // Set the row adding buttons to the proper height
-        inflateAddRowButtons(addRowAboveButton, addRowBelowButton);
         // Add the buttons to the rowTab
         rowTab.appendChild(addRowAboveButton);
-        rowTab.appendChild(dragHandle);
+        rowTab.appendChild(dragContainer);
         rowTab.appendChild(addRowBelowButton);
         // Add the title to the rowHeader
         var rowTitle = document.createElement("input");
@@ -216,19 +217,6 @@ function addRow(row, isAbove) {
     else row.insertAdjacentElement("afterend", new Row(true).rowFull);
 }
 
-function inflateAddRowButtons(topButton, btmButton) {
-    var btnImage = new Image();
-    btnImage.src = "/resources/images/addRowAboveIcon.png";
-    btnImage.onload = () => {
-        // Calculate the aspect ratio
-        var aspectRatio = btnImage.width / btnImage.height;
-        // Set the padding bottom of the top button to the aspect ratio
-        var paddingBottom = (1 / aspectRatio) * 100;
-        topButton.style.paddingBottom = paddingBottom + "%";
-        btmButton.style.paddingBottom = paddingBottom + "%";
-    };
-}
-
 timeoutIds = {};
 lastHiddenTab = null;
 
@@ -320,7 +308,6 @@ function dropToHeader(ev) {
 // IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
 // IDEA: Animate Row being removed or being added (setting height to 0 or full)
 // FIXME: selection should also clear when clicking outside of the rows/container.
-// IDEA: Animate reset button rotating when clicked
 // TODO: Separate Row Class to separate file & perhaps other things.
 // TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
