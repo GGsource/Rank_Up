@@ -59,10 +59,10 @@ body {
     left: 0;
     transform: translateX(-100%);
     /* Add padding without altering size */
-    padding: 0px 8px;
     box-sizing: border-box;
     border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
     background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
+    overflow: hidden;
 }
 .rowTab.closed {
     width: 0;
@@ -72,31 +72,42 @@ body {
 
 .dragContainer {
     flex-grow: 1;
+    min-height: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5px 0;
 }
 .tabButton {
     width: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 .tabButton:hover {
     z-index: 2;
 }
 .addRowButton {
-    height: calc((var(--resolution) / 2) * var(--ratio));
+    box-sizing: border-box;
+}
+.addRowAboveButton {
+    padding: 5px 5px 0px 5px;
+}
+.addRowBelowButton {
+    padding: 0px 5px 5px 5px;
 }
 .dragHandle {
-    height: 100%;
-    width: 100%;
+    min-height: 0;
+    min-width: 0;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
     max-width: calc(var(--resolution) / 4);
-    background-image: url("/resources/images/DragHandleIcon.png");
+    padding: 0px 4px;
+    box-sizing: border-box;
 }
 
 .resetDeleteButton,
