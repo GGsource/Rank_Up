@@ -230,6 +230,7 @@ function showTab(tab) {
 }
 
 function hideTab(tab, useDelay = true) {
+    if (isRowBeingDragged) return;
     if (timeoutIds[tab.id]) clearTimeout(timeoutIds[tab.id]); // Clear any existing timeout
     var delayMS = useDelay ? 500 : 0;
     timeoutIds[tab.id] = setTimeout(() => {
@@ -303,7 +304,6 @@ function dropToHeader(ev) {
 }
 
 // TODO: Make README.md for github page
-// TODO: Setup this on its own webpage
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Dragging image to header still shows symbol implying ability to drop in
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
@@ -311,12 +311,8 @@ function dropToHeader(ev) {
 // IDEA: Animate Row being removed or being added (setting height to 0 or full)
 // FIXME: selection should also clear when clicking outside of the rows/container.
 // TODO: Separate Row Class to separate file & perhaps other things.
-// TODO: Disable tabs ability to hide if it is currently being dragged.
 // TODO: Make row title text shrink to fit in its container
-// FIXME: Delete/Reset buttons are currently draggable but shouldn't be.
 // TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
-// FIXME: Draghandle growth/shrinking is jittery. Change to plainly having the imgs in the tab be evenly spaced.
-// IDEA: The above may require draghandle to be wrapped in a div that can grow to take up the needed space, with the image in a child div. Maybe just add a child div.
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
@@ -336,9 +332,24 @@ function populatePlaceholderImages() {
         imageContainer.appendChild(image);
     });
 }
-
+var isRowBeingDragged = false;
+// Function to add drag ability with JQuery
+function makeRowsDrag() {
+    $("#rowList").sortable({
+        handle: ".dragContainer", // Specify the tab as the handle for dragging
+        axis: "y", // Allow vertical reordering
+        start: function (event, ui) {
+            isRowBeingDragged = true;
+        },
+        stop: function (event, ui) {
+            isRowBeingDragged = false;
+            hideTab(ui.item[0].getElementsByClassName("rowTab")[0]);
+        },
+    });
+}
 function main() {
     populateInitialRows(5); // Make the original starting rows
+    makeRowsDrag();
     populatePlaceholderImages(); //Put in the placeholders
 }
 main();
