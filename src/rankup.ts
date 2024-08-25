@@ -1,5 +1,6 @@
 class Row {
     static count = 1; // Keep track of number of rows created
+    // TODO: Add rowFull Here? As a class data member
     constructor(isNewRow = false) {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
         this.rowFull = document.createElement("div");
@@ -304,6 +305,7 @@ function dropToHeader(ev) {
 }
 
 // TODO: Make README.md for github page
+// TODO: Add new build instructions with typescript, mostly for myself
 // FIXME: Adding more items than row length causes overflow
 // FIXME: Dragging image to header still shows symbol implying ability to drop in
 // FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
@@ -313,6 +315,7 @@ function dropToHeader(ev) {
 // TODO: Separate Row Class to separate file & perhaps other things.
 // TODO: Make row title text shrink to fit in its container
 // TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
+// FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
 function populateInitialRows(rowCount) {
     var rowList = document.getElementById("rowList");
