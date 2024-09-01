@@ -1,9 +1,9 @@
 class Row {
     static count = 1; // Keep track of number of rows created
-    // TODO: Add rowFull Here? As a class data member
+    rowFull: HTMLDivElement = document.createElement("div");
+    rowBody: HTMLDivElement = document.createElement("div");
     constructor(isNewRow = false) {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
-        this.rowFull = document.createElement("div");
         this.rowFull.className = "rowFull";
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         var rowHeader = document.createElement("div");
@@ -61,29 +61,32 @@ class Row {
         // Add the rowHeader to the full row
         this.rowFull.appendChild(rowHeader);
         // rowBody will be the element that contains the row's ranking images.
-        var rowBody = document.createElement("div");
-        rowBody.className = "rowBody rowPiece Container";
-        rowBody.onclick = (event) => clickContainer(event);
-        rowBody.ondragover = (event) => dragImageOver(event);
-        rowBody.ondragend = (event) => dragImageEnd(event);
-        resetButton.onclick = () => resetRow(rowBody);
+        this.rowBody.className = "rowBody rowPiece Container";
+        this.rowBody.onclick = (event) => clickContainer(event);
+        this.rowBody.ondragover = (event) => dragImageOver(event);
+        this.rowBody.ondragend = (event) => dragImageEnd(event);
+        resetButton.onclick = () => resetRow(this.rowBody);
         // Add the rowBody to the Row
-        this.rowFull.appendChild(rowBody);
+        this.rowFull.appendChild(this.rowBody);
         Row.count++;
     }
     // Function for appending this row to a parent element
-    appendTo(parent) {
+    appendTo(parent: HTMLElement) {
         parent.appendChild(this.rowFull);
     }
 }
 
-var draggingImageDiv = null;
-var emptyImg = new Image();
+// TODO: Rename functions to be Capitalized, as function names should be.
+
+let draggingImageDiv: HTMLDivElement;
+let emptyImg: HTMLImageElement = new Image();
 emptyImg.src = "/resources/images/empty.png";
+let selectedImages: Set<HTMLImageElement> = new Set();
+let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
-function dragStart(ev) {
+function dragStart(ev: DragEvent) {
     document.body.classList.remove("allow-hover");
-    var image = ev.target;
+    let image: HTMLImageElement = ev.target as HTMLImageElement;
     if (!selectedImages.has(image)) clickImage(ev);
     selectedImages.forEach((selectedImage) => {
         selectedImage.setAttribute("data-dragging", "true");
@@ -95,65 +98,73 @@ function dragStart(ev) {
     // TODO: Center number & make more visually appealing
     draggingImageDiv = document.createElement("div");
     draggingImageDiv.style.position = "absolute";
-    draggingImageDiv.style.zIndex = 1000; //Arbitrarily high, above anything else.
-    draggingImageDiv.style.width = image.width + "px";
-    draggingImageDiv.style.height = image.height + "px";
+    draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
+    draggingImageDiv.style.width = `${image.width}px`;
+    draggingImageDiv.style.height = `${image.height}px`;
     draggingImageDiv.style.backgroundColor = "#f0f0f055";
-    draggingImageDiv.style.border = "1px solid #000";
-    draggingImageDiv.style.borderRadius = "10%";
+    draggingImageDiv.style.border = `${1}px solid #000`;
+    draggingImageDiv.style.borderRadius = `${10}%`;
     draggingImageDiv.style.textAlign = "center";
-    draggingImageDiv.style.font = "2em 'Alice', sans-serif";
-    draggingImageDiv.textContent = selectedImages.size;
+    draggingImageDiv.style.font = `${2}em 'Alice', sans-serif`;
+    draggingImageDiv.textContent = selectedImages.size.toString(); // How many images are selected
     document.body.appendChild(draggingImageDiv);
     // Update the div position
     updateDragDivPosition(ev);
     // Disable the default dragging image
-    ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+    if (ev.dataTransfer) {
+        ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+    } else {
+        console.error("ev.dataTransfer is null in dragStart");
+    }
 }
 
 // DragImage - Mouse is being held and dragged.
-function dragImage(ev) {
-    if (draggingImageDiv) updateDragDivPosition(ev);
+function dragImage(ev: DragEvent) {
+    if (draggingImageDiv) {
+        updateDragDivPosition(ev);
+    }
 }
 
-var prevTarget = null;
-var prevSideLeft = null;
+let prevTarget: HTMLElement;
+let isPrevSideLeft: boolean;
 // DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
-function dragImageOver(ev) {
+function dragImageOver(ev: DragEvent) {
     // TODO: Reintroduce check to make sure item being dragged in is an image
     // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
-    var sources = document.querySelectorAll("[data-dragging]");
-    if (ev.target.classList.contains("Container")) {
-        sources.forEach((source) => {
-            if (prevTarget == ev.target && source.nextElementSibling == null) return; //Same container & position, nothin should change.
-            ev.target.appendChild(source);
-        });
-    } else if (ev.target.classList.contains("rankingImage")) {
-        // The user dragged an image onto another image, place the image next to the target image in its parent.
-        if (selectedImages.has(ev.target)) return; //Selected imgs need to ignore eachother
-        // Check if the image was dragged to the left or right of the target image
-        var targetImageRect = ev.target.getBoundingClientRect();
-        var targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
-        // If the user dragged the image to the left of the target image, insert the image before the target image
-        if (ev.clientX < targetImageCenter) {
-            curSideLeft = true;
-        } else {
-            curSideLeft = false;
+    let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
+    if (ev.target) {
+        let element: HTMLElement = ev.target as HTMLElement;
+        if (element.classList.contains("Container")) {
+            sources.forEach((source) => {
+                if (prevTarget == element && source.nextElementSibling == null) return; //Same container & position, nothin should change.
+                element.appendChild(source);
+            });
+        } else if (element.classList.contains("rankingImage")) {
+            let imageElement: HTMLImageElement = element as HTMLImageElement;
+            // The user dragged an image onto another image, place the image next to the target image in its parent.
+            if (selectedImages.has(imageElement)) return; //Selected imgs need to ignore eachother
+            // Check if the image was dragged to the left or right of the target image
+            let targetImageRect: DOMRect = imageElement.getBoundingClientRect();
+            let targetImageCenter: number = targetImageRect.left + targetImageRect.width / 2;
+            // If the user dragged the image to the left of the target image, insert the image before the target image
+            let isCurSideLeft: boolean = ev.clientX < targetImageCenter ? true : false;
+            if (prevTarget == element && isCurSideLeft == isPrevSideLeft) return;
+            sources.forEach((source) => {
+                if (isCurSideLeft) imageElement.insertAdjacentElement("beforebegin", source);
+                else recursiveInsert(imageElement);
+            });
+            isPrevSideLeft = isCurSideLeft;
         }
-        if (prevTarget == ev.target && curSideLeft == prevSideLeft) return;
-        sources.forEach((source) => {
-            if (curSideLeft) ev.target.insertAdjacentElement("beforebegin", source);
-            else recursiveInsert(ev.target);
-        });
-        prevSideLeft = curSideLeft;
+        // TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
+        prevTarget = element;
+    } else {
+        console.error("ev.target is is null in DragImageOver");
     }
-    // TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
-    prevTarget = ev.target;
 }
 
 // DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
-function dragImageEnd(ev) {
+function dragImageEnd(ev: DragEvent) {
     document.body.classList.add("allow-hover");
     var sources = document.querySelectorAll("[data-dragging]");
     sources.forEach((source) => {
@@ -164,18 +175,18 @@ function dragImageEnd(ev) {
 }
 
 // UpdateDragDivPosition - updates where the div should be as mouse moves
-function updateDragDivPosition(ev) {
-    draggingImageDiv.style.left = ev.pageX + "px";
-    draggingImageDiv.style.top = ev.pageY + "px";
+function updateDragDivPosition(ev: DragEvent) {
+    draggingImageDiv.style.left = `${ev.pageX}px`;
+    draggingImageDiv.style.top = `${ev.pageY}px`;
 }
 
 // RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
-function recursiveInsert(image) {
-    iterator = selectedImages.values();
+function recursiveInsert(image: HTMLImageElement) {
+    let iterator: IterableIterator<HTMLImageElement> = selectedImages.values();
     _recursiveInsert(image, iterator);
 }
-function _recursiveInsert(image, iterator) {
-    var nextImg = iterator.next();
+function _recursiveInsert(image: HTMLImageElement, iterator: IterableIterator<HTMLImageElement>) {
+    let nextImg = iterator.next();
     if (!nextImg.done) {
         image.insertAdjacentElement("afterend", nextImg.value);
         _recursiveInsert(nextImg.value, iterator);
@@ -183,26 +194,36 @@ function _recursiveInsert(image, iterator) {
 }
 
 // ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
-function resetRow(rowBody) {
+function resetRow(rowBody: HTMLDivElement) {
     if (rowBody.hasChildNodes()) {
-        var imageContainer = document.getElementById("imageContainer");
-        while (rowBody.hasChildNodes()) imageContainer.appendChild(rowBody.firstChild);
+        let imageContainer = document.getElementById("imageContainer");
+        if (imageContainer) {
+            // Check the container is not null
+            if (rowBody.firstChild) {
+                // Check firstChild is not null
+                while (rowBody.hasChildNodes()) {
+                    imageContainer.appendChild(rowBody.firstChild);
+                }
+            }
+        } else {
+            console.error("Tried to get imageCountainer while resetting a row but it's null.");
+        }
     }
 }
 
 // DeleteRow - Deletes a specified row and moves any contents to the imageContainer at the bottom of the page.
-function deleteRow(row) {
+function deleteRow(row: HTMLDivElement) {
     // First check if this row had any images in it, if so, move them to the imageContainer
-    rowBody = row.getElementsByClassName("rowBody")[0];
+    let rowBody: HTMLDivElement = row.getElementsByClassName("rowBody")[0] as HTMLDivElement;
     resetRow(rowBody);
     // Remove the row from the rowList
     row.remove();
     // If there is only one row remaining disable the delete button and make it look disabled.
-    var rowList = document.getElementById("rowList");
-    if (rowList.childElementCount == 1) {
-        var deleteButton = rowList.getElementsByClassName("deleteButton")[0];
+    let rowList = document.getElementById("rowList");
+    if (rowList && rowList.childElementCount == 1) {
+        let deleteButton: HTMLElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLElement;
         deleteButton.style.pointerEvents = "none";
-        deleteButton.style.opacity = 0.2;
+        deleteButton.style.opacity = `${0.2}`;
     }
 }
 
@@ -238,9 +259,6 @@ function hideTab(tab, useDelay = true) {
         tab.classList.add("closed");
     }, delayMS);
 }
-
-var selectedImages = new Set();
-var lastSelectedImage = null;
 
 window.addEventListener("keydown", function (ev) {
     if (ev.key == "Control" || ev.key == "Shift") ev.preventDefault();
