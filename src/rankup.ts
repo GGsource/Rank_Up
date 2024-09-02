@@ -6,27 +6,27 @@ class Row {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
         this.rowFull.className = "rowFull";
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
-        var rowHeader = document.createElement("div");
+        let rowHeader: HTMLDivElement = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
-        var rowTab = document.createElement("div");
+        let rowTab: HTMLDivElement = document.createElement("div");
         rowTab.className = "rowTab rowPiece closed";
         rowTab.id = "rowTab" + Row.count;
         rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
         rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-        var addRowAboveButton = document.createElement("img");
+        let addRowAboveButton: HTMLImageElement = document.createElement("img");
         addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
         addRowAboveButton.src = "/resources/images/addRowAboveIcon.png";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         addRowAboveButton.ondragstart = (event) => event.preventDefault();
-        var dragContainer = document.createElement("div");
+        let dragContainer: HTMLDivElement = document.createElement("div");
         dragContainer.className = "tabButton dragContainer";
-        var dragHandle = document.createElement("img");
+        let dragHandle: HTMLImageElement = document.createElement("img");
         dragHandle.className = "dragHandle";
         dragHandle.src = "/resources/images/DragHandleIcon.png";
         dragContainer.appendChild(dragHandle);
-        var addRowBelowButton = document.createElement("img");
+        let addRowBelowButton: HTMLImageElement = document.createElement("img");
         addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
         addRowBelowButton.src = "/resources/images/addRowBelowIcon.png";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
@@ -36,19 +36,19 @@ class Row {
         rowTab.appendChild(dragContainer);
         rowTab.appendChild(addRowBelowButton);
         // Add the title to the rowHeader
-        var rowTitle = document.createElement("input");
+        let rowTitle: HTMLInputElement = document.createElement("input");
         rowTitle.className = "rowTitle";
         rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
         rowTitle.ondrop = (event) => dropToHeader(event);
         rowTitle.onfocus = () => clearSelections();
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
-        var resetDeleteContainer = document.createElement("div");
+        let resetDeleteContainer: HTMLDivElement = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
-        var resetButton = document.createElement("div");
+        let resetButton: HTMLDivElement = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
         resetButton.style.backgroundImage = "url('/resources/images/RowHeaderClear.png')"; // Set background image for delete button
         resetButton.onclick = () => resetRow(this.rowBody);
-        var deleteButton = document.createElement("div");
+        let deleteButton: HTMLDivElement = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.style.backgroundImage = "url('/resources/images/RowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.onclick = () => deleteRow(this.rowFull);
@@ -221,31 +221,36 @@ function deleteRow(row: HTMLDivElement) {
     // If there is only one row remaining disable the delete button and make it look disabled.
     let rowList = document.getElementById("rowList");
     if (rowList && rowList.childElementCount == 1) {
-        let deleteButton: HTMLElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLElement;
+        let deleteButton: HTMLDivElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLDivElement;
         deleteButton.style.pointerEvents = "none";
         deleteButton.style.opacity = `${0.2}`;
     }
 }
 
 // AddRow - Adds a new row above or below the specified row.
-function addRow(row, isAbove) {
+function addRow(row: HTMLDivElement, isAbove: boolean) {
     // First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
     var rowList = document.getElementById("rowList");
-    if (rowList.childElementCount == 1) {
-        var deleteButton = rowList.getElementsByClassName("deleteButton")[0];
+    if (rowList && rowList.childElementCount == 1) {
+        let deleteButton: HTMLDivElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLDivElement;
         deleteButton.style.pointerEvents = "auto";
-        deleteButton.style.opacity = 1;
+        deleteButton.style.opacity = `${1}`;
     }
     // Create the new row
     if (isAbove) row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
     else row.insertAdjacentElement("afterend", new Row(true).rowFull);
 }
 
-timeoutIds = {};
-lastHiddenTab = null;
+interface KeyPairList {
+    [key: string]: number;
+}
+let timeoutIds: KeyPairList = {};
+let lastHiddenTab: HTMLDivElement;
 
-function showTab(tab) {
-    if (lastHiddenTab != null && lastHiddenTab != tab) hideTab(lastHiddenTab, false);
+function showTab(tab: HTMLDivElement) {
+    if (lastHiddenTab && lastHiddenTab != tab) {
+        hideTab(lastHiddenTab, false);
+    }
     clearTimeout(timeoutIds[tab.id]);
     tab.classList.remove("closed");
     lastHiddenTab = tab;
