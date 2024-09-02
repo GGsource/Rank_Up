@@ -86,35 +86,39 @@ let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev: DragEvent) {
     document.body.classList.remove("allow-hover");
-    let image: HTMLImageElement = ev.target as HTMLImageElement;
-    if (!selectedImages.has(image)) clickImage(ev);
-    selectedImages.forEach((selectedImage) => {
-        selectedImage.setAttribute("data-dragging", "true");
-        selectedImage.classList.add("draggingImage");
-    });
-    // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
-    // TODO: Convert this styling to a css class styling
-    // TODO: Center properly on cursor
-    // TODO: Center number & make more visually appealing
-    draggingImageDiv = document.createElement("div");
-    draggingImageDiv.style.position = "absolute";
-    draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
-    draggingImageDiv.style.width = `${image.width}px`;
-    draggingImageDiv.style.height = `${image.height}px`;
-    draggingImageDiv.style.backgroundColor = "#f0f0f055";
-    draggingImageDiv.style.border = `${1}px solid #000`;
-    draggingImageDiv.style.borderRadius = `${10}%`;
-    draggingImageDiv.style.textAlign = "center";
-    draggingImageDiv.style.font = `${2}em 'Alice', sans-serif`;
-    draggingImageDiv.textContent = selectedImages.size.toString(); // How many images are selected
-    document.body.appendChild(draggingImageDiv);
-    // Update the div position
-    updateDragDivPosition(ev);
-    // Disable the default dragging image
-    if (ev.dataTransfer) {
-        ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+    let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
+    if (image) {
+        if (!selectedImages.has(image)) clickImage(ev);
+        selectedImages.forEach((selectedImage) => {
+            selectedImage.setAttribute("data-dragging", "true");
+            selectedImage.classList.add("draggingImage");
+        });
+        // At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
+        // TODO: Convert this styling to a css class styling
+        // TODO: Center properly on cursor
+        // TODO: Center number & make more visually appealing
+        draggingImageDiv = document.createElement("div");
+        draggingImageDiv.style.position = "absolute";
+        draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
+        draggingImageDiv.style.width = `${image.width}px`;
+        draggingImageDiv.style.height = `${image.height}px`;
+        draggingImageDiv.style.backgroundColor = "#f0f0f055";
+        draggingImageDiv.style.border = `${1}px solid #000`;
+        draggingImageDiv.style.borderRadius = `${10}%`;
+        draggingImageDiv.style.textAlign = "center";
+        draggingImageDiv.style.font = `${2}em 'Alice', sans-serif`;
+        draggingImageDiv.textContent = selectedImages.size.toString(); // How many images are selected
+        document.body.appendChild(draggingImageDiv);
+        // Update the div position
+        updateDragDivPosition(ev);
+        // Disable the default dragging image
+        if (ev.dataTransfer) {
+            ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+        } else {
+            console.error("ev.dataTransfer is null in DragStart");
+        }
     } else {
-        console.error("ev.dataTransfer is null in dragStart");
+        console.error("Tried to drag image but it's null in DragStart");
     }
 }
 
@@ -133,8 +137,8 @@ function dragImageOver(ev: DragEvent) {
     // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
     let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
-    if (ev.target) {
-        let element: HTMLElement = ev.target as HTMLElement;
+    let element: HTMLElement | null = ev.target as HTMLElement | null;
+    if (element) {
         if (element.classList.contains("Container")) {
             sources.forEach((source) => {
                 if (prevTarget == element && source.nextElementSibling == null) return; //Same container & position, nothin should change.
@@ -256,56 +260,67 @@ function showTab(tab: HTMLDivElement) {
     lastHiddenTab = tab;
 }
 
-function hideTab(tab, useDelay = true) {
+function hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
     if (isRowBeingDragged) return;
     if (timeoutIds[tab.id]) clearTimeout(timeoutIds[tab.id]); // Clear any existing timeout
-    var delayMS = useDelay ? 500 : 0;
+    let delayMS: number = useDelay ? 500 : 0; // If delay is enabled, then we'll do half a second
     timeoutIds[tab.id] = setTimeout(() => {
         tab.classList.add("closed");
     }, delayMS);
 }
 
-window.addEventListener("keydown", function (ev) {
-    if (ev.key == "Control" || ev.key == "Shift") ev.preventDefault();
+window.addEventListener("keydown", function (ev: KeyboardEvent) {
+    if (ev.key == "Control" || ev.key == "Shift") {
+        ev.preventDefault();
+    }
 });
 
-function clickImage(ev) {
-    var image = ev.target;
-    var container = ev.target.parentNode;
-    var images = Array.from(container.children);
-    var index = images.indexOf(image);
+function clickImage(ev: MouseEvent) {
+    let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
+    if (image) {
+        let container: HTMLDivElement = image.parentNode as HTMLDivElement;
+        let images: HTMLImageElement[] = Array.from(container.children) as HTMLImageElement[];
+        let index: number = images.indexOf(image);
 
-    if (ev.ctrlKey)
-        // Ctrl key + click to toggle selected status on an image
-        toggleSelection(image);
-    else if (ev.shiftKey && lastSelectedImage != null) {
-        // Shift key + click selects all images between last and current image
-        var lastIndex = images.indexOf(lastSelectedImage);
-        if (lastIndex !== -1) {
-            var start = Math.min(index, lastIndex);
-            var end = Math.max(index, lastIndex);
-            for (var i = start; i <= end; i++) selectImage(images[i]);
-        } else selectImage(image);
+        if (ev.ctrlKey)
+            // Ctrl key + click to toggle selected status on an image
+            toggleSelection(image);
+        else if (ev.shiftKey && lastSelectedImage) {
+            // Shift key + click selects all images between last and current image
+            let lastIndex: number = images.indexOf(lastSelectedImage);
+            if (lastIndex !== -1) {
+                let start: number = Math.min(index, lastIndex);
+                let end: number = Math.max(index, lastIndex);
+                for (let i = start; i <= end; i++) {
+                    selectImage(images[i]);
+                }
+            } else {
+                selectImage(image);
+            }
+        } else {
+            // Normal image click, only select the one image
+            clearSelections();
+            selectImage(image);
+        }
+        lastSelectedImage = image;
     } else {
-        clearSelections();
-        selectImage(image);
+        console.log("Image was clicked but returned null.");
     }
-    lastSelectedImage = image;
 }
 
-function selectImage(image) {
+function selectImage(image: HTMLImageElement) {
     // Selects an image
     selectedImages.add(image);
     image.classList.add("selectedImage");
 }
 
-function deselectImage(image) {
+function deselectImage(image: HTMLImageElement) {
     // Unselects an image
     selectedImages.delete(image);
     image.classList.remove("selectedImage");
 }
 
-function toggleSelection(image) {
+function toggleSelection(image: HTMLImageElement) {
     // Flips selected status on a given image
     if (selectedImages.has(image)) deselectImage(image);
     else selectImage(image);
@@ -314,17 +329,19 @@ function toggleSelection(image) {
 function clearSelections() {
     // Clears the list of currently selected images
     selectedImages.forEach(deselectImage);
-    selectedImages.clear();
+    selectedImages.clear(); //TESTME: This line might be redundant. And if it is, is the function redundant?
 }
 
-function clickContainer(ev) {
+function clickContainer(ev: MouseEvent) {
     // Clears selection when clicking on an empty spot of the container
-    if (ev.target.classList.contains("Container")) clearSelections();
+    let container: HTMLDivElement | null = ev.target as HTMLDivElement | null;
+    if (container && container.classList.contains("Container")) clearSelections();
 }
 
 // DropToHeader - drop function for dragging something onto a row header. Only allow text.
-function dropToHeader(ev) {
-    if (ev.dataTransfer.types.length != 1 || ev.dataTransfer.types[0] != "text/plain") ev.preventDefault();
+function dropToHeader(ev: DragEvent) {
+    let data = ev.dataTransfer;
+    if (data && (data.types.length != 1 || data.types[0] != "text/plain")) ev.preventDefault();
 }
 
 // TODO: Make README.md for github page
@@ -340,36 +357,50 @@ function dropToHeader(ev) {
 // TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
 // FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
-function populateInitialRows(rowCount) {
-    var rowList = document.getElementById("rowList");
-    for (i = 0; i < rowCount; i++) new Row().appendTo(rowList);
+function populateInitialRows(rowCount: number) {
+    let rowList: HTMLDivElement | null = document.getElementById("rowList") as HTMLDivElement | null;
+    if (rowList) for (let i: number = 0; i < rowCount; i++) new Row().appendTo(rowList);
 }
 // Function to add in the placeholder images for debugging
 function populatePlaceholderImages() {
-    var imageNames = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
-    var imageContainer = document.getElementById("imageContainer");
-    imageNames.forEach((name) => {
-        var image = document.createElement("img");
-        image.className = "rankingImage";
-        image.src = "/resources/images/" + name + ".png";
-        image.onclick = (event) => clickImage(event);
-        image.ondragstart = (event) => dragStart(event);
-        image.ondrag = (event) => dragImage(event);
-        imageContainer.appendChild(image);
-    });
+    let imageNames: string[] = [
+        "bird",
+        "bird_evil",
+        "BordBlue",
+        "BordGreen",
+        "BordPink",
+        "BordPorple",
+        "BordRee",
+        "BordWhite",
+        "BordYellow",
+    ];
+    let imageContainer: HTMLDivElement | null = document.getElementById("imageContainer") as HTMLDivElement | null;
+    if (imageContainer) {
+        imageNames.forEach((name) => {
+            let image: HTMLImageElement = document.createElement("img");
+            image.className = "rankingImage";
+            image.src = "/resources/images/" + name + ".png";
+            image.onclick = (event) => clickImage(event);
+            image.ondragstart = (event) => dragStart(event);
+            image.ondrag = (event) => dragImage(event);
+            imageContainer.appendChild(image);
+        });
+    } else {
+        console.error("Couldn't populate container with placeholders because imageContainer was not null.");
+    }
 }
-var isRowBeingDragged = false;
+let isRowBeingDragged: boolean = false;
 // Function to add drag ability with JQuery
 function makeRowsDrag() {
-    $("#rowList").sortable({
+    ($("#rowList") as any).sortable({
         handle: ".dragContainer", // Specify the tab as the handle for dragging
         axis: "y", // Allow vertical reordering
-        start: function (event, ui) {
+        start: function (event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) {
             isRowBeingDragged = true;
         },
-        stop: function (event, ui) {
+        stop: function (event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) {
             isRowBeingDragged = false;
-            hideTab(ui.item[0].getElementsByClassName("rowTab")[0]);
+            hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
         },
     });
 }
