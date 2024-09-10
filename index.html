@@ -15,7 +15,28 @@
     </head>
 
     <body class="allow-hover">
+        <div id="headerBox">
+            <!-- Header Title - Title of the grid. -->
+            <input
+                id="headerTitle"
+                type="textarea"
+                placeholder="Placeholder Title"
+                class="headerText"
+                maxlength="90"
+                oninput="updateHeaderText(event)"
+            />
+            <!-- Description - Describes what the grid is about or whatever the author wants. -->
+            <input
+                id="headerDescription"
+                type="textarea"
+                placeholder="Placeholder Description"
+                class="headerText"
+                oninput="updateHeaderText(event)"
+            />
+        </div>
+        <!-- Row List - The list of rows where the images will be moved to. -->
         <div id="rowList"></div>
+        <!-- Image Container - The container that holds the images -->
         <div
             id="imageContainer"
             class="Container"

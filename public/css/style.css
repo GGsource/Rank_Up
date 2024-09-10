@@ -7,7 +7,7 @@ body {
 
 /* Make the bottom container where all images begin larger */
 #imageContainer {
-    width: calc(var(--rowWidth) + var(--resolution));
+    width: var(--fullRowWidth);
     /* center the container */
     margin-left: auto;
     margin-right: auto;
@@ -207,4 +207,26 @@ body .Container .rankingImage.draggingImage {
     width: calc(var(--resolution) / 3);
     height: calc(var(--resolution) / 3);
     z-index: 3;
+}
+
+/* CSS For the header area */
+
+#headerBox {
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    /* Space between tiems */
+    gap: 5px;
+    width: var(--fullRowWidth);
+    flex-wrap: wrap;
+}
+.headerText {
+    background-color: transparent;
+    border: none;
+    color: white;
+    resize: none;
+}
+#headerTitle {
+    font: 3em "Alice", sans-serif;
+    flex: 1;
 }

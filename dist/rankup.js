@@ -412,3 +412,13 @@ function main() {
 main();
 // TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
 // TODO: Add return types to all functions
+function updateHeaderText(event) {
+    let keyPressed = event;
+    if (keyPressed.key === "Enter") {
+        console.log("Enter pressed");
+        keyPressed.preventDefault();
+    }
+    let headerText = event.target;
+    headerText.style.height = "";
+    headerText.style.height = `${headerText.scrollHeight}px`;
+}

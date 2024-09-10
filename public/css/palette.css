@@ -11,6 +11,7 @@
     --ratio: calc(186 / 314);
     --columnCount: 8;
     --rowWidth: calc(var(--resolution) * var(--columnCount));
+    --fullRowWidth: calc(var(--rowWidth) + var(--resolution));
     --radius: 30px;
     --animNormMS: 500ms;
     --animFastMS: 200ms;
