@@ -5,12 +5,15 @@ body {
     background-color: var(--primary);
 }
 
+#pageCenterColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 /* Make the bottom container where all images begin larger */
 #imageContainer {
     width: var(--fullRowWidth);
-    /* center the container */
-    margin-left: auto;
-    margin-right: auto;
     /* Remove spacing between elements in the container*/
     display: flex;
     flex-wrap: wrap;
@@ -19,10 +22,9 @@ body {
 }
 
 #rowList {
-    /* Center */
+    /* Center the rows */
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 /* 
 - rowList (contains all rowFulls)
@@ -214,7 +216,7 @@ body .Container .rankingImage.draggingImage {
 #headerBox {
     display: flex;
     flex-direction: column;
-    padding: 2%;
+    padding: 2% 0%;
     /* Space between tiems */
     gap: 5px;
     width: var(--fullRowWidth);

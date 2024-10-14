@@ -5,9 +5,11 @@ class Row {
     constructor(isNewRow = false) {
         // RowFull is the main container for the row. It contains the rowHeader and the rowBody.
         this.rowFull.className = "rowFull";
+        this.rowFull.id = "rowFull" + Row.count;
         // rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
         let rowHeader: HTMLDivElement = document.createElement("div");
         rowHeader.className = "rowHeader rowPiece";
+        rowHeader.id = "rowHeader" + Row.count;
         // rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
         let rowTab: HTMLDivElement = document.createElement("div");
         rowTab.className = "rowTab rowPiece closed";
@@ -38,18 +40,22 @@ class Row {
         // Add the title to the rowHeader
         let rowTitle: HTMLInputElement = document.createElement("input");
         rowTitle.className = "rowTitle";
+        rowTitle.id = "rowTitle" + Row.count;
         rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
-        rowTitle.ondrop = (event) => dropToHeader(event);
+        rowTitle.ondrop = (event) => dragOverTextBox(event);
         rowTitle.onfocus = () => clearSelections();
         // Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
         let resetDeleteContainer: HTMLDivElement = document.createElement("div");
         resetDeleteContainer.className = "resetDeleteContainer";
+        resetDeleteContainer.id = "resetDeleteContainer" + Row.count;
         let resetButton: HTMLDivElement = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
+        resetButton.id = "resetButton" + Row.count;
         resetButton.style.backgroundImage = "url('/public/images/RowHeaderClear.png')"; // Set background image for delete button
         resetButton.onclick = () => resetRow(this.rowBody);
         let deleteButton: HTMLDivElement = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
+        deleteButton.id = "deleteButton" + Row.count;
         deleteButton.style.backgroundImage = "url('/public/images/RowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
@@ -137,7 +143,7 @@ function dragImageOver(ev: DragEvent) {
     // For change to be necessary one of these must have changed: target changed, targetside changed.
     ev.preventDefault();
     let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
-    let element: HTMLElement | null = ev.target as HTMLElement | null;
+    let element: HTMLElement | null = ev.target as HTMLElement | null; // The element being dragged into.
     if (element) {
         if (element.classList.contains("Container")) {
             sources.forEach((source) => {
@@ -338,10 +344,15 @@ function clickContainer(ev: MouseEvent) {
     if (container && container.classList.contains("Container")) clearSelections();
 }
 
-// DropToHeader - drop function for dragging something onto a row header. Only allow text.
-function dropToHeader(ev: DragEvent) {
+// dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
+function dragOverTextBox(ev: DragEvent) {
     let data = ev.dataTransfer;
-    if (data && (data.types.length != 1 || data.types[0] != "text/plain")) ev.preventDefault();
+    if (data && (data.types.length != 1 || data.types[0] != "text/plain")) {
+        ev.preventDefault();
+    }
+    let element = ev.target as HTMLElement;
+    console.log(`Dragged something over ${element.id} but this is an invalid drag target`);
+    console.log("Data: ", data);
 }
 
 // TODO: Make README.md for github page
