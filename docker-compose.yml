@@ -8,5 +8,3 @@ services:
         volumes:
             - .:/app # Sync the local files
             - /app/node_modules # Keep the container's node_modules
-        environment:
-            - NODE_ENV=development
