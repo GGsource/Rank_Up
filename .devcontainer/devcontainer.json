@@ -1,5 +1,47 @@
 {
     "dockerComposeFile": "../docker-compose.yml",
     "service": "app", // Must match docker-compose service name
-    "workspaceFolder": "/app" // Must match WORKDIR in Dockerfile
+    "workspaceFolder": "/app", // Must match WORKDIR in Dockerfile
+
+    "overrideCommand": false,
+    "forwardPorts": [5173],
+    "postCreateCommand": "npm run dev",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "adpyke.codesnap",
+                "bierner.markdown-checkbox",
+                "bierner.markdown-emoji",
+                "bierner.markdown-footnotes",
+                "bierner.markdown-preview-github-styles",
+                "cliffordfajardo.highlight-line-vscode",
+                "eamodio.gitlens",
+                "ecmel.vscode-html-css",
+                "esbenp.prettier-vscode",
+                "github.copilot",
+                "github.copilot-chat",
+                "github.vscode-pull-request-github",
+                "gruntfuggly.todo-tree",
+                "icrawl.discord-vscode",
+                "johnpapa.vscode-peacock",
+                "kejun.markdown-alert",
+                "mechatroner.rainbow-csv",
+                "medo64.render-crlf",
+                "mhutchie.git-graph",
+                "naumovs.color-highlight",
+                "oderwat.indent-rainbow",
+                "pflannery.vscode-versionlens",
+                "pkief.material-icon-theme",
+                "pucelle.vscode-css-navigation",
+                "royaction.color-manager",
+                "tomoki1207.pdf",
+                "usernamehw.errorlens",
+                "vincaslt.highlight-matching-tag",
+                "visualstudioexptteam.vscodeintellicode",
+                "yoavbls.pretty-ts-errors",
+                "zhuangtongfa.material-theme",
+                "zignd.html-css-class-completion"
+            ]
+        }
+    }
 }

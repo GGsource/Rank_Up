@@ -7,7 +7,7 @@
         "paths": {
             "@/*": ["./src/*"] /* Specify a set of entries that re-map imports to lookup locations relative to the 'baseUrl'. */
         },
-        "types": ["vite/client"] /* Type declaration files to be included in the compilation. */,
+        "types": ["vite/client", "jqueryui"] /* Type declaration files to be included in the compilation. */,
         "rootDir": "./src" /* Specify the root folder within your source files. */,
         "outDir": "./dist" /* Specify an output folder for all emitted files. */,
         "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */,

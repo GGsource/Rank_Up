@@ -2,6 +2,11 @@
 
 # First select the base image
 FROM node:22-alpine
+
+# Install Git and set up the terminal prompt
+RUN apk update && apk add --no-cache git \
+    && echo 'export PS1="\[\033[1;32m\]\u@rank-up\[\033[0m\]:\[\033[1;34m\]\w\[\033[0m\]\$ "' >> /etc/profile
+
 # Set the working directory
 WORKDIR /app
 # Copy the package.json and package-lock.json files
