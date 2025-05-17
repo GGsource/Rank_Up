@@ -1,0 +1,5 @@
+{
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "app", // Must match docker-compose service name
+    "workspaceFolder": "/app" // Must match WORKDIR in Dockerfile
+}
