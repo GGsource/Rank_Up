@@ -402,6 +402,8 @@ function populatePlaceholderImages() {
 }
 let isRowBeingDragged: boolean = false;
 // Function to add drag ability with JQuery
+import $ from "jquery"; // TODO: Move this import to a more appropriate place
+import "jquery-ui-dist/JQuery-ui";
 function makeRowsDrag() {
     ($("#rowList") as any).sortable({
         handle: ".dragContainer", // Specify the tab as the handle for dragging
