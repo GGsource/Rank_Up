@@ -19,18 +19,18 @@ class Row {
         // Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
         let addRowAboveButton: HTMLImageElement = document.createElement("img");
         addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
-        addRowAboveButton.src = "/public/images/addRowAboveIcon.png";
+        addRowAboveButton.src = "/src/assets/images/addRowAboveIcon.png";
         addRowAboveButton.onclick = () => addRow(this.rowFull, true);
         addRowAboveButton.ondragstart = (event) => event.preventDefault();
         let dragContainer: HTMLDivElement = document.createElement("div");
         dragContainer.className = "tabButton dragContainer";
         let dragHandle: HTMLImageElement = document.createElement("img");
         dragHandle.className = "dragHandle";
-        dragHandle.src = "/public/images/DragHandleIcon.png";
+        dragHandle.src = "/src/assets/images/DragHandleIcon.png";
         dragContainer.appendChild(dragHandle);
         let addRowBelowButton: HTMLImageElement = document.createElement("img");
         addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
-        addRowBelowButton.src = "/public/images/addRowBelowIcon.png";
+        addRowBelowButton.src = "/src/assets/images/addRowBelowIcon.png";
         addRowBelowButton.onclick = () => addRow(this.rowFull, false);
         addRowBelowButton.ondragstart = (event) => event.preventDefault();
         // Add the buttons to the rowTab
@@ -51,12 +51,12 @@ class Row {
         let resetButton: HTMLDivElement = document.createElement("div");
         resetButton.className = "resetButton resetDeleteButton";
         resetButton.id = "resetButton" + Row.count;
-        resetButton.style.backgroundImage = "url('/public/images/RowHeaderClear.png')"; // Set background image for delete button
+        resetButton.style.backgroundImage = "url('/src/assets/images/RowHeaderClear.png')"; // Set background image for delete button
         resetButton.onclick = () => resetRow(this.rowBody);
         let deleteButton: HTMLDivElement = document.createElement("div");
         deleteButton.className = "deleteButton resetDeleteButton";
         deleteButton.id = "deleteButton" + Row.count;
-        deleteButton.style.backgroundImage = "url('/public/images/RowHeaderDelete.png')"; // Set background image for delete button
+        deleteButton.style.backgroundImage = "url('/src/assets/images/RowHeaderDelete.png')"; // Set background image for delete button
         deleteButton.onclick = () => deleteRow(this.rowFull);
         resetDeleteContainer.appendChild(resetButton);
         resetDeleteContainer.appendChild(deleteButton);
@@ -86,7 +86,7 @@ class Row {
 
 let draggingImageDiv: HTMLDivElement;
 let emptyImg: HTMLImageElement = new Image();
-emptyImg.src = "/public/images/empty.png";
+emptyImg.src = "/src/assets/images/empty.png";
 let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
@@ -390,7 +390,7 @@ function populatePlaceholderImages() {
         imageNames.forEach((name) => {
             let image: HTMLImageElement = document.createElement("img");
             image.className = "rankingImage";
-            image.src = "/public/images/" + name + ".png";
+            image.src = "/src/assets/images/" + name + ".png";
             image.onclick = (event) => clickImage(event);
             image.ondragstart = (event) => dragStart(event);
             image.ondrag = (event) => dragImage(event);
