@@ -402,21 +402,9 @@ function populatePlaceholderImages() {
 }
 let isRowBeingDragged: boolean = false;
 // Function to add drag ability with JQuery
-import $ from "jquery"; // TODO: Move this import to a more appropriate place
-import "jquery-ui-dist/jquery-ui.js";
 
 function makeRowsDrag() {
-    ($("#rowList") as any).sortable({
-        handle: ".dragContainer", // Specify the tab as the handle for dragging
-        axis: "y", // Allow vertical reordering
-        start: function (event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) {
-            isRowBeingDragged = true;
-        },
-        stop: function (event: JQuery.TriggeredEvent, ui: JQueryUI.SortableUIParams) {
-            isRowBeingDragged = false;
-            hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
-        },
-    });
+    // TODO: Implement custom drag and drop functionality instead of using JQuery UI
 }
 function main() {
     populateInitialRows(5); // Make the original starting rows
