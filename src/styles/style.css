@@ -3,12 +3,14 @@
 
 body {
     background-color: var(--primary);
+    margin: 0; /* Remove the padding around it */
 }
 
 #pageCenterColumn {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: solid 1px blue; /* DEBUGGING: Border to see limits*/
 }
 
 /* Make the bottom container where all images begin larger */
@@ -19,12 +21,17 @@ body {
     flex-wrap: wrap;
     height: calc(var(--resolution) * 2); /* Make it start off at least 2 images tall */
     background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
+    border: solid 1px green; /* DEBUGGING: Border to see limits*/
 }
 
 #rowList {
     /* Center the rows */
     display: flex;
     flex-direction: column;
+    border: solid 1px yellow; /* DEBUGGING: Border to see limits*/
+    width: 100%;
+    /* Center children */
+    align-items: center;
 }
 /* 
 - rowList (contains all rowFulls)
