@@ -32,7 +32,6 @@ body {
     width: 100%;
     /* Center children */
     align-items: center;
-    gap: calc(var(--resolution) / 20);
 }
 /* 
 - rowList (contains all rowFulls)
@@ -48,18 +47,11 @@ body {
 -                             deleteButton
 -             rowBody
 */
-.rowBounds {
-    width: 100%;
-    /* center the children */
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    transition: order 0.3s, transform 0.3s;
-}
 .rowFull {
     display: flex;
     flex-direction: row;
     height: var(--resolution);
+    margin-bottom: calc(var(--resolution) / 20); /* DEBUGGING: This margin may not be needed later. */
 }
 
 .rowTab {
@@ -125,7 +117,6 @@ body {
     max-width: calc(var(--resolution) / 4);
     padding: 0px 4px;
     box-sizing: border-box;
-    pointer-events: none;
 }
 
 .resetDeleteButton,
