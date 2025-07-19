@@ -403,8 +403,20 @@ function populatePlaceholderImages() {
 let isRowBeingDragged: boolean = false;
 // Function to add drag ability with JQuery
 
+declare var $: any; // Tell TypeScript about global jQuery
+// Make jQuery available globally
 function makeRowsDrag() {
-    // TODO: Implement custom drag and drop functionality instead of using JQuery UI
+    ($("#rowList") as any).sortable({
+        handle: ".dragContainer", // Specify the tab as the handle for dragging
+        axis: "y", // Allow vertical reordering
+        start: function (event: any, ui: any) {
+            isRowBeingDragged = true;
+        },
+        stop: function (event: any, ui: any) {
+            isRowBeingDragged = false;
+            hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
+        },
+    });
 }
 function main() {
     populateInitialRows(5); // Make the original starting rows
@@ -426,3 +438,4 @@ main();
 //     headerText.style.height = "";
 //     headerText.style.height = `${headerText.scrollHeight}px`;
 // }
+// TODO: Make it so clicking in the starter container also deselects all images
