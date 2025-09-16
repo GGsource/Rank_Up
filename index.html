@@ -1,53 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <!-- Style Sheet -->
-        <!-- Viewport -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <!-- Tab Title -->
-        <title>Rank Up</title>
-        <!-- JQuery Import -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css" />
-      <script type="module" crossorigin src="/assets/index-eWUOs2ZW.js"></script>
-      <link rel="stylesheet" crossorigin href="/assets/index-Ca849Qvv.css">
-    </head>
+	<head>
+		<meta charset="UTF-8" />
+		<!-- Style Sheet -->
+		<!-- Viewport -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- Tab Title -->
+		<title>Rank Up</title>
+		<!-- JQuery Import -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css" />
+		<script type="module" crossorigin src="/assets/index-eWUOs2ZW.js"></script>
+		<link rel="stylesheet" crossorigin href="/assets/index-Ca849Qvv.css">
+	</head>
 
-    <body class="allow-hover">
-        <div id="pageCenterColumn">
-            <div id="headerBox">
-                <!-- Header Title - Title of the grid. -->
-                <input
-                    id="headerTitle"
-                    type="textarea"
-                    placeholder="Placeholder Title"
-                    class="headerText"
-                    maxlength="50"
-                    ondragover="dragOverTextBox(event)"
-                />
-                <!-- Description - Describes what the grid is about or whatever the author wants. -->
-                <textarea
-                    id="headerDescription"
-                    placeholder="Placeholder Description"
-                    class="headerText"
-                    maxlength="330"
-                    rows="3"
-                    ondragover="dragOverTextBox(event)"
-                ></textarea>
-            </div>
-            <!-- Row List - The list of rows where the images will be moved to. -->
-            <div id="rowList"></div>
-            <!-- Image Container - The container that holds the images -->
-            <div
-                id="imageContainer"
-                class="Container"
-                onclick="clickContainer(event)"
-                ondragover="dragImageOver(event)"
-                ondragend="dragImageEnd(event)"
-            ></div>
-        </div>
-        <!-- Source Files -->
-    </body>
+	<body class="allow-hover">
+		<div id="pageCenterColumn">
+			<div id="headerBox">
+				<!-- Header Title - Title of the grid. -->
+				<input
+					id="headerTitle"
+					type="textarea"
+					placeholder="Placeholder Title"
+					class="headerText"
+					maxlength="50"
+					ondragover="dragOverTextBox(event)"
+				/>
+				<!-- Description - Describes what the grid is about or whatever the author wants. -->
+				<textarea
+					id="headerDescription"
+					placeholder="Placeholder Description"
+					class="headerText"
+					maxlength="330"
+					rows="3"
+					ondragover="dragOverTextBox(event)"
+				></textarea>
+			</div>
+			<!-- Row List - The list of rows where the images will be moved to. -->
+			<div id="rowList"></div>
+			<!-- Image Container - The container that holds the images -->
+			<div
+				id="imageContainer"
+				class="Container"
+				onclick="clickContainer(event)"
+				ondragover="dragImageOver(event)"
+				ondragend="dragImageEnd(event)"
+			></div>
+		</div>
+		<!-- Source Files -->
+	</body>
 </html>
