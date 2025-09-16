@@ -13,7 +13,11 @@
     --rowWidth: calc(var(--resolution) * var(--columnCount));
     --fullRowWidth: calc(var(--rowWidth) + var(--resolution));
     --radius: 30px;
+    --animSlowMS: 1000ms;
     --animNormMS: 500ms;
     --animFastMS: 200ms;
     --animInstMS: 100ms;
+    --colorGreyed: rgb(255, 255, 255, 0.5);
+    --colorSelected: rgba(69, 202, 255, 0.5);
+    --colorSelectedLightened: color-mix(in srgb, var(--colorSelected) 12.5%, transparent);
 }

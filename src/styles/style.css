@@ -223,7 +223,7 @@ body .Container .rankingImage.draggingImage {
 #headerBox {
     display: flex;
     flex-direction: column;
-    padding: 2% 0%;
+    padding: 2% 0% 1% 0%;
     /* Space between tiems */
     gap: 5px;
     width: var(--fullRowWidth);
@@ -231,11 +231,31 @@ body .Container .rankingImage.draggingImage {
 }
 .headerText {
     background-color: transparent;
-    border: none;
     color: white;
     resize: none;
+    border: 3px transparent solid;
+    border-radius: 10px;
+    transition: border var(--animNormMS);
 }
 #headerTitle {
     font: 3em "Alice", sans-serif;
     flex: 1;
 }
+
+#headerDescription {
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    font-size: 1.5em;
+}
+.headerText:hover {
+    border-color: var(--colorGreyed);
+    transition: border-color var(--animNormMS);
+}
+.headerText:focus {
+    outline: none;
+    border-color: var(--colorSelected);
+    transition: border var(--animSlowMS);
+}
+
+/* TODO: Add counter on bottom right showing character limit of description DURING creation/editing until saved. Allow overtyping into red but then the user can't save until they make it the right size. */
+/* Add a cool little pencil icon next to it :) and a x and checkmark when in editing mode to save or cancel. */
+/* TODO: Make the input fields in row headers be a textarea with word wrap instead. */
