@@ -1,23 +1,23 @@
 @font-face {
-    font-family: "Alice";
-    src: url("/src/assets/fonts/AliceYotsubaInc-Ea7Zj.ttf");
-    font-weight: normal;
-    font-style: normal;
+	font-family: "Alice";
+	src: url("/src/assets/fonts/AliceYotsubaInc-Ea7Zj.ttf");
+	font-weight: normal;
+	font-style: normal;
 }
 
 :root {
-    --primary: rgb(70, 70, 70);
-    --resolution: 150px;
-    --ratio: calc(186 / 314);
-    --columnCount: 8;
-    --rowWidth: calc(var(--resolution) * var(--columnCount));
-    --fullRowWidth: calc(var(--rowWidth) + var(--resolution));
-    --radius: 30px;
-    --animSlowMS: 1000ms;
-    --animNormMS: 500ms;
-    --animFastMS: 200ms;
-    --animInstMS: 100ms;
-    --colorGreyed: rgb(255, 255, 255, 0.5);
-    --colorSelected: rgba(69, 202, 255, 0.5);
-    --colorSelectedLightened: color-mix(in srgb, var(--colorSelected) 12.5%, transparent);
+	--primary: rgb(70, 70, 70);
+	--resolution: 150px;
+	--ratio: calc(186 / 314);
+	--columnCount: 8;
+	--rowWidth: calc(var(--resolution) * var(--columnCount));
+	--fullRowWidth: calc(var(--rowWidth) + var(--resolution));
+	--radius: 30px;
+	--animSlowMS: 1000ms;
+	--animNormMS: 500ms;
+	--animFastMS: 200ms;
+	--animInstMS: 100ms;
+	--colorGreyed: rgb(255, 255, 255, 0.5);
+	--colorSelected: rgba(69, 202, 255, 0.5);
+	--colorSelectedLightened: color-mix(in srgb, var(--colorSelected) 12.5%, transparent);
 }
