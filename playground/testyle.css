@@ -1,92 +1,92 @@
 body {
-    background-color: gray;
-    /* Center */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+	background-color: gray;
+	/* Center */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .parent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100px;
-    height: 200px;
-    background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(255, 0, 0, 0.4) 20px);
-    border: 1px solid black;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100px;
+	height: 200px;
+	background: repeating-linear-gradient(45deg, rgba(0, 0, 0, 0), rgba(255, 0, 0, 0.4) 20px);
+	border: 1px solid black;
 }
 .wide {
-    width: 100%;
+	width: 100%;
 }
 .tall {
-    flex-grow: 1;
-    min-height: 0;
-    border: 1px solid black;
+	flex-grow: 1;
+	min-height: 0;
+	border: 1px solid black;
 }
 
 .img {
-    width: 200px;
-    height: 200px;
-    border: dashed 10px darkblue;
-    z-index: 1;
-    position: relative;
+	width: 200px;
+	height: 200px;
+	border: dashed 10px darkblue;
+	z-index: 1;
+	position: relative;
 }
 .img::after {
-    content: "";
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #ff000075;
-    z-index: 300;
+	content: "";
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #ff000075;
+	z-index: 300;
 }
 
 #addTop {
-    background-image: url("/resources/images/addRowAboveIcon.png");
+	background-image: url("../src/assets/images/addRowAboveIcon.png");
 }
 #dragger {
-    background-image: url("/resources/images/DragHandleIcon.png");
+	background-image: url("../src/assets/images/DragHandleIcon.png");
 }
 #addBtm {
-    background-image: url("/resources/images/addRowBelowIcon.png");
+	background-image: url("../src/assets/images/addRowBelowIcon.png");
 }
 #dragContainer {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	flex-grow: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .rowTab {
-    width: calc(var(--res) / 2);
-    height: 400px;
-    background-color: darkcyan;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
+	width: calc(var(--res) / 2);
+	height: 400px;
+	background-color: darkcyan;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
 }
 .tabButton {
-    width: 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    border: solid 1px blue;
+	width: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	border: solid 1px blue;
 }
 .addRowButton {
-    height: calc((var(--res) / 2) * (186 / 314));
+	height: calc((var(--res) / 2) * (186 / 314));
 }
 .dragHandle {
-    height: 100%;
-    width: 100%;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    max-width: calc(var(--res) / 4);
-    background-color: rgba(160, 81, 45, 0.459);
+	height: 100%;
+	width: 100%;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	max-width: calc(var(--res) / 4);
+	background-color: rgba(160, 81, 45, 0.459);
 }
 
 :root {
-    --res: 200px;
-    --ratio: calc(186 / 314);
+	--res: 200px;
+	--ratio: calc(186 / 314);
 }
