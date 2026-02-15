@@ -390,7 +390,8 @@ function populatePlaceholderImages() {
 		imageNames.forEach((name) => {
 			let image: HTMLImageElement = document.createElement("img");
 			image.className = "rankingImage";
-			image.src = new URL(`./assets/images/${name}.png`, import.meta.url).href;
+			image.src = `/src/assets/images/${name}.png`;
+			console.log(image.src);
 			image.onclick = (event) => clickImage(event);
 			image.ondragstart = (event) => dragStart(event);
 			image.ondrag = (event) => dragImage(event);
