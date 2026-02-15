@@ -1,53 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<!-- Style Sheet -->
-		<!-- Viewport -->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- Tab Title -->
-		<title>Rank Up</title>
-		<!-- JQuery Import -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css" />
-		<script type="module" crossorigin src="/assets/index-DL25LvPs.js"></script>
-		<link rel="stylesheet" crossorigin href="/assets/index-Ca849Qvv.css">
+		<title>Overview Page</title>
+		<!-- Imports -->
+		<style>
+			.octicon {
+				display: inline-block;
+				font-size: 32px;
+				border: 1px solid red;
+				color: green;
+			}
+		</style>
+		<script type="module" crossorigin src="/assets/index-lffMAGYO.js"></script>
+		<link rel="stylesheet" crossorigin href="/assets/index-DUC_Wfon.css">
 	</head>
-
-	<body class="allow-hover">
-		<div id="pageCenterColumn">
-			<div id="headerBox">
-				<!-- Header Title - Title of the grid. -->
-				<input
-					id="headerTitle"
-					type="textarea"
-					placeholder="Placeholder Title"
-					class="headerText"
-					maxlength="50"
-					ondragover="dragOverTextBox(event)"
-				/>
-				<!-- Description - Describes what the grid is about or whatever the author wants. -->
-				<textarea
-					id="headerDescription"
-					placeholder="Placeholder Description"
-					class="headerText"
-					maxlength="330"
-					rows="3"
-					ondragover="dragOverTextBox(event)"
-				></textarea>
+	<body>
+		<!-- This is the main page we first arrive at. Since guest experience is priority, this page should work whether or not you are logged in -->
+		<!-- Therefore the layout should be: -->
+		<!-- Just a basic centered horizontal list of cards displaying the 3 most recently created lists by this guest/user. -->
+		<!-- On the right of these is a card with a "+" Icon, which can be selected to start creating a new rankup. -->
+		<!-- Hovering or keying between any of these should leave a blue border around the selection and populate some centered text below showing either the title of the rankup or 'create new' -->
+		<!-- If less than 3 recent rankups exist for this guest/user, then only those will be shown and then the '+' card. If none, then just the plus card -->
+		<div id="cardbox">
+			<!-- 3 most recent rankup cards if applicable -->
+			<!-- Create New Rankup card -->
+			<div id="placeholder-1" class="placeholder-card home-cards">Placeholder 1</div>
+			<div id="placeholder-2" class="placeholder-card home-cards">Placeholder 2</div>
+			<div id="create-new-rankup-card" class="home-cards">
+				<img id="icon-plus" src="/assets/icon_plus-C2tQjR3N.png" alt="plus icon" />
 			</div>
-			<!-- Row List - The list of rows where the images will be moved to. -->
-			<div id="rowList"></div>
-			<!-- Image Container - The container that holds the images -->
-			<div
-				id="imageContainer"
-				class="Container"
-				onclick="clickContainer(event)"
-				ondragover="dragImageOver(event)"
-				ondragend="dragImageEnd(event)"
-			></div>
 		</div>
-		<!-- Source Files -->
 	</body>
 </html>
