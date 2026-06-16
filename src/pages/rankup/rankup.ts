@@ -369,7 +369,8 @@ function dragOverTextBox(ev: DragEvent) {
 // FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
 function populateInitialRows(rowCount: number) {
-	let rowList: HTMLDivElement | null = document.getElementById("rowList") as HTMLDivElement | null;
+	console.log("populateInitialRows was called.");
+	let rowList = document.getElementById("rowList") as HTMLDivElement;
 	if (rowList) for (let i: number = 0; i < rowCount; i++) new Row().appendTo(rowList);
 }
 // Function to add in the placeholder images for debugging
@@ -385,7 +386,7 @@ function populatePlaceholderImages() {
 		"BordWhite",
 		"BordYellow",
 	];
-	let imageContainer: HTMLDivElement | null = document.getElementById("imageContainer") as HTMLDivElement | null;
+	let imageContainer = document.getElementById("imageContainer") as HTMLDivElement;
 	if (imageContainer) {
 		imageNames.forEach((name) => {
 			let image: HTMLImageElement = document.createElement("img");
@@ -398,33 +399,31 @@ function populatePlaceholderImages() {
 			imageContainer.appendChild(image);
 		});
 	} else {
-		console.error("Couldn't populate container with placeholders because imageContainer was not null.");
+		console.error("Couldn't populate container with placeholders because imageContainer was null.");
 	}
 }
 let isRowBeingDragged: boolean = false;
 // Function to add drag ability with JQuery
 
-declare var $: any; // Tell TypeScript about global jQuery
 // Make jQuery available globally
-function makeRowsDrag() {
-	($("#rowList") as any).sortable({
-		handle: ".dragContainer", // Specify the tab as the handle for dragging
-		axis: "y", // Allow vertical reordering
-		start: function (event: any, ui: any) {
-			isRowBeingDragged = true;
-		},
-		stop: function (event: any, ui: any) {
-			isRowBeingDragged = false;
-			hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
-		},
-	});
-}
-function main() {
+// function makeRowsDrag() {
+// 	($("#rowList") as any).sortable({
+// 		handle: ".dragContainer", // Specify the tab as the handle for dragging
+// 		axis: "y", // Allow vertical reordering
+// 		start: function (event: any, ui: any) {
+// 			isRowBeingDragged = true;
+// 		},
+// 		stop: function (event: any, ui: any) {
+// 			isRowBeingDragged = false;
+// 			hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
+// 		},
+// 	});
+// }
+export function initializeRankUp() {
 	populateInitialRows(5); // Make the original starting rows
-	makeRowsDrag();
+	// makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
-main();
 
 // TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
 // TODO: Add return types to all functions
