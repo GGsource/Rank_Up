@@ -1,3 +1,5 @@
+import "../../styles/style.css";
+
 class Row {
 	static count: number = 1; // Keep track of number of rows created
 	rowFull: HTMLDivElement = document.createElement("div");
@@ -42,7 +44,7 @@ class Row {
 		rowTitle.className = "rowTitle";
 		rowTitle.id = "rowTitle" + Row.count;
 		rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
-		rowTitle.ondrop = (event) => dragOverTextBox(event);
+		rowTitle.ondrop = (event) => draggedOntoTextBox(event);
 		rowTitle.onfocus = () => clearSelections();
 		// Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
 		let resetDeleteContainer: HTMLDivElement = document.createElement("div");
@@ -345,7 +347,7 @@ function clickContainer(ev: MouseEvent) {
 }
 
 // dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
-function dragOverTextBox(ev: DragEvent) {
+function draggedOntoTextBox(ev: DragEvent) {
 	let data = ev.dataTransfer;
 	if (data && (data.types.length != 1 || data.types[0] != "text/plain")) {
 		ev.preventDefault();
@@ -419,7 +421,24 @@ let isRowBeingDragged: boolean = false;
 // 		},
 // 	});
 // }
+
+// IDEA: This should probably be its own file function
 export function initializeRankUp() {
+	// Attach Listeners
+	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
+	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement | null;
+	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement | null;
+
+	// Main container behaviors
+	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
+	imageContainer.onclick = clickContainer;
+	imageContainer.ondragover = dragImageOver;
+	imageContainer.ondragend = dragImageEnd;
+	// Text boxes behaviors
+	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
+	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
+
+	// Populate the page with our default rows and images
 	populateInitialRows(5); // Make the original starting rows
 	// makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
