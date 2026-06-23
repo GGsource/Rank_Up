@@ -28,8 +28,7 @@ export function renderPage(pageName: string = "home") {
 			break;
 		default:
 			pageContents.innerHTML = "I didn't find shit!!! Fuh 😩";
-			console.log(pageName);
-			console.log(pageName.toLowerCase());
+			console.error(`Failed to find "${pageName.toLocaleLowerCase}" page`);
 			break;
 	}
 	// Inject contents into page
