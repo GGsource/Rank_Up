@@ -1,4 +1,14 @@
+// NOTE: Should this be its own css file?
+import "../../styles/style.css"; // Styling for our Rankup Page
 import "../../styles/style.css";
+
+// Import our Images
+import addRowAboveIcon from "../../assets/images/addRowAboveIcon.png";
+import addRowBelowIcon from "../../assets/images/addRowBelowIcon.png";
+import dragHandleIcon from "../../assets/images/DragHandleIcon.png";
+import rowHeaderClearIcon from "../../assets/images/RowHeaderClear.png";
+import rowHeaderDeleteIcon from "../../assets/images/RowHeaderDelete.png";
+import emptyImage from "../../assets/images/empty.png";
 
 class Row {
 	static count: number = 1; // Keep track of number of rows created
@@ -21,18 +31,19 @@ class Row {
 		// Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
 		let addRowAboveButton: HTMLImageElement = document.createElement("img");
 		addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
-		addRowAboveButton.src = new URL("./assets/images/addRowAboveIcon.png", import.meta.url).href;
+		addRowAboveButton.src = addRowAboveIcon;
 		addRowAboveButton.onclick = () => addRow(this.rowFull, true);
 		addRowAboveButton.ondragstart = (event) => event.preventDefault();
 		let dragContainer: HTMLDivElement = document.createElement("div");
 		dragContainer.className = "tabButton dragContainer";
 		let dragHandle: HTMLImageElement = document.createElement("img");
 		dragHandle.className = "dragHandle";
+		dragHandle.src = dragHandleIcon;
 		dragHandle.src = new URL("./assets/images/DragHandleIcon.png", import.meta.url).href;
 		dragContainer.appendChild(dragHandle);
 		let addRowBelowButton: HTMLImageElement = document.createElement("img");
 		addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
-		addRowBelowButton.src = new URL("./assets/images/addRowBelowIcon.png", import.meta.url).href;
+		addRowBelowButton.src = addRowBelowIcon;
 		addRowBelowButton.onclick = () => addRow(this.rowFull, false);
 		addRowBelowButton.ondragstart = (event) => event.preventDefault();
 		// Add the buttons to the rowTab
@@ -53,12 +64,12 @@ class Row {
 		let resetButton: HTMLDivElement = document.createElement("div");
 		resetButton.className = "resetButton resetDeleteButton";
 		resetButton.id = "resetButton" + Row.count;
-		resetButton.style.backgroundImage = `url('${new URL("./assets/images/RowHeaderClear.png", import.meta.url).href}')`; // Set background image for delete button
+		resetButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
 		resetButton.onclick = () => resetRow(this.rowBody);
 		let deleteButton: HTMLDivElement = document.createElement("div");
 		deleteButton.className = "deleteButton resetDeleteButton";
 		deleteButton.id = "deleteButton" + Row.count;
-		deleteButton.style.backgroundImage = `url('${new URL("./assets/images/RowHeaderDelete.png", import.meta.url).href}')`; // Set background image for delete button
+		deleteButton.style.backgroundImage = `url("${rowHeaderDeleteIcon}")`; // Set background image for delete button
 		deleteButton.onclick = () => deleteRow(this.rowFull);
 		resetDeleteContainer.appendChild(resetButton);
 		resetDeleteContainer.appendChild(deleteButton);
@@ -88,7 +99,7 @@ class Row {
 
 let draggingImageDiv: HTMLDivElement;
 let emptyImg: HTMLImageElement = new Image();
-emptyImg.src = new URL("./assets/images/empty.png", import.meta.url).href;
+emptyImg.src = emptyImage;
 let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
@@ -422,7 +433,7 @@ let isRowBeingDragged: boolean = false;
 // 	});
 // }
 
-// IDEA: This should probably be its own file function
+// IDEA: This should probably be its own file function?
 export function initializeRankUp() {
 	// Attach Listeners
 	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
@@ -446,15 +457,4 @@ export function initializeRankUp() {
 
 // TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
 // TODO: Add return types to all functions
-
-// function updateHeaderText(event: Event): void {
-//     let keyPressed = event as KeyboardEvent;
-//     if (keyPressed.key === "Enter") {
-//         console.log("Enter pressed");
-//         keyPressed.preventDefault();
-//     }
-//     let headerText = event.target as HTMLInputElement;
-//     headerText.style.height = "";
-//     headerText.style.height = `${headerText.scrollHeight}px`;
-// }
-// TODO: Make it so clicking in the starter container also deselects all images
+// TODO: Fix layout in non-standard window sizes, like splitscreen
