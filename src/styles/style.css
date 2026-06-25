@@ -51,6 +51,8 @@ body {
 	display: flex;
 	flex-direction: row;
 	height: var(--resolution);
+	width: 100%;
+	justify-content: center;
 	margin-bottom: calc(var(--resolution) / 20); /* DEBUGGING: This margin may not be needed later. */
 }
 
@@ -58,7 +60,10 @@ body {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
 	width: calc(var(--resolution) / 2);
-	transition: width var(--animNormMS), padding var(--animNormMS), border-radius var(--animNormMS);
+	transition:
+		width var(--animNormMS),
+		padding var(--animNormMS),
+		border-radius var(--animNormMS);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -125,7 +130,9 @@ body {
 	background-size: contain;
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: transform var(--animInstMS), filter var(--animInstMS);
+	transition:
+		transform var(--animInstMS),
+		filter var(--animInstMS);
 }
 .resetDeleteButton:hover,
 .tabButton:hover {
@@ -171,8 +178,13 @@ body {
 	border-radius: 0px;
 	padding: 0px;
 	backdrop-filter: none;
-	transition: border var(--animFastMS), background-color var(--animFastMS), border-radius var(--animFastMS), padding var(--animFastMS),
-		transform var(--animFastMS), backdrop-filter var(--animFastMS);
+	transition:
+		border var(--animFastMS),
+		background-color var(--animFastMS),
+		border-radius var(--animFastMS),
+		padding var(--animFastMS),
+		transform var(--animFastMS),
+		backdrop-filter var(--animFastMS);
 }
 
 body.allow-hover .rankingImage:hover {
@@ -196,7 +208,9 @@ body .Container .rankingImage.draggingImage {
 .rowTitle {
 	width: 100%;
 	text-align: center;
-	font: 2em "Alice", sans-serif;
+	font:
+		2em "Alice",
+		sans-serif;
 	background-color: transparent;
 	border: none;
 	color: white;
@@ -238,7 +252,9 @@ body .Container .rankingImage.draggingImage {
 	transition: border var(--animNormMS);
 }
 #headerTitle {
-	font: 3em "Alice", sans-serif;
+	font:
+		3em "Alice",
+		sans-serif;
 	flex: 1;
 }
 

@@ -1,6 +1,6 @@
 // NOTE: Should this be its own css file?
 import "../../styles/style.css"; // Styling for our Rankup Page
-import "../../styles/style.css";
+import Sortable from "sortablejs";
 
 // Import our Images
 import addRowAboveIcon from "../../assets/images/addRowAboveIcon.png";
@@ -39,7 +39,8 @@ class Row {
 		let dragHandle: HTMLImageElement = document.createElement("img");
 		dragHandle.className = "dragHandle";
 		dragHandle.src = dragHandleIcon;
-		dragHandle.src = new URL("./assets/images/DragHandleIcon.png", import.meta.url).href;
+		dragHandle.draggable = false;
+		dragHandle.ondragstart = (event) => event.preventDefault();
 		dragContainer.appendChild(dragHandle);
 		let addRowBelowButton: HTMLImageElement = document.createElement("img");
 		addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
@@ -416,22 +417,28 @@ function populatePlaceholderImages() {
 	}
 }
 let isRowBeingDragged: boolean = false;
-// Function to add drag ability with JQuery
+// Function to add drag ability with Sortable JS
+function makeRowsDrag(): void {
+	const rowList = document.getElementById("rowList");
+	if (!rowList) throw new Error("Could not enable row dragging. rowList was not found.");
 
-// Make jQuery available globally
-// function makeRowsDrag() {
-// 	($("#rowList") as any).sortable({
-// 		handle: ".dragContainer", // Specify the tab as the handle for dragging
-// 		axis: "y", // Allow vertical reordering
-// 		start: function (event: any, ui: any) {
-// 			isRowBeingDragged = true;
-// 		},
-// 		stop: function (event: any, ui: any) {
-// 			isRowBeingDragged = false;
-// 			hideTab(ui.item[0].getElementsByClassName("rowTab")[0] as HTMLDivElement);
-// 		},
-// 	});
-// }
+	let rowSortable = new Sortable(rowList, {
+		draggable: ".rowFull", // The thing to be dragged
+		handle: ".dragContainer", // The thing to grab to drag by
+		direction: "vertical",
+		animation: 180,
+		easing: "cubic-bezier(0.22,1,0.36,1)",
+		ghostClass: "rowSortGhost",
+		onStart() {
+			isRowBeingDragged = true;
+		},
+		onEnd(event) {
+			isRowBeingDragged = false;
+			const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
+			if (rowTab) hideTab(rowTab);
+		},
+	});
+}
 
 // IDEA: This should probably be its own file function?
 export function initializeRankUp() {
@@ -451,7 +458,7 @@ export function initializeRankUp() {
 
 	// Populate the page with our default rows and images
 	populateInitialRows(5); // Make the original starting rows
-	// makeRowsDrag();
+	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
 
