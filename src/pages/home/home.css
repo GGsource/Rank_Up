@@ -28,10 +28,19 @@ body {
 }
 
 .home-cards {
+	appearance: none;
+	background: none;
+	font: inherit;
 	width: 10%;
 	aspect-ratio: 1;
 	color: white;
 	border: 1px orange dotted;
+	transition: outline 0.2s;
+	outline: 0px transparent solid;
+}
+.home-cards:is(:hover, :focus-visible) {
+	outline: 3px cyan solid;
+	border-radius: 5px;
 }
 
 #icon-plus {
