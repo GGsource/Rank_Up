@@ -105,7 +105,7 @@ let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev: DragEvent) {
-	document.body.classList.remove("allow-hover");
+	document.body.classList.remove("allow-hover"); // Disallow hover effects, we're holding it
 	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
 	if (image) {
 		if (!selectedImages.has(image)) clickImage(ev);
@@ -429,19 +429,29 @@ function makeRowsDrag(): void {
 		animation: 180,
 		easing: "cubic-bezier(0.22,1,0.36,1)",
 		ghostClass: "rowSortGhost",
-		onStart() {
+		onStart(event) {
 			isRowBeingDragged = true;
+			// Add the dragging class for styling
+			const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+			dragContainer?.classList.add("is-row-dragging");
 		},
 		onEnd(event) {
 			isRowBeingDragged = false;
+			// Hide the row tab when drag has ended
 			const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
 			if (rowTab) hideTab(rowTab);
+			// Remove the dragging class for styling
+			const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+			dragContainer?.classList.remove("is-row-dragging");
 		},
 	});
 }
 
 // IDEA: This should probably be its own file function?
 export function initializeRankUp() {
+	// Attach class to allow hovering on images
+	document.body.classList.add("allow-hover");
+
 	// Attach Listeners
 	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
 	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement | null;

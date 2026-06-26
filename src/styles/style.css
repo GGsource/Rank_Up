@@ -122,6 +122,7 @@ body {
 	max-width: calc(var(--resolution) / 4);
 	padding: 0px 4px;
 	box-sizing: border-box;
+	cursor: grab;
 }
 
 .resetDeleteButton,
@@ -140,7 +141,8 @@ body {
 	transform: scale(1.1) rotate(0);
 }
 .resetDeleteButton:active,
-.tabButton:active {
+.tabButton:active,
+.dragContainer.is-row-dragging {
 	filter: brightness(100%);
 	transform: scale(0.9) rotate(0);
 }
@@ -185,6 +187,7 @@ body {
 		padding var(--animFastMS),
 		transform var(--animFastMS),
 		backdrop-filter var(--animFastMS);
+	cursor: grab;
 }
 
 body.allow-hover .rankingImage:hover {
