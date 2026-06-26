@@ -13,5 +13,6 @@ addEventListener("DOMContentLoaded", () => {
 	// Attach new rankup listener
 	const newRankUpBtn = document.getElementById("create-new-rankup-card");
 	if (newRankUpBtn) newRankUpBtn.addEventListener("click", (event) => renderPage("RankUp"));
+	// TODO: Redirect this to the form page instead of rankup
 	else console.error("Error: Failed to locate create-new-rankup-card element to attach listener.");
 });
