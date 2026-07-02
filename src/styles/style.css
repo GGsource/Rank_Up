@@ -274,7 +274,3 @@ body .Container .rankingImage.draggingImage {
 	border-color: var(--colorSelected);
 	transition: border var(--animSlowMS);
 }
-
-/* TODO: Add counter on bottom right showing character limit of description DURING creation/editing until saved. Allow overtyping into red but then the user can't save until they make it the right size. */
-/* Add a cool little pencil icon next to it :) and a x and checkmark when in editing mode to save or cancel. */
-/* TODO: Make the input fields in row headers be a textarea with word wrap instead. */

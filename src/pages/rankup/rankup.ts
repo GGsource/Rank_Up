@@ -1,4 +1,3 @@
-// NOTE: Should this be its own css file?
 import "../../styles/style.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
@@ -96,8 +95,6 @@ class Row {
 	}
 }
 
-// TODO: Rename functions to be Capitalized, as function names should be.
-
 let draggingImageDiv: HTMLDivElement;
 let emptyImg: HTMLImageElement = new Image();
 emptyImg.src = emptyImage;
@@ -114,9 +111,6 @@ function dragStart(ev: DragEvent) {
 			selectedImage.classList.add("draggingImage");
 		});
 		// At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
-		// TODO: Convert this styling to a css class styling
-		// TODO: Center properly on cursor
-		// TODO: Center number & make more visually appealing
 		draggingImageDiv = document.createElement("div");
 		draggingImageDiv.style.position = "absolute";
 		draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
@@ -153,7 +147,6 @@ let prevTarget: HTMLElement;
 let isPrevSideLeft: boolean;
 // DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
 function dragImageOver(ev: DragEvent) {
-	// TODO: Reintroduce check to make sure item being dragged in is an image
 	// For change to be necessary one of these must have changed: target changed, targetside changed.
 	ev.preventDefault();
 	let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
@@ -180,7 +173,6 @@ function dragImageOver(ev: DragEvent) {
 			});
 			isPrevSideLeft = isCurSideLeft;
 		}
-		// TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
 		prevTarget = element;
 	} else {
 		console.error("ev.target is is null in DragImageOver");
