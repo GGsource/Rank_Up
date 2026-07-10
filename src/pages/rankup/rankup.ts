@@ -361,18 +361,6 @@ function draggedOntoTextBox(ev: DragEvent) {
 	console.log("Data: ", data);
 }
 
-// TODO: Make README.md for github page
-// TODO: Add new build instructions with typescript, mostly for myself
-// FIXME: Adding more items than row length causes overflow
-// FIXME: Dragging image to header still shows symbol implying ability to drop in
-// FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
-// IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
-// IDEA: Animate Row being removed or being added (setting height to 0 or full)
-// FIXME: selection should also clear when clicking outside of the rows/container.
-// TODO: Separate Row Class to separate file & perhaps other things.
-// TODO: Make row title text shrink to fit in its container
-// TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
-// FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
 function populateInitialRows(rowCount: number) {
 	console.log("populateInitialRows was called.");
@@ -439,7 +427,6 @@ function makeRowsDrag(): void {
 	});
 }
 
-// IDEA: This should probably be its own file function?
 export function initializeRankUp() {
 	// Attach class to allow hovering on images
 	document.body.classList.add("allow-hover");
@@ -463,7 +450,3 @@ export function initializeRankUp() {
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
-
-// TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
-// TODO: Add return types to all functions
-// TODO: Fix layout in non-standard window sizes, like splitscreen
