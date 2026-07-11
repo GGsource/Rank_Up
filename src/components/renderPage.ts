@@ -1,4 +1,4 @@
-import mainHTMLRaw from "../pages/home/home.html?raw";
+import homeHTMLRaw from "../pages/home/home.html?raw";
 import rankupHTMLRaw from "../pages/rankup/rankup.html?raw";
 import { initializeRankUp } from "../pages/rankup/rankup";
 
@@ -20,7 +20,7 @@ export function renderPage(pageName: string = "home") {
 	// Retrieve contents
 	switch (pageName.toLowerCase()) {
 		case "home":
-			pageContents.innerHTML = mainHTMLRaw;
+			pageContents.innerHTML = homeHTMLRaw;
 			break;
 		case "rankup":
 			pageContents.innerHTML = rankupHTMLRaw;
