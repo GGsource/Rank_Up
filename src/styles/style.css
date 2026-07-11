@@ -4,6 +4,16 @@
 body {
 	background-color: var(--primary);
 	margin: 0; /* Remove the padding around it */
+	display: flex;
+	flex-direction: column;
+}
+
+#mode-banner {
+	height: 30%;
+	background-color: goldenrod;
+}
+#pageContainer {
+	height: 100%;
 }
 
 #pageCenterColumn {
