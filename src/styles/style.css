@@ -190,7 +190,7 @@ body {
 	cursor: grab;
 }
 
-body.allow-hover .rankingImage:hover {
+body.allow-image-hover .rankingImage:hover {
 	border-radius: 5px;
 	transform: scale(1.1);
 	z-index: 5;

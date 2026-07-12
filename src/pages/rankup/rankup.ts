@@ -1,13 +1,13 @@
-import "../../styles/style.css"; // Styling for our Rankup Page
+import "@/styles/style.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
 // Import our Images
-import addRowAboveIcon from "../../assets/images/addRowAboveIcon.png";
-import addRowBelowIcon from "../../assets/images/addRowBelowIcon.png";
-import dragHandleIcon from "../../assets/images/DragHandleIcon.png";
-import rowHeaderClearIcon from "../../assets/images/RowHeaderClear.png";
-import rowHeaderDeleteIcon from "../../assets/images/RowHeaderDelete.png";
-import emptyImage from "../../assets/images/empty.png";
+import addRowAboveIcon from "@/assets/images/addRowAboveIcon.png";
+import addRowBelowIcon from "@/assets/images/addRowBelowIcon.png";
+import dragHandleIcon from "@/assets/images/DragHandleIcon.png";
+import rowHeaderClearIcon from "@/assets/images/RowHeaderClear.png";
+import rowHeaderDeleteIcon from "@/assets/images/RowHeaderDelete.png";
+import emptyImage from "@/assets/images/empty.png";
 
 class Row {
 	static count: number = 1; // Keep track of number of rows created
@@ -102,7 +102,7 @@ let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev: DragEvent) {
-	document.body.classList.remove("allow-hover"); // Disallow hover effects, we're holding it
+	document.body.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
 	if (image) {
 		if (!selectedImages.has(image)) clickImage(ev);
@@ -181,7 +181,7 @@ function dragImageOver(ev: DragEvent) {
 
 // DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
 function dragImageEnd(ev: DragEvent) {
-	document.body.classList.add("allow-hover");
+	document.body.classList.add("allow-image-hover");
 	var sources = document.querySelectorAll("[data-dragging]");
 	sources.forEach((source) => {
 		source.classList.remove("draggingImage");
@@ -427,25 +427,31 @@ function makeRowsDrag(): void {
 	});
 }
 
-export function initializeRankUp() {
-	// Attach class to allow hovering on images
-	document.body.classList.add("allow-hover");
+import rankupHTMLRaw from "./rankup.html?raw";
 
-	// Attach Listeners
+export function renderRankUpPage(pageContainer: HTMLElement) {
+	/* ------------------------- Inject RankUp page HTML ------------------------ */
+	pageContainer.innerHTML = rankupHTMLRaw;
+
+	/* ---------------- Attach class to allow hovering on images ---------------- */
+	document.body.classList.add("allow-image-hover");
+
+	/* ---------------------------- Attach Listeners ---------------------------- */
 	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
 	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement | null;
 	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement | null;
 
-	// Main container behaviors
+	/* ------------------------ Main container behaviors ------------------------ */
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
 	imageContainer.onclick = clickContainer;
 	imageContainer.ondragover = dragImageOver;
 	imageContainer.ondragend = dragImageEnd;
-	// Text boxes behaviors
+
+	/* -------------------------- Text boxes behaviors -------------------------- */
 	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
 	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
 
-	// Populate the page with our default rows and images
+	/* ----------- Populate the page with our default rows and images ----------- */
 	populateInitialRows(5); // Make the original starting rows
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
