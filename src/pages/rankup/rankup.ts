@@ -1,4 +1,4 @@
-import "@/styles/style.css"; // Styling for our Rankup Page
+import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
 // Import our Images
