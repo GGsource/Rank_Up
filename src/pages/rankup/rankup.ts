@@ -1,4 +1,3 @@
-// NOTE: Should this be its own css file?
 import "../../styles/style.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
@@ -96,8 +95,6 @@ class Row {
 	}
 }
 
-// TODO: Rename functions to be Capitalized, as function names should be.
-
 let draggingImageDiv: HTMLDivElement;
 let emptyImg: HTMLImageElement = new Image();
 emptyImg.src = emptyImage;
@@ -114,9 +111,6 @@ function dragStart(ev: DragEvent) {
 			selectedImage.classList.add("draggingImage");
 		});
 		// At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
-		// TODO: Convert this styling to a css class styling
-		// TODO: Center properly on cursor
-		// TODO: Center number & make more visually appealing
 		draggingImageDiv = document.createElement("div");
 		draggingImageDiv.style.position = "absolute";
 		draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
@@ -153,7 +147,6 @@ let prevTarget: HTMLElement;
 let isPrevSideLeft: boolean;
 // DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
 function dragImageOver(ev: DragEvent) {
-	// TODO: Reintroduce check to make sure item being dragged in is an image
 	// For change to be necessary one of these must have changed: target changed, targetside changed.
 	ev.preventDefault();
 	let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
@@ -180,7 +173,6 @@ function dragImageOver(ev: DragEvent) {
 			});
 			isPrevSideLeft = isCurSideLeft;
 		}
-		// TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
 		prevTarget = element;
 	} else {
 		console.error("ev.target is is null in DragImageOver");
@@ -369,18 +361,6 @@ function draggedOntoTextBox(ev: DragEvent) {
 	console.log("Data: ", data);
 }
 
-// TODO: Make README.md for github page
-// TODO: Add new build instructions with typescript, mostly for myself
-// FIXME: Adding more items than row length causes overflow
-// FIXME: Dragging image to header still shows symbol implying ability to drop in
-// FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
-// IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
-// IDEA: Animate Row being removed or being added (setting height to 0 or full)
-// FIXME: selection should also clear when clicking outside of the rows/container.
-// TODO: Separate Row Class to separate file & perhaps other things.
-// TODO: Make row title text shrink to fit in its container
-// TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
-// FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
 function populateInitialRows(rowCount: number) {
 	console.log("populateInitialRows was called.");
@@ -447,7 +427,6 @@ function makeRowsDrag(): void {
 	});
 }
 
-// IDEA: This should probably be its own file function?
 export function initializeRankUp() {
 	// Attach class to allow hovering on images
 	document.body.classList.add("allow-hover");
@@ -471,7 +450,3 @@ export function initializeRankUp() {
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
-
-// TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
-// TODO: Add return types to all functions
-// TODO: Fix layout in non-standard window sizes, like splitscreen
