@@ -1,5 +1,6 @@
 /* Include the palette file */
-@import url("palette.css");
+@import url("../../styles/palette.css");
+/* REVISIT: Should this just import global, which imports palette? */
 
 body {
 	background-color: var(--primary);
