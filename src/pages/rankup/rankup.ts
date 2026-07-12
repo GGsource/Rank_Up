@@ -1,13 +1,13 @@
-import "../../styles/style.css"; // Styling for our Rankup Page
+import "@/styles/style.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
 // Import our Images
-import addRowAboveIcon from "../../assets/images/addRowAboveIcon.png";
-import addRowBelowIcon from "../../assets/images/addRowBelowIcon.png";
-import dragHandleIcon from "../../assets/images/DragHandleIcon.png";
-import rowHeaderClearIcon from "../../assets/images/RowHeaderClear.png";
-import rowHeaderDeleteIcon from "../../assets/images/RowHeaderDelete.png";
-import emptyImage from "../../assets/images/empty.png";
+import addRowAboveIcon from "@/assets/images/addRowAboveIcon.png";
+import addRowBelowIcon from "@/assets/images/addRowBelowIcon.png";
+import dragHandleIcon from "@/assets/images/DragHandleIcon.png";
+import rowHeaderClearIcon from "@/assets/images/RowHeaderClear.png";
+import rowHeaderDeleteIcon from "@/assets/images/RowHeaderDelete.png";
+import emptyImage from "@/assets/images/empty.png";
 
 class Row {
 	static count: number = 1; // Keep track of number of rows created
