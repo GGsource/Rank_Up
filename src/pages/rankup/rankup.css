@@ -7,7 +7,7 @@ body {
 	margin: 0; /* Remove the padding around it */
 }
 
-#pageCenterColumn {
+#page-container {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
