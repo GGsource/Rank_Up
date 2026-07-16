@@ -9,16 +9,13 @@ export async function renderPage(pageName: string) {
 		case "home":
 			const { renderHomePage } = await import("@/pages/home/home");
 			renderHomePage(pageContainer);
-			pageContainer.className = "homePage";
 			break;
 		case "rankup":
 			const { renderRankUpPage } = await import("@/pages/rankup/rankup");
 			renderRankUpPage(pageContainer);
-			pageContainer.className = "rankupPage";
 			break;
 		default:
 			pageContainer.innerHTML = "I didn't find shit!!! Fuh 😩";
-			pageContainer.className = "";
 			console.error(`Failed to find "${pageName.toLocaleLowerCase}" page`);
 			break;
 	}
