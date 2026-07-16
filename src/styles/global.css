@@ -15,3 +15,11 @@ body {
 	margin: 0; /* Remove the padding around it */
 	border: 6px red solid; /* DEBUGGING: */
 }
+
+#mode-banner {
+	height: 80px;
+	background-color: goldenrod;
+}
+#page-container {
+	height: 100%;
+}
