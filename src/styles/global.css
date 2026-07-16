@@ -1,0 +1,17 @@
+/* Include the palette file */
+@import url("./palette.css");
+
+html,
+body {
+	height: 100%; /* Take up full page */
+	box-sizing: border-box; /* Have border be accounted for in size */
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: var(--primary);
+	margin: 0; /* Remove the padding around it */
+	border: 6px red solid; /* DEBUGGING: */
+}

@@ -1,22 +1,4 @@
-/* Include colors from the palette file */
-@import url("../../styles/palette.css");
-
-html {
-	height: 100%; /* Take up full page */
-	box-sizing: border-box; /* Have border be accounted for in size */
-	background-color: var(--primary);
-}
-body {
-	height: 100%;
-	margin: 0;
-	box-sizing: inherit;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	border: 3px red solid;
-}
-
-#cardbox {
+.home-view #cardbox {
 	display: flex;
 	justify-content: center;
 	background-color: rgba(0, 0, 0, 0.2);
@@ -27,7 +9,7 @@ body {
 	border: 2px blue dashed;
 }
 
-.home-cards {
+.home-view .home-cards {
 	appearance: none;
 	background: none;
 	font: inherit;
@@ -38,12 +20,12 @@ body {
 	transition: outline 0.2s;
 	outline: 0px transparent solid;
 }
-.home-cards:is(:hover, :focus-visible) {
+.home-view .home-cards:is(:hover, :focus-visible) {
 	outline: 3px cyan solid;
 	border-radius: 5px;
 }
 
-#icon-plus {
+.home-view #icon-plus {
 	width: 100%;
 	height: 100%;
 }

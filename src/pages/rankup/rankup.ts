@@ -1,4 +1,4 @@
-import "@/styles/style.css"; // Styling for our Rankup Page
+import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
 // Import our Images
@@ -80,7 +80,7 @@ class Row {
 		// Add the rowHeader to the full row
 		this.rowFull.appendChild(rowHeader);
 		// rowBody will be the element that contains the row's ranking images.
-		this.rowBody.className = "rowBody rowPiece Container";
+		this.rowBody.className = "rowBody rowPiece image-container";
 		this.rowBody.onclick = (event) => clickContainer(event);
 		this.rowBody.ondragover = (event) => dragImageOver(event);
 		this.rowBody.ondragend = (event) => dragImageEnd(event);
@@ -102,7 +102,8 @@ let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev: DragEvent) {
-	document.body.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
 	if (image) {
 		if (!selectedImages.has(image)) clickImage(ev);
@@ -152,7 +153,7 @@ function dragImageOver(ev: DragEvent) {
 	let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
 	let element: HTMLElement | null = ev.target as HTMLElement | null; // The element being dragged into.
 	if (element) {
-		if (element.classList.contains("Container")) {
+		if (element.classList.contains("image-container")) {
 			sources.forEach((source) => {
 				if (prevTarget == element && source.nextElementSibling == null) return; //Same container & position, nothin should change.
 				element.appendChild(source);
@@ -181,7 +182,8 @@ function dragImageOver(ev: DragEvent) {
 
 // DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
 function dragImageEnd(ev: DragEvent) {
-	document.body.classList.add("allow-image-hover");
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.add("allow-image-hover");
 	var sources = document.querySelectorAll("[data-dragging]");
 	sources.forEach((source) => {
 		source.classList.remove("draggingImage");
@@ -347,7 +349,7 @@ function clearSelections() {
 function clickContainer(ev: MouseEvent) {
 	// Clears selection when clicking on an empty spot of the container
 	let container: HTMLDivElement | null = ev.target as HTMLDivElement | null;
-	if (container && container.classList.contains("Container")) clearSelections();
+	if (container && container.classList.contains("image-container")) clearSelections();
 }
 
 // dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
@@ -434,7 +436,8 @@ export function renderRankUpPage(pageContainer: HTMLElement) {
 	pageContainer.innerHTML = rankupHTMLRaw;
 
 	/* ---------------- Attach class to allow hovering on images ---------------- */
-	document.body.classList.add("allow-image-hover");
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.add("allow-image-hover");
 
 	/* ---------------------------- Attach Listeners ---------------------------- */
 	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
