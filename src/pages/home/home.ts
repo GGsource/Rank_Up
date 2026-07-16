@@ -1,17 +1,20 @@
-import { renderPage } from "../../components/renderPage";
-import plusIconImage from "../../assets/images/icon_plus.png";
+import homeHTMLRaw from "./home.html?raw";
+import "./home.css";
+import plusIconImage from "@/assets/images/icon_plus.png";
+import { renderPage } from "@/components/renderPage";
 
-addEventListener("DOMContentLoaded", () => {
-	// Render the page
-	renderPage();
+export function renderHomePage(pageContainer: HTMLElement) {
+	/* -------------------------- Inject Home Page HTML ------------------------- */
+	pageContainer.innerHTML = homeHTMLRaw;
 
-	// Insert icons
-	let plusIconElement = document.getElementById("icon-plus") as HTMLImageElement | null;
-	if (plusIconElement) plusIconElement.src = plusIconImage;
-	else console.error("Error: Failed to locate icon-plus element to attach image source.");
+	/* ------------------------------ Insert icons ------------------------------ */
+	const plusIconElement = document.getElementById("icon-plus") as HTMLImageElement | null;
+	if (!plusIconElement) console.error("Error: Failed to locate #icon-plus element to attach image source.");
+	else plusIconElement.src = plusIconImage;
 
-	// Attach new rankup listener
+	/* ----------------------- Attach new rankup listener ----------------------- */
 	const newRankUpBtn = document.getElementById("create-new-rankup-card");
-	if (newRankUpBtn) newRankUpBtn.addEventListener("click", (event) => renderPage("RankUp"));
-	else console.error("Error: Failed to locate create-new-rankup-card element to attach listener.");
-});
+	if (!newRankUpBtn) throw new Error("Fatal Error: Failed to locate #create-new-rankup-card element to attach listener.");
+	newRankUpBtn.addEventListener("click", (event) => renderPage("RankUp"));
+	// FEAT: Redirect this to the form page instead of rankup
+}

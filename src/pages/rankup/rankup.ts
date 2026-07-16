@@ -1,14 +1,13 @@
-// NOTE: Should this be its own css file?
-import "../../styles/style.css"; // Styling for our Rankup Page
+import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 
 // Import our Images
-import addRowAboveIcon from "../../assets/images/addRowAboveIcon.png";
-import addRowBelowIcon from "../../assets/images/addRowBelowIcon.png";
-import dragHandleIcon from "../../assets/images/DragHandleIcon.png";
-import rowHeaderClearIcon from "../../assets/images/RowHeaderClear.png";
-import rowHeaderDeleteIcon from "../../assets/images/RowHeaderDelete.png";
-import emptyImage from "../../assets/images/empty.png";
+import addRowAboveIcon from "@/assets/images/addRowAboveIcon.png";
+import addRowBelowIcon from "@/assets/images/addRowBelowIcon.png";
+import dragHandleIcon from "@/assets/images/DragHandleIcon.png";
+import rowHeaderClearIcon from "@/assets/images/RowHeaderClear.png";
+import rowHeaderDeleteIcon from "@/assets/images/RowHeaderDelete.png";
+import emptyImage from "@/assets/images/empty.png";
 
 class Row {
 	static count: number = 1; // Keep track of number of rows created
@@ -81,7 +80,7 @@ class Row {
 		// Add the rowHeader to the full row
 		this.rowFull.appendChild(rowHeader);
 		// rowBody will be the element that contains the row's ranking images.
-		this.rowBody.className = "rowBody rowPiece Container";
+		this.rowBody.className = "rowBody rowPiece image-container";
 		this.rowBody.onclick = (event) => clickContainer(event);
 		this.rowBody.ondragover = (event) => dragImageOver(event);
 		this.rowBody.ondragend = (event) => dragImageEnd(event);
@@ -96,8 +95,6 @@ class Row {
 	}
 }
 
-// TODO: Rename functions to be Capitalized, as function names should be.
-
 let draggingImageDiv: HTMLDivElement;
 let emptyImg: HTMLImageElement = new Image();
 emptyImg.src = emptyImage;
@@ -105,7 +102,8 @@ let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
 function dragStart(ev: DragEvent) {
-	document.body.classList.remove("allow-hover"); // Disallow hover effects, we're holding it
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
 	if (image) {
 		if (!selectedImages.has(image)) clickImage(ev);
@@ -114,9 +112,6 @@ function dragStart(ev: DragEvent) {
 			selectedImage.classList.add("draggingImage");
 		});
 		// At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
-		// TODO: Convert this styling to a css class styling
-		// TODO: Center properly on cursor
-		// TODO: Center number & make more visually appealing
 		draggingImageDiv = document.createElement("div");
 		draggingImageDiv.style.position = "absolute";
 		draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
@@ -153,13 +148,12 @@ let prevTarget: HTMLElement;
 let isPrevSideLeft: boolean;
 // DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
 function dragImageOver(ev: DragEvent) {
-	// TODO: Reintroduce check to make sure item being dragged in is an image
 	// For change to be necessary one of these must have changed: target changed, targetside changed.
 	ev.preventDefault();
 	let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
 	let element: HTMLElement | null = ev.target as HTMLElement | null; // The element being dragged into.
 	if (element) {
-		if (element.classList.contains("Container")) {
+		if (element.classList.contains("image-container")) {
 			sources.forEach((source) => {
 				if (prevTarget == element && source.nextElementSibling == null) return; //Same container & position, nothin should change.
 				element.appendChild(source);
@@ -180,7 +174,6 @@ function dragImageOver(ev: DragEvent) {
 			});
 			isPrevSideLeft = isCurSideLeft;
 		}
-		// TODO: A new image has been dropped into a container. Check if the container needs to be made larger to accomodate.
 		prevTarget = element;
 	} else {
 		console.error("ev.target is is null in DragImageOver");
@@ -189,7 +182,8 @@ function dragImageOver(ev: DragEvent) {
 
 // DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
 function dragImageEnd(ev: DragEvent) {
-	document.body.classList.add("allow-hover");
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.add("allow-image-hover");
 	var sources = document.querySelectorAll("[data-dragging]");
 	sources.forEach((source) => {
 		source.classList.remove("draggingImage");
@@ -355,7 +349,7 @@ function clearSelections() {
 function clickContainer(ev: MouseEvent) {
 	// Clears selection when clicking on an empty spot of the container
 	let container: HTMLDivElement | null = ev.target as HTMLDivElement | null;
-	if (container && container.classList.contains("Container")) clearSelections();
+	if (container && container.classList.contains("image-container")) clearSelections();
 }
 
 // dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
@@ -369,18 +363,6 @@ function draggedOntoTextBox(ev: DragEvent) {
 	console.log("Data: ", data);
 }
 
-// TODO: Make README.md for github page
-// TODO: Add new build instructions with typescript, mostly for myself
-// FIXME: Adding more items than row length causes overflow
-// FIXME: Dragging image to header still shows symbol implying ability to drop in
-// FIXME: Dragging shows icon for not allowed for a split second when going across border of an image
-// IDEA: Make it so 'highlighting' multiple images by dragging across them (where browser highlights them in blue) actually selects them
-// IDEA: Animate Row being removed or being added (setting height to 0 or full)
-// FIXME: selection should also clear when clicking outside of the rows/container.
-// TODO: Separate Row Class to separate file & perhaps other things.
-// TODO: Make row title text shrink to fit in its container
-// TODO: Improve the multi-drag placeholder. Consider putting back ghost for single-drag placeholder.
-// FIXME: Dragging image offscreen makes the square be placed outside the list
 // Function to make the rows on the main page
 function populateInitialRows(rowCount: number) {
 	console.log("populateInitialRows was called.");
@@ -447,31 +429,33 @@ function makeRowsDrag(): void {
 	});
 }
 
-// IDEA: This should probably be its own file function?
-export function initializeRankUp() {
-	// Attach class to allow hovering on images
-	document.body.classList.add("allow-hover");
+import rankupHTMLRaw from "./rankup.html?raw";
 
-	// Attach Listeners
+export function renderRankUpPage(pageContainer: HTMLElement) {
+	/* ------------------------- Inject RankUp page HTML ------------------------ */
+	pageContainer.innerHTML = rankupHTMLRaw;
+
+	/* ---------------- Attach class to allow hovering on images ---------------- */
+	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
+	rankupContainer?.classList.add("allow-image-hover");
+
+	/* ---------------------------- Attach Listeners ---------------------------- */
 	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
 	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement | null;
 	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement | null;
 
-	// Main container behaviors
+	/* ------------------------ Main container behaviors ------------------------ */
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
 	imageContainer.onclick = clickContainer;
 	imageContainer.ondragover = dragImageOver;
 	imageContainer.ondragend = dragImageEnd;
-	// Text boxes behaviors
+
+	/* -------------------------- Text boxes behaviors -------------------------- */
 	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
 	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
 
-	// Populate the page with our default rows and images
+	/* ----------- Populate the page with our default rows and images ----------- */
 	populateInitialRows(5); // Make the original starting rows
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
-
-// TODO: Enable extra tsconfig settings. https://youtu.be/d56mG7DezGs?t=2601
-// TODO: Add return types to all functions
-// TODO: Fix layout in non-standard window sizes, like splitscreen
