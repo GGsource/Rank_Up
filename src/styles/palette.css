@@ -6,18 +6,22 @@
 }
 
 :root {
+	/* ------------------------------ Color Palette ----------------------------- */
 	--primary: rgb(70, 70, 70);
-	--resolution: 150px;
-	--ratio: calc(186 / 314);
-	--columnCount: 8;
-	--rowWidth: calc(var(--resolution) * var(--columnCount));
-	--fullRowWidth: calc(var(--rowWidth) + var(--resolution));
-	--radius: 30px;
+	--colorHovered: rgb(255, 255, 255, 0.5);
+	--colorSelected: rgba(69, 202, 255, 0.5);
+
+	/* ---------------------------------- Sizes --------------------------------- */
+	--imageRes: 13vh; /* The size of each image */
+	--ratio: calc(186 / 314); /* DELETEME: This is specific to test stuff. Remove from repo */
+	--rowImageCount: 8; /* How many images a row should be able to fit */
+	--rowBodyWidth: calc(var(--imageRes) * var(--rowImageCount)); /* The calculated width of the row's body */
+	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
+	--radius: 30px; /* REVISIT: Look into if this can be used elsewhere or get rid of it */
+
+	/* --------------------------------- Speeds --------------------------------- */
 	--animSlowMS: 1000ms;
 	--animNormMS: 500ms;
 	--animFastMS: 200ms;
 	--animInstMS: 100ms;
-	--colorGreyed: rgb(255, 255, 255, 0.5);
-	--colorSelected: rgba(69, 202, 255, 0.5);
-	--colorSelectedLightened: color-mix(in srgb, var(--colorSelected) 12.5%, transparent);
 }

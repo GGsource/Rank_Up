@@ -365,7 +365,6 @@ function draggedOntoTextBox(ev: DragEvent) {
 
 // Function to make the rows on the main page
 function populateInitialRows(rowCount: number) {
-	console.log("populateInitialRows was called.");
 	let rowList = document.getElementById("rowList") as HTMLDivElement;
 	if (rowList) for (let i: number = 0; i < rowCount; i++) new Row().appendTo(rowList);
 }
@@ -388,7 +387,6 @@ function populatePlaceholderImages() {
 			let image: HTMLImageElement = document.createElement("img");
 			image.className = "rankingImage";
 			image.src = new URL(`../../assets/images/${name}.png`, import.meta.url).href;
-			console.log(image.src);
 			image.onclick = (event) => clickImage(event);
 			image.ondragstart = (event) => dragStart(event);
 			image.ondrag = (event) => dragImage(event);
@@ -459,3 +457,5 @@ export function renderRankUpPage(pageContainer: HTMLElement) {
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
+
+// TODO: Check for more console logs

@@ -1,33 +1,67 @@
-.rankup-view {
+/* -------------------------------------------------------------------------- */
+/*                            RankUp Header Section                           */
+/* -------------------------------------------------------------------------- */
+
+.rankup-view #headerBox {
 	display: flex;
 	flex-direction: column;
-	align-items: center;
-}
-
-/* Make the bottom container where all images begin larger */
-.rankup-view #imageContainer {
+	gap: 5px;
 	width: var(--fullRowWidth);
-	/* Remove spacing between elements in the container*/
-	display: flex;
 	flex-wrap: wrap;
-	height: calc(var(--resolution) * 2); /* Make it start off at least 2 images tall */
-	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
-	border: solid 1px green; /* DEBUGGING: Border to see limits*/
+
+	/* DEBUGGING: */
+	border: 4px rgba(46, 139, 86, 0.3) solid;
+}
+.rankup-view #headerBox > * {
+	/* DEBUGGING: */
+	background-color: rgba(0, 255, 128, 0.05);
+}
+.rankup-view .headerText {
+	background-color: transparent;
+	color: white;
+	resize: none;
+	border: 3px transparent solid;
+	border-radius: 10px;
+	transition: border var(--animNormMS);
+}
+.rankup-view #headerTitle {
+	font:
+		3em "Alice",
+		sans-serif;
+	flex: 1;
 }
 
+.rankup-view #headerDescription {
+	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+	font-size: 1.5em;
+	flex: 1;
+}
+.rankup-view .headerText:hover {
+	border-color: var(--colorHovered);
+	transition: border-color var(--animNormMS);
+}
+.rankup-view .headerText:focus {
+	outline: none;
+	border-color: var(--colorSelected);
+	transition: border var(--animSlowMS);
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Row List Section                              */
+/* -------------------------------------------------------------------------- */
 /* 
-- rowList (contains all rowFulls)
--       rowFull
--             rowHeader
--                     rowTab
--                             addRowAboveButton
--                             dragHandle
--                             addRowBelowButton
--                     rowTitle
--                     resetDeleteContainer
--                             resetButton
--                             deleteButton
--             rowBody
+rowList (containts all rowFulls)
+├── rowFull
+│   └── rowHeader
+│       ├── rowTab
+│       │   ├── addRowAboveButton
+│       │   ├── dragHandle
+│       │   └── addRowBelowButton
+│       ├── rowTitle
+│       └── rowOptions // TODO: rename these all to be consistent with this
+│           ├── resetRowButton
+│           └── deleteRowButton
+└── (other rowFulls)
 */
 
 .rankup-view #rowList {
@@ -38,21 +72,22 @@
 	width: 100%;
 	/* Center children */
 	align-items: center;
+
+	gap: calc(var(--imageRes) / 20); /* DEBUGGING: This margin may not be needed later. */
 }
 
 .rankup-view .rowFull {
 	display: flex;
 	flex-direction: row;
-	height: var(--resolution);
+	height: var(--imageRes);
 	width: 100%;
 	justify-content: center;
-	margin-bottom: calc(var(--resolution) / 20); /* DEBUGGING: This margin may not be needed later. */
 }
 
 .rankup-view .rowTab {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
-	width: calc(var(--resolution) / 2);
+	width: calc(var(--imageRes) / 2);
 	transition:
 		width var(--animNormMS),
 		padding var(--animNormMS),
@@ -65,8 +100,6 @@
 	top: 0;
 	left: 0;
 	transform: translateX(-100%);
-	/* Add padding without altering size */
-	box-sizing: border-box;
 	border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
 	background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
 	overflow: hidden;
@@ -97,9 +130,6 @@
 .rankup-view .tabButton:hover {
 	z-index: 2;
 }
-.rankup-view .addRowButton {
-	box-sizing: border-box;
-}
 .rankup-view .addRowAboveButton {
 	padding: 5px 5px 0px 5px;
 }
@@ -112,9 +142,8 @@
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;
-	max-width: calc(var(--resolution) / 4);
+	max-width: calc(var(--imageRes) / 4);
 	padding: 0px 4px;
-	box-sizing: border-box;
 	cursor: grab;
 }
 
@@ -146,7 +175,7 @@
 
 .rankup-view .rowHeader {
 	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
-	width: var(--resolution); /* Make the header be a square */
+	width: var(--imageRes); /* Make the header be a square */
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
@@ -155,7 +184,7 @@
 
 .rankup-view .rowBody {
 	/* Make the rowBody take up the remaining space in the rowTab */
-	width: var(--rowWidth);
+	width: var(--rowBodyWidth);
 	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 255, 0.4) 40px);
 	/* Align items within to the left */
 	display: flex;
@@ -163,9 +192,8 @@
 }
 
 .rankup-view .rankingImage {
-	width: var(--resolution);
-	height: var(--resolution);
-	box-sizing: border-box;
+	width: var(--imageRes);
+	height: var(--imageRes);
 	object-position: center;
 	object-fit: cover;
 	border: solid 0px transparent;
@@ -223,47 +251,27 @@
 }
 
 .rankup-view .resetDeleteButton {
-	width: calc(var(--resolution) / 3);
-	height: calc(var(--resolution) / 3);
+	width: calc(var(--imageRes) / 3);
+	height: calc(var(--imageRes) / 3);
 	z-index: 3;
 }
 
-/* CSS For the header area */
+/* -------------------------------------------------------------------------- */
+/*                          Starter Container Section                         */
+/* -------------------------------------------------------------------------- */
 
-.rankup-view #headerBox {
-	display: flex;
-	flex-direction: column;
-	padding: 2% 0% 1% 0%;
-	/* Space between tiems */
-	gap: 5px;
+.rankup-view #imageContainer {
 	width: var(--fullRowWidth);
+	min-height: calc(var(--imageRes) * 2); /* Make it start off at least 2 images tall */
+	display: flex;
+	flex-grow: 1;
+	flex-shrink: 0;
 	flex-wrap: wrap;
-}
-.rankup-view .headerText {
-	background-color: transparent;
-	color: white;
-	resize: none;
-	border: 3px transparent solid;
-	border-radius: 10px;
-	transition: border var(--animNormMS);
-}
-.rankup-view #headerTitle {
-	font:
-		3em "Alice",
-		sans-serif;
-	flex: 1;
+	justify-content: center;
+
+	/* DEBUGGING: Border to see limits*/
+	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
+	outline: solid 1px green;
 }
 
-.rankup-view #headerDescription {
-	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-	font-size: 1.5em;
-}
-.rankup-view .headerText:hover {
-	border-color: var(--colorGreyed);
-	transition: border-color var(--animNormMS);
-}
-.rankup-view .headerText:focus {
-	outline: none;
-	border-color: var(--colorSelected);
-	transition: border var(--animSlowMS);
-}
+/* TODO: Add a bounce to images on click :] */

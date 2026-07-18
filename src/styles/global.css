@@ -1,10 +1,13 @@
 /* Include the palette file */
 @import url("./palette.css");
 
+* {
+	box-sizing: border-box;
+}
+
 html,
 body {
 	height: 100%; /* Take up full page */
-	box-sizing: border-box; /* Have border be accounted for in size */
 }
 
 body {
@@ -22,4 +25,28 @@ body {
 }
 #page-container {
 	height: 100%;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	/* DEBUGGING: */
+	border: 5px blueviolet dotted;
+}
+
+.page-view {
+	height: 100%;
+	width: 100%;
+	overflow-y: inherit;
+	overflow-x: inherit;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 1%;
+	gap: 1%;
+	justify-content: safe center;
+
+	/* DEBUGGING: */
+	border: palevioletred 6px dashed;
 }
