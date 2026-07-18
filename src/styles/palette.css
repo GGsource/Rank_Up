@@ -12,12 +12,12 @@
 	--colorSelected: rgba(69, 202, 255, 0.5);
 
 	/* ---------------------------------- Sizes --------------------------------- */
-	--imageRes: 13vh; /* The size of each image */
-	--ratio: calc(186 / 314); /* DELETEME: This is specific to test stuff. Remove from repo */
+	--imageRes: 10vh; /* The size of each image */
+	--ratio: calc(186 / 314);
 	--rowImageCount: 8; /* How many images a row should be able to fit */
 	--rowBodyWidth: calc(var(--imageRes) * var(--rowImageCount)); /* The calculated width of the row's body */
 	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
-	--radius: 30px; /* REVISIT: Look into if this can be used elsewhere or get rid of it */
+	--radius: 30px;
 
 	/* --------------------------------- Speeds --------------------------------- */
 	--animSlowMS: 1000ms;

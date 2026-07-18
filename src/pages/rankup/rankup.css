@@ -58,7 +58,7 @@ rowList (containts all rowFulls)
 │       │   ├── dragHandle
 │       │   └── addRowBelowButton
 │       ├── rowTitle
-│       └── rowOptions // TODO: rename these all to be consistent with this
+│       └── rowOptions
 │           ├── resetRowButton
 │           └── deleteRowButton
 └── (other rowFulls)
@@ -273,5 +273,3 @@ rowList (containts all rowFulls)
 	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
 	outline: solid 1px green;
 }
-
-/* TODO: Add a bounce to images on click :] */

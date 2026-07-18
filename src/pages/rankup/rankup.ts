@@ -343,7 +343,7 @@ function toggleSelection(image: HTMLImageElement) {
 function clearSelections() {
 	// Clears the list of currently selected images
 	selectedImages.forEach(deselectImage);
-	selectedImages.clear(); //TESTME: This line might be redundant. And if it is, is the function redundant?
+	selectedImages.clear();
 }
 
 function clickContainer(ev: MouseEvent) {
@@ -457,5 +457,3 @@ export function renderRankUpPage(pageContainer: HTMLElement) {
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
-
-// TODO: Check for more console logs
