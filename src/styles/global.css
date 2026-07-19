@@ -20,8 +20,16 @@ body {
 }
 
 #mode-banner {
-	height: 80px;
-	background-color: goldenrod;
+	height: 3%;
+	color: rgb(88, 64, 2);
+	background: repeating-linear-gradient(290deg, rgb(129, 95, 8), goldenrod 5px);
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	font-family: "Alice";
+	font-size: 2em;
+	border-radius: 0px 0px 20px 20px;
 }
 #page-container {
 	height: 100%;
