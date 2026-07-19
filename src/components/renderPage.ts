@@ -9,6 +9,9 @@ export async function renderPage(pageName: string) {
 			const { renderHomePage } = await import("@/pages/home/home");
 			renderHomePage(pageContainer);
 			break;
+		case "form":
+			// FEAT: Implement me!
+			break;
 		case "rankup":
 			const { renderRankUpPage } = await import("@/pages/rankup/rankup");
 			renderRankUpPage(pageContainer);
