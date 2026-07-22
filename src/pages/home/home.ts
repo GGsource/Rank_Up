@@ -1,9 +1,9 @@
 import homeHTMLRaw from "./home.html?raw";
 import "./home.css";
 import plusIconImage from "@/assets/images/icon_plus.png";
-import { renderPage } from "@/components/renderPage";
+import { registerPage, renderPage } from "@/components/renderPage";
 
-export function renderHomePage(pageContainer: HTMLElement) {
+function renderHomePage(pageContainer: HTMLElement) {
 	/* -------------------------- Inject Home Page HTML ------------------------- */
 	pageContainer.innerHTML = homeHTMLRaw;
 
@@ -17,3 +17,6 @@ export function renderHomePage(pageContainer: HTMLElement) {
 	if (!newRankUpBtn) throw new Error("Fatal Error: Failed to locate #create-new-rankup-card element to attach listener.");
 	newRankUpBtn.addEventListener("click", (event) => renderPage("form"));
 }
+
+// Register this page to the renderer
+registerPage("home", renderHomePage);

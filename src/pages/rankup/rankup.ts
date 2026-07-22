@@ -428,8 +428,9 @@ function makeRowsDrag(): void {
 }
 
 import rankupHTMLRaw from "./rankup.html?raw";
+import { registerPage } from "@/components/renderPage";
 
-export function renderRankUpPage(pageContainer: HTMLElement) {
+function renderRankUpPage(pageContainer: HTMLElement) {
 	/* ------------------------- Inject RankUp page HTML ------------------------ */
 	pageContainer.innerHTML = rankupHTMLRaw;
 
@@ -457,3 +458,6 @@ export function renderRankUpPage(pageContainer: HTMLElement) {
 	makeRowsDrag();
 	populatePlaceholderImages(); //Put in the placeholders
 }
+
+// Register this page to the renderer
+registerPage("rankup", renderRankUpPage);
