@@ -1,0 +1,55 @@
+.form-view {
+	justify-content: flex-start;
+}
+.form-view > :last-child {
+	margin-top: auto; /* Snaps last item to bottom*/
+}
+.form-view > * {
+	font-family: "Courier New", Courier, monospace;
+	width: 80%;
+	max-width: 1000px;
+	color: var(--text--dark);
+}
+
+/* ------------------------------- Page Header ------------------------------ */
+.form-view #form-header {
+	font-size: 5em;
+	font-family: "Alice";
+	text-align: center;
+}
+
+/* ----------------------------- Labels & Inputs ---------------------------- */
+.form-view .form-label {
+	font-size: 2em;
+	text-align: center;
+}
+
+.form-view .form-input {
+	border: 1px lavenderblush solid;
+	background-color: transparent;
+}
+
+#form-title-input {
+	height: 5%;
+	font-size: 1.5em;
+}
+
+#form-desc-input {
+	resize: vertical;
+	height: 10%;
+}
+/* ------------------------------- User Images ------------------------------ */
+
+#form-images-adder {
+	border: 3px mediumseagreen dashed;
+	border-radius: 8px;
+	height: 30%;
+}
+
+/* ------------------------------- Submission ------------------------------- */
+
+#form-submit {
+	height: 5vh;
+	font-size: 2.5em;
+	background-color: darkslategray;
+}
