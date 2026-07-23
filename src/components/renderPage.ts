@@ -14,7 +14,7 @@ export async function renderPage(pageName: string) {
 	const pageKey = pageName.toLocaleLowerCase();
 	if (!pageRegistry.has(pageKey)) {
 		try {
-			await import(`../pages/${pageKey}/${pageKey}`);
+			await import(`../pages/${pageKey}/${pageKey}.ts`);
 		} catch (err) {
 			console.error(`Fatal Error: Failed to import @/pages/${pageKey}/${pageKey}`);
 			throw err;
