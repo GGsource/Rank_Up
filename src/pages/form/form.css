@@ -1,0 +1,95 @@
+.form-view {
+	justify-content: flex-start;
+}
+.form-view > :last-child {
+	margin-top: auto; /* Snaps last item to bottom*/
+}
+.form-view > * {
+	font-family: "Courier New", Courier, monospace;
+	width: 80%;
+	max-width: 1000px;
+	color: var(--text--dark);
+}
+
+/* ------------------------------- Page Header ------------------------------ */
+.form-view #form-header {
+	font-size: 5em;
+	font-family: "Alice";
+	text-align: center;
+}
+
+/* ----------------------------- Labels & Inputs ---------------------------- */
+.form-view .form-label {
+	font-size: 2em;
+	text-align: center;
+}
+
+.form-view .form-input {
+	border: 1px lavenderblush solid;
+	background-color: transparent;
+}
+
+.form-view #form-title-input {
+	height: 5%;
+	font-size: 1.5em;
+}
+
+.form-view #form-desc-input {
+	resize: vertical;
+	height: 10%;
+}
+/* ------------------------------- User Images ------------------------------ */
+
+.form-view #form-file-container {
+	outline: 3px var(--text--dark) dashed;
+	border-radius: 8px;
+	height: 35%;
+	display: flex;
+	flex-direction: row;
+}
+
+.form-view #form-file-container.drag-active,
+.form-view #form-file-container:hover {
+	outline-color: mediumturquoise;
+	background-color: rgba(72, 209, 205, 0.08);
+	color: mediumturquoise;
+	cursor: pointer;
+}
+
+.form-view #upload-indicators {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 5%;
+	justify-content: center;
+	align-items: center;
+}
+.form-view #upload-indicators svg {
+	height: 50%;
+}
+.form-view #upload-indicators[hidden],
+.form-view #upload-image-container[hidden] {
+	display: none;
+}
+.form-view #upload-image-container {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	flex: 1;
+	gap: 0.5cqw;
+	padding: 1%;
+	overflow: scroll;
+	/* container-type: ; */
+}
+.form-view .uploaded-image {
+	width: 19%;
+	border-radius: 5%;
+}
+/* ------------------------------- Submission ------------------------------- */
+
+.form-view #form-submit {
+	height: 5vh;
+	font-size: 2.5em;
+	background-color: darkslategray;
+}
