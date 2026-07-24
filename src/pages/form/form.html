@@ -7,21 +7,24 @@
 	<form-images-label class="form-label">RankUp Images</form-images-label>
 	<input type="file" id="form-file-input" name="files input" accept="image/*" hidden multiple />
 	<div id="form-file-container">
-		Drag images here or click to browse
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-			stroke-linecap="round"
-			stroke-linejoin="round"
-			class="lucide lucide-upload-icon lucide-upload"
-		>
-			<path d="M12 3v12" />
-			<path d="m17 8-5-5-5 5" />
-			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-		</svg>
+		<div id="upload-indicators">
+			Drag images here or click to browse
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="lucide lucide-upload-icon lucide-upload"
+			>
+				<path d="M12 3v12" />
+				<path d="m17 8-5-5-5 5" />
+				<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+			</svg>
+		</div>
+		<div id="upload-image-container" hidden></div>
 	</div>
 	<button id="form-submit">Submit RankUp</button>
 </section>

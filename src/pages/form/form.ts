@@ -16,9 +16,7 @@ async function renderFormPage(pageContainer: HTMLElement) {
 	if (!formFileInput) throw new Error("Fatal Error: Failed to locate #form-file-input");
 	formFileInput.addEventListener("change", (event) => {
 		const fileElement = event.target as HTMLInputElement;
-		const files = fileElement.files;
-		console.log("Files gathered from explorer:");
-		console.dir(files);
+		handleFiles(fileElement.files);
 	});
 	// Form Image Container
 	const formFileContainer = document.getElementById("form-file-container");
@@ -27,16 +25,48 @@ async function renderFormPage(pageContainer: HTMLElement) {
 	formFileContainer.addEventListener("dragover", (event) => {
 		event.preventDefault();
 		formFileContainer.classList.add("drag-active");
-		console.log("Dragging over...");
 	});
 	formFileContainer.addEventListener("dragleave", () => formFileContainer.classList.remove("drag-active"));
 	formFileContainer.addEventListener("drop", (event) => {
 		event.preventDefault();
 		formFileContainer.classList.remove("drag-active");
-		console.log("Files gathered from drag-n-drop:");
-		console.dir(event.dataTransfer?.files);
+		handleFiles(event.dataTransfer?.files);
 	});
 }
 
 // Register this page to the page renderer
 registerPage("form", renderFormPage);
+
+/**
+ * Deals with files collected from drag-drop or explorer selection, ensuring they are images.
+ *
+ * @param files List of files received as input to upload container.
+ */
+function handleFiles(files: FileList | undefined | null) {
+	if (!files) throw new Error("Fatal Error: Files object was invalid, associated elements must be missing");
+
+	/* ------------------------ Confirm we received files ----------------------- */
+	if (files.length < 1) {
+		console.warn("Dragged in non-file, likely from a webpage. This is not supported.");
+		// FEAT: Look into supporting this for web images/links?
+		return;
+	}
+
+	/* ---------------- We have images, disable upload indicators --------------- */
+	const uploadIndicators = document.getElementById("upload-indicators");
+	if (!uploadIndicators) throw new Error("Fatal Error: Failed to locate #upload-indicators");
+	uploadIndicators.hidden = true;
+	const imageContainer = document.getElementById("upload-image-container");
+	if (!imageContainer) throw new Error("Fatal Error: Failed to locate #upload-image-container");
+	imageContainer.hidden = false;
+
+	/* --------------------- Loop through images and display -------------------- */
+	for (const file of files) {
+		if (!file.type.startsWith("image/")) continue; // Skip non-images
+		console.dir(file);
+		const newImage = document.createElement("img") as HTMLImageElement;
+		newImage.className = "uploaded-image";
+		newImage.src = URL.createObjectURL(file);
+		imageContainer.append(newImage);
+	}
+}

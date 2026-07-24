@@ -43,15 +43,9 @@
 .form-view #form-file-container {
 	outline: 3px var(--text--dark) dashed;
 	border-radius: 8px;
-	height: 30%;
+	height: 35%;
 	display: flex;
-	flex-direction: column;
-	gap: 5%;
-	justify-content: center;
-	align-items: center;
-}
-.form-view #form-file-container svg {
-	height: 50%;
+	flex-direction: row;
 }
 
 .form-view #form-file-container.drag-active,
@@ -62,6 +56,36 @@
 	cursor: pointer;
 }
 
+.form-view #upload-indicators {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 5%;
+	justify-content: center;
+	align-items: center;
+}
+.form-view #upload-indicators svg {
+	height: 50%;
+}
+.form-view #upload-indicators[hidden],
+.form-view #upload-image-container[hidden] {
+	display: none;
+}
+.form-view #upload-image-container {
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	flex: 1;
+	gap: 0.5cqw;
+	padding: 1%;
+	overflow: scroll;
+	/* container-type: ; */
+}
+.form-view .uploaded-image {
+	width: 19%;
+	border-radius: 5%;
+}
 /* ------------------------------- Submission ------------------------------- */
 
 .form-view #form-submit {
