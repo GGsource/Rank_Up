@@ -49,6 +49,7 @@ function handleFiles(files: FileList | undefined | null) {
 	if (files.length < 1) {
 		console.warn("Dragged in non-file, likely from a webpage. This is not supported.");
 		// FEAT: Look into supporting this for web images/links?
+		// FEAT: Add support for pasting image from clipboard
 		return;
 	}
 
@@ -56,17 +57,32 @@ function handleFiles(files: FileList | undefined | null) {
 	const uploadIndicators = document.getElementById("upload-indicators");
 	if (!uploadIndicators) throw new Error("Fatal Error: Failed to locate #upload-indicators");
 	uploadIndicators.hidden = true;
-	const imageContainer = document.getElementById("upload-image-container");
-	if (!imageContainer) throw new Error("Fatal Error: Failed to locate #upload-image-container");
-	imageContainer.hidden = false;
+	const uploadsContainer = document.getElementById("upload-image-container");
+	if (!uploadsContainer) throw new Error("Fatal Error: Failed to locate #upload-image-container");
+	uploadsContainer.hidden = false;
 
 	/* --------------------- Loop through images and display -------------------- */
 	for (const file of files) {
 		if (!file.type.startsWith("image/")) continue; // Skip non-images
 		console.dir(file);
+
+		// Make a wrapper to contain image elements
+		const imageWrapper = document.createElement("div") as HTMLDivElement;
+		imageWrapper.className = "image-wrapper";
+		uploadsContainer.append(imageWrapper);
+
+		// Make the image file into an HTML Image element to insert
 		const newImage = document.createElement("img") as HTMLImageElement;
 		newImage.className = "uploaded-image";
 		newImage.src = URL.createObjectURL(file);
-		imageContainer.append(newImage);
+		imageWrapper.append(newImage);
+
+		// Make the delete button
+		const deleteButton = document.createElement("button") as HTMLButtonElement;
+		deleteButton.className = "delete-button";
+		deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+		imageWrapper.append(deleteButton);
 	}
 }
+
+// TODO: Where applicable, convert div elements to button elements so they gain tabbing and enter/space interaction for free
