@@ -102,7 +102,11 @@ function handleFiles(files: FileList | undefined | null) {
 		imageWrapper.append(deleteButton);
 	}
 	if (uploadsContainer.hasChildNodes()) {
-		toggleHidden(uploadIndicators, uploadsContainer);
+		uploadIndicators.hidden = true;
+		uploadsContainer.hidden = false;
+		const clearUploadsButton = document.getElementById("clear-uploads") as HTMLButtonElement;
+		if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
+		clearUploadsButton.disabled = true;
 	}
 }
 
@@ -116,7 +120,6 @@ function toggleHidden(indicators: HTMLElement, images: HTMLElement) {
 	const clearUploadsButton = document.getElementById("clear-uploads") as HTMLButtonElement;
 	if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
 	clearUploadsButton.disabled = !clearUploadsButton.disabled;
-	console.log(`clear disabled? ${clearUploadsButton.disabled}`);
 }
 
 // IDEA: Refactor this file into a form class that gets all its elements by ID once and keeps them available for its functions
