@@ -40,16 +40,16 @@
 }
 /* ------------------------------- User Images ------------------------------ */
 
-.form-view #form-file-container {
+.form-view #form-upload-area {
 	outline: 3px var(--text--dark) dashed;
-	border-radius: 8px;
+	border-radius: 10px;
 	height: 35%;
 	display: flex;
 	flex-direction: row;
 }
 
-.form-view #form-file-container.drag-active,
-.form-view #form-file-container:hover {
+.form-view #form-upload-area.drag-active,
+.form-view #form-upload-area:hover {
 	outline-color: mediumturquoise;
 	background-color: rgba(72, 209, 205, 0.08);
 	color: mediumturquoise;
@@ -106,12 +106,31 @@
 }
 .form-view .delete-button:hover {
 	opacity: 0.8;
+	cursor: pointer;
 }
 
 .form-view .delete-button svg {
 	color: rgb(255, 100, 100);
 	flex: 1;
 	padding: 3%;
+}
+
+.form-view #clear-uploads {
+	height: 5%;
+	width: 100%;
+	background-color: #393939;
+	outline: 3px solid var(--text--dark);
+	border: none;
+	border-radius: 10px;
+	font-size: 1.5em;
+}
+.form-view #clear-uploads:disabled {
+	opacity: 0.2;
+}
+.form-view #clear-uploads:hover:not(:disabled) {
+	background-color: rgba(80, 0, 0, 0.6);
+	color: rgb(255, 100, 100);
+	outline: 3px solid rgb(255, 100, 100);
 }
 
 /* ------------------------------- Submission ------------------------------- */

@@ -7,10 +7,6 @@ async function renderFormPage(pageContainer: HTMLElement) {
 	pageContainer.innerHTML = formHTMLRaw;
 
 	/* ---------------------------- Add Interactions ---------------------------- */
-	// Submission button
-	const submitButton = document.getElementById("form-submit");
-	if (!submitButton) throw new Error("Fatal Error: Failed to locate submission button to attach listeners. Aborting...");
-	submitButton.addEventListener("click", () => renderPage("rankup"));
 	// Form Image Input
 	const formFileInput = document.getElementById("form-file-input");
 	if (!formFileInput) throw new Error("Fatal Error: Failed to locate #form-file-input");
@@ -19,19 +15,37 @@ async function renderFormPage(pageContainer: HTMLElement) {
 		handleFiles(fileElement.files);
 	});
 	// Form Image Container
-	const formFileContainer = document.getElementById("form-file-container");
-	if (!formFileContainer) throw new Error("Fatal Error: Failed to locate #form-file-container");
-	formFileContainer.addEventListener("click", () => formFileInput.click());
-	formFileContainer.addEventListener("dragover", (event) => {
+	const formUploadContainer = document.getElementById("form-upload-area");
+	if (!formUploadContainer) throw new Error("Fatal Error: Failed to locate #form-file-container");
+	formUploadContainer.addEventListener("click", () => formFileInput.click());
+	formUploadContainer.addEventListener("dragover", (event) => {
 		event.preventDefault();
-		formFileContainer.classList.add("drag-active");
+		formUploadContainer.classList.add("drag-active");
 	});
-	formFileContainer.addEventListener("dragleave", () => formFileContainer.classList.remove("drag-active"));
-	formFileContainer.addEventListener("drop", (event) => {
+	formUploadContainer.addEventListener("dragleave", () => formUploadContainer.classList.remove("drag-active"));
+	formUploadContainer.addEventListener("drop", (event) => {
 		event.preventDefault();
-		formFileContainer.classList.remove("drag-active");
+		formUploadContainer.classList.remove("drag-active");
 		handleFiles(event.dataTransfer?.files);
 	});
+	// Form Image Clear button
+	const clearUploadsButton = document.getElementById("clear-uploads") as HTMLButtonElement;
+	if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
+	clearUploadsButton.addEventListener("click", (event) => {
+		console.log("clicked clear button...");
+		const uploadsContainer = document.getElementById("upload-image-container");
+		if (!uploadsContainer) throw new Error("Fatal Error: Failed to locate #upload-image-container");
+		uploadsContainer.querySelectorAll("img.uploaded-image").forEach((image) => URL.revokeObjectURL((image as HTMLImageElement).src));
+		uploadsContainer.hidden = true;
+		const uploadIndicators = document.getElementById("upload-indicators");
+		if (!uploadIndicators) throw new Error("Fatal Error: Failed to locate #upload-indicators");
+		uploadIndicators.hidden = false;
+		clearUploadsButton.disabled = true;
+	});
+	// Form Submission button
+	const submitButton = document.getElementById("form-submit");
+	if (!submitButton) throw new Error("Fatal Error: Failed to locate submission button to attach listeners. Aborting...");
+	submitButton.addEventListener("click", () => renderPage("rankup"));
 }
 
 // Register this page to the page renderer
@@ -56,15 +70,13 @@ function handleFiles(files: FileList | undefined | null) {
 	/* ---------------- We have images, disable upload indicators --------------- */
 	const uploadIndicators = document.getElementById("upload-indicators");
 	if (!uploadIndicators) throw new Error("Fatal Error: Failed to locate #upload-indicators");
-	uploadIndicators.hidden = true;
 	const uploadsContainer = document.getElementById("upload-image-container");
 	if (!uploadsContainer) throw new Error("Fatal Error: Failed to locate #upload-image-container");
-	uploadsContainer.hidden = false;
 
 	/* --------------------- Loop through images and display -------------------- */
 	for (const file of files) {
 		if (!file.type.startsWith("image/")) continue; // Skip non-images
-		console.dir(file);
+		// TODO: Present warning to user if uploaded non-image?
 
 		// Make a wrapper to contain image elements
 		const imageWrapper = document.createElement("div") as HTMLDivElement;
@@ -81,8 +93,30 @@ function handleFiles(files: FileList | undefined | null) {
 		const deleteButton = document.createElement("button") as HTMLButtonElement;
 		deleteButton.className = "delete-button";
 		deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
+		deleteButton.addEventListener("click", (event) => {
+			event.stopPropagation();
+			imageWrapper.remove();
+			URL.revokeObjectURL(newImage.src);
+			if (!uploadsContainer.hasChildNodes()) toggleHidden(uploadIndicators, uploadsContainer);
+		});
 		imageWrapper.append(deleteButton);
+	}
+	if (uploadsContainer.hasChildNodes()) {
+		toggleHidden(uploadIndicators, uploadsContainer);
 	}
 }
 
 // TODO: Where applicable, convert div elements to button elements so they gain tabbing and enter/space interaction for free
+
+function toggleHidden(indicators: HTMLElement, images: HTMLElement) {
+	// Toggle which one is shown
+	indicators.hidden = !indicators.hidden;
+	images.hidden = !images.hidden;
+	// Also toggle clear button
+	const clearUploadsButton = document.getElementById("clear-uploads") as HTMLButtonElement;
+	if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
+	clearUploadsButton.disabled = !clearUploadsButton.disabled;
+	console.log(`clear disabled? ${clearUploadsButton.disabled}`);
+}
+
+// IDEA: Refactor this file into a form class that gets all its elements by ID once and keeps them available for its functions
