@@ -54,7 +54,6 @@ async function renderFormPage(pageContainer: HTMLElement) {
 		if (!titleInput) throw new Error("Fatal Error: Failed to locate #form-title-input");
 		const descInput = document.getElementById("form-desc-input") as HTMLInputElement;
 		if (!descInput) throw new Error("Fatal Error: Failed to locate #form-desc-input");
-		// TODO: Instead of saving all of this to user data when submit button is clicked, add change listeners to all inputs and update the user data each time, so setUserData is not needed
 		setUserData(titleInput.value, descInput.value, collectedURLs);
 		renderPage("rankup");
 	});
@@ -73,9 +72,7 @@ function handleFiles(files: FileList | undefined | null) {
 
 	/* ------------------------ Confirm we received files ----------------------- */
 	if (files.length < 1) {
-		console.warn("Dragged in non-file, likely from a webpage. This is not supported.");
-		// FEAT: Look into supporting this for web images/links?
-		// FEAT: Add support for pasting image from clipboard
+		console.warn("Dragged in non-file, likely from a webpage. This is not currently supported.");
 		return;
 	}
 
@@ -87,8 +84,10 @@ function handleFiles(files: FileList | undefined | null) {
 
 	/* --------------------- Loop through images and display -------------------- */
 	for (const file of files) {
-		if (!file.type.startsWith("image/")) continue; // Skip non-images
-		// TODO: Present warning to user if uploaded non-image?
+		if (!file.type.startsWith("image/")) {
+			console.warn(`Tried to upload non-image: ${file.name}`);
+			continue; // Skip non-images
+		}
 
 		// Make a wrapper to contain image elements
 		const imageWrapper = document.createElement("div") as HTMLDivElement;
@@ -126,8 +125,6 @@ function handleFiles(files: FileList | undefined | null) {
 	}
 }
 
-// TODO: Where applicable, convert div elements to button elements so they gain tabbing and enter/space interaction for free
-
 function toggleHidden(indicators: HTMLElement, images: HTMLElement) {
 	// Toggle which one is shown
 	indicators.hidden = !indicators.hidden;
@@ -137,5 +134,3 @@ function toggleHidden(indicators: HTMLElement, images: HTMLElement) {
 	if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
 	clearUploadsButton.disabled = !clearUploadsButton.disabled;
 }
-
-// TODO: Make having at LEAST 1 image a hard requirement before submission is accepted
