@@ -368,34 +368,21 @@ function populateInitialRows(rowCount: number) {
 	let rowList = document.getElementById("rowList") as HTMLDivElement;
 	if (rowList) for (let i: number = 0; i < rowCount; i++) new Row().appendTo(rowList);
 }
-// Function to add in the placeholder images for debugging
-function populatePlaceholderImages() {
-	let imageNames: string[] = [
-		"bird",
-		"bird_evil",
-		"BordBlue",
-		"BordGreen",
-		"BordPink",
-		"BordPorple",
-		"BordRee",
-		"BordWhite",
-		"BordYellow",
-	];
-	let imageContainer = document.getElementById("imageContainer") as HTMLDivElement;
-	if (imageContainer) {
-		imageNames.forEach((name) => {
-			let image: HTMLImageElement = document.createElement("img");
-			image.className = "rankingImage";
-			image.src = new URL(`../../assets/images/${name}.png`, import.meta.url).href;
-			image.onclick = (event) => clickImage(event);
-			image.ondragstart = (event) => dragStart(event);
-			image.ondrag = (event) => dragImage(event);
-			imageContainer.appendChild(image);
-		});
-	} else {
-		console.error("Couldn't populate container with placeholders because imageContainer was null.");
-	}
+
+const placeholderImages = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
+
+function addImageToContainer(url: string) {
+	const imageContainer = document.getElementById("imageContainer");
+	if (!imageContainer) throw new Error("Fatal Error: Failed to locate #imageContainer");
+	const image = document.createElement("img") as HTMLImageElement;
+	image.className = "rankingImage";
+	image.src = url;
+	image.onclick = (event) => clickImage(event);
+	image.ondragstart = (event) => dragStart(event);
+	image.ondrag = (event) => dragImage(event);
+	imageContainer.appendChild(image);
 }
+
 let isRowBeingDragged: boolean = false;
 // Function to add drag ability with Sortable JS
 function makeRowsDrag(): void {
@@ -432,8 +419,6 @@ import { registerPage } from "@/components/renderPage";
 import { getUserData } from "@/state/UserData";
 
 function renderRankUpPage(pageContainer: HTMLElement) {
-	console.log("Attempting to retrieve info from form page result...");
-	console.dir(getUserData());
 	/* ------------------------- Inject RankUp page HTML ------------------------ */
 	pageContainer.innerHTML = rankupHTMLRaw;
 
@@ -459,7 +444,12 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	/* ----------- Populate the page with our default rows and images ----------- */
 	populateInitialRows(5); // Make the original starting rows
 	makeRowsDrag();
-	populatePlaceholderImages(); //Put in the placeholders
+
+	console.log("Attempting to retrieve info from form page result...");
+	const userData = getUserData();
+	console.dir(userData);
+	if (userData) userData.imageURLs.forEach((url) => addImageToContainer(url));
+	else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
 }
 
 // Register this page to the renderer

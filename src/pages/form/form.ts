@@ -3,7 +3,7 @@ import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
 
-const collectedImages: File[] = [];
+const collectedURLs: string[] = [];
 
 async function renderFormPage(pageContainer: HTMLElement) {
 	/* -------------------------- Inject Form Page HTML ------------------------- */
@@ -55,7 +55,7 @@ async function renderFormPage(pageContainer: HTMLElement) {
 		const descInput = document.getElementById("form-desc-input") as HTMLInputElement;
 		if (!descInput) throw new Error("Fatal Error: Failed to locate #form-desc-input");
 		// TODO: Instead of saving all of this to user data when submit button is clicked, add change listeners to all inputs and update the user data each time, so setUserData is not needed
-		setUserData(titleInput.value, descInput.value, collectedImages);
+		setUserData(titleInput.value, descInput.value, collectedURLs);
 		renderPage("rankup");
 	});
 }
@@ -98,9 +98,10 @@ function handleFiles(files: FileList | undefined | null) {
 		// Make the image file into an HTML Image element to insert
 		const newImage = document.createElement("img") as HTMLImageElement;
 		newImage.className = "uploaded-image";
-		newImage.src = URL.createObjectURL(file);
+		const imageURL = URL.createObjectURL(file);
+		newImage.src = imageURL;
+		collectedURLs.push(imageURL);
 		imageWrapper.append(newImage);
-		collectedImages.push(file);
 
 		// Make the delete button
 		const deleteButton = document.createElement("button") as HTMLButtonElement;
@@ -110,8 +111,8 @@ function handleFiles(files: FileList | undefined | null) {
 			event.stopPropagation();
 			imageWrapper.remove();
 			URL.revokeObjectURL(newImage.src);
-			const index = collectedImages.indexOf(file);
-			if (index !== -1) collectedImages.splice(index, 1);
+			const index = collectedURLs.indexOf(imageURL);
+			if (index !== -1) collectedURLs.splice(index, 1);
 			if (!uploadsContainer.hasChildNodes()) toggleHidden(uploadIndicators, uploadsContainer);
 		});
 		imageWrapper.append(deleteButton);

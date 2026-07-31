@@ -1,13 +1,13 @@
 interface UserFormData {
 	title: string;
 	desc: string;
-	imageFiles: File[];
+	imageURLs: string[];
 }
 
 let userData: UserFormData | null;
 
-export function setUserData(title: string, desc: string, imageFiles: File[]) {
-	userData = { title, desc, imageFiles };
+export function setUserData(title: string, desc: string, imageURLs: string[]) {
+	userData = { title, desc, imageURLs };
 }
 
 export function getUserData(): UserFormData | null {
