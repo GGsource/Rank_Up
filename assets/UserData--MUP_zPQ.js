@@ -1,0 +1,1 @@
+var e;function t(t,n,r){e={title:t,desc:n,imageURLs:r}}function n(){return e}export{t as n,n as t};
