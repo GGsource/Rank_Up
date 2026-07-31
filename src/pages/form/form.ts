@@ -1,6 +1,9 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
+import { setUserData } from "@/state/UserData";
+
+const collectedImages: File[] = [];
 
 async function renderFormPage(pageContainer: HTMLElement) {
 	/* -------------------------- Inject Form Page HTML ------------------------- */
@@ -43,9 +46,18 @@ async function renderFormPage(pageContainer: HTMLElement) {
 		clearUploadsButton.disabled = true;
 	});
 	// Form Submission button
-	const submitButton = document.getElementById("form-submit");
-	if (!submitButton) throw new Error("Fatal Error: Failed to locate submission button to attach listeners. Aborting...");
-	submitButton.addEventListener("click", () => renderPage("rankup"));
+	const formView = document.getElementById("form-view");
+	if (!formView) throw new Error("Fatal Error: Failed to locate #form-view");
+	formView.addEventListener("submit", (event) => {
+		event.preventDefault(); // Prevent submission auto-send
+		const titleInput = document.getElementById("form-title-input") as HTMLInputElement;
+		if (!titleInput) throw new Error("Fatal Error: Failed to locate #form-title-input");
+		const descInput = document.getElementById("form-desc-input") as HTMLInputElement;
+		if (!descInput) throw new Error("Fatal Error: Failed to locate #form-desc-input");
+		// TODO: Instead of saving all of this to user data when submit button is clicked, add change listeners to all inputs and update the user data each time, so setUserData is not needed
+		setUserData(titleInput.value, descInput.value, collectedImages);
+		renderPage("rankup");
+	});
 }
 
 // Register this page to the page renderer
@@ -88,6 +100,7 @@ function handleFiles(files: FileList | undefined | null) {
 		newImage.className = "uploaded-image";
 		newImage.src = URL.createObjectURL(file);
 		imageWrapper.append(newImage);
+		collectedImages.push(file);
 
 		// Make the delete button
 		const deleteButton = document.createElement("button") as HTMLButtonElement;
@@ -97,6 +110,8 @@ function handleFiles(files: FileList | undefined | null) {
 			event.stopPropagation();
 			imageWrapper.remove();
 			URL.revokeObjectURL(newImage.src);
+			const index = collectedImages.indexOf(file);
+			if (index !== -1) collectedImages.splice(index, 1);
 			if (!uploadsContainer.hasChildNodes()) toggleHidden(uploadIndicators, uploadsContainer);
 		});
 		imageWrapper.append(deleteButton);
@@ -106,7 +121,7 @@ function handleFiles(files: FileList | undefined | null) {
 		uploadsContainer.hidden = false;
 		const clearUploadsButton = document.getElementById("clear-uploads") as HTMLButtonElement;
 		if (!clearUploadsButton) throw new Error("Fatal Error: Failed to locate #clear-uploads");
-		clearUploadsButton.disabled = true;
+		clearUploadsButton.disabled = false;
 	}
 }
 
@@ -122,4 +137,4 @@ function toggleHidden(indicators: HTMLElement, images: HTMLElement) {
 	clearUploadsButton.disabled = !clearUploadsButton.disabled;
 }
 
-// IDEA: Refactor this file into a form class that gets all its elements by ID once and keeps them available for its functions
+// TODO: Make having at LEAST 1 image a hard requirement before submission is accepted

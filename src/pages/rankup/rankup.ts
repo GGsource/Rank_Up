@@ -429,8 +429,11 @@ function makeRowsDrag(): void {
 
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
+import { getUserData } from "@/state/UserData";
 
 function renderRankUpPage(pageContainer: HTMLElement) {
+	console.log("Attempting to retrieve info from form page result...");
+	console.dir(getUserData());
 	/* ------------------------- Inject RankUp page HTML ------------------------ */
 	pageContainer.innerHTML = rankupHTMLRaw;
 
