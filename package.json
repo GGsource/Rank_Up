@@ -1,6 +1,6 @@
 {
-	"name": "rank-up-project",
-	"version": "0.2.0",
+	"name": "rank-up-site",
+	"version": "0.3.0",
 	"scripts": {
 		"dev": "vite",
 		"build": "vite build",
