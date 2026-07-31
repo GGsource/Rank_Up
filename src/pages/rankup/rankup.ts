@@ -427,9 +427,9 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	rankupContainer?.classList.add("allow-image-hover");
 
 	/* ---------------------------- Attach Listeners ---------------------------- */
-	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement | null;
-	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement | null;
-	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement | null;
+	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement;
+	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement;
+	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement;
 
 	/* ------------------------ Main container behaviors ------------------------ */
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
@@ -448,8 +448,11 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	console.log("Attempting to retrieve info from form page result...");
 	const userData = getUserData();
 	console.dir(userData);
-	if (userData) userData.imageURLs.forEach((url) => addImageToContainer(url));
-	else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
+	if (userData) {
+		headerTitle.value = userData.title;
+		headerDescription.value = userData.desc;
+		userData.imageURLs.forEach((url) => addImageToContainer(url));
+	} else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
 }
 
 // Register this page to the renderer
