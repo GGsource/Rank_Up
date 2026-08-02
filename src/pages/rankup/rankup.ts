@@ -445,10 +445,9 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	populateInitialRows(5); // Make the original starting rows
 	makeRowsDrag();
 
-	console.log("Attempting to retrieve info from form page result...");
+	/* ------------------------------ Insert images ----------------------------- */
 	const userData = getUserData();
-	console.dir(userData);
-	if (userData) {
+	if (userData && userData.imageURLs.length > 0) {
 		headerTitle.value = userData.title;
 		headerDescription.value = userData.desc;
 		userData.imageURLs.forEach((url) => addImageToContainer(url));
