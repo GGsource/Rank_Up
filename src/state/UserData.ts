@@ -4,7 +4,7 @@ interface UserFormData {
 	imageURLs: string[];
 }
 
-let userData: UserFormData | null;
+let userData: UserFormData | null = null;
 
 export function setUserData(title: string, desc: string, imageURLs: string[]) {
 	userData = { title, desc, imageURLs };
