@@ -11,7 +11,7 @@ class FormPage extends Page {
 	private clearUploadsButton = this.getEl<HTMLButtonElement>("clear-uploads");
 	private uploadsContainer = this.getEl("upload-image-container");
 	private uploadIndicators = this.getEl("upload-indicators");
-	private formView = this.getEl("form-view");
+	private formView = this.getEl<HTMLFormElement>("form-view");
 	private titleInput = this.getEl<HTMLInputElement>("form-title-input");
 	private descInput = this.getEl<HTMLInputElement>("form-desc-input");
 	private collectedURLs: string[] = [];
@@ -22,6 +22,13 @@ class FormPage extends Page {
 	constructor() {
 		super();
 		/* ------------------------- Add Event Interactions ------------------------- */
+		// Form description input
+		this.descInput.addEventListener("keydown", (event) => {
+			if (event.key === "Enter" && event.ctrlKey) {
+				event.preventDefault(); // Prevent newline
+				this.formView.requestSubmit(); // Submit form
+			}
+		});
 		// Form Image Input
 		this.formFileInput.addEventListener("change", () => this.handleFiles(this.formFileInput.files));
 		// Form Image Container
@@ -90,6 +97,7 @@ class FormPage extends Page {
 			// Make the delete button
 			const deleteButton = document.createElement("button") as HTMLButtonElement;
 			deleteButton.className = "delete-button";
+			deleteButton.type = "button";
 			deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M10 11v6"/><path d="M14 11v6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>`;
 			deleteButton.addEventListener("click", (event) => {
 				event.stopPropagation();
