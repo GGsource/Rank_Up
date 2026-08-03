@@ -447,11 +447,12 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 
 	/* ------------------------------ Insert images ----------------------------- */
 	const userData = getUserData();
-	if (userData && userData.imageURLs.length > 0) {
+	if (userData) {
 		headerTitle.value = userData.title;
 		headerDescription.value = userData.desc;
-		userData.imageURLs.forEach((url) => addImageToContainer(url));
-	} else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
+		if (userData.imageURLs.length > 0) userData.imageURLs.forEach((url) => addImageToContainer(url));
+		else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
+	}
 }
 
 // Register this page to the renderer
