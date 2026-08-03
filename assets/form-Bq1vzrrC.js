@@ -1,4 +1,4 @@
-import{n as e,t}from"./index-qBi4YmN3.js";import{n}from"./UserData-BtkTIZNg.js";var r=`<form id="form-view" class="page-view form-view">
+import{n as e,t}from"./index-D35lDrAc.js";import{n}from"./UserData-BtkTIZNg.js";var r=`<form id="form-view" class="page-view form-view">
 	<!-- ------------------------------- Header -------------------------------- -->
 	<div id="form-header">RankUp Creation Form</div>
 	<!-- ----------------------------- Input Title ----------------------------- -->
