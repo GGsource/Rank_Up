@@ -2,16 +2,10 @@ import formHTMLRaw from "./form.html?raw";
 import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
-
-abstract class Page {
-	getEl<ElementType extends HTMLElement = HTMLElement>(elementName: string): ElementType {
-		const element = document.getElementById(elementName) as ElementType;
-		if (!element) throw new Error(`Fatal Error: Failed to locate #${elementName}`);
-		return element;
-	}
-}
+import { Page } from "@/pages/Page";
 
 class FormPage extends Page {
+	/* ------------------------------ Page elements ----------------------------- */
 	private formFileInput = this.getEl<HTMLInputElement>("form-file-input");
 	private formUploadContainer = this.getEl("form-upload-area");
 	private clearUploadsButton = this.getEl<HTMLButtonElement>("clear-uploads");
@@ -21,6 +15,10 @@ class FormPage extends Page {
 	private titleInput = this.getEl<HTMLInputElement>("form-title-input");
 	private descInput = this.getEl<HTMLInputElement>("form-desc-input");
 	private collectedURLs: string[] = [];
+
+	/**
+	 * Default constructor attaches event listeners
+	 */
 	constructor() {
 		super();
 		/* ------------------------- Add Event Interactions ------------------------- */
