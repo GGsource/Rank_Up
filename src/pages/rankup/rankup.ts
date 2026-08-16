@@ -290,36 +290,33 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 });
 
 function clickImage(ev: MouseEvent) {
-	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
-	if (image) {
-		let container: HTMLDivElement = image.parentNode as HTMLDivElement;
-		let images: HTMLImageElement[] = Array.from(container.children) as HTMLImageElement[];
-		let index: number = images.indexOf(image);
+	ev.stopPropagation(); // Stop event from moving up to prevent clearing
+	const image = ev.target as HTMLImageElement;
+	// Confirm valid targets
+	if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
+	const container = image.parentNode;
+	if (!container) throw new Error("Fatal Error: Image's parent container null...");
 
-		if (ev.ctrlKey)
-			// Ctrl key + click to toggle selected status on an image
-			toggleSelection(image);
-		else if (ev.shiftKey && lastSelectedImage) {
-			// Shift key + click selects all images between last and current image
-			let lastIndex: number = images.indexOf(lastSelectedImage);
-			if (lastIndex !== -1) {
-				let start: number = Math.min(index, lastIndex);
-				let end: number = Math.max(index, lastIndex);
-				for (let i = start; i <= end; i++) {
-					selectImage(images[i]);
-				}
-			} else {
-				selectImage(image);
-			}
-		} else {
-			// Normal image click, only select the one image
-			clearSelections();
-			selectImage(image);
-		}
-		lastSelectedImage = image;
+	// Get our index
+	const images = Array.from(container.children) as HTMLImageElement[];
+	const currentNdx = images.indexOf(image);
+
+	// Ctrl key + click to toggle selected status on an image
+	if (ev.ctrlKey) toggleSelection(image);
+	else if (ev.shiftKey && lastSelectedImage) {
+		// Shift key + click selects all images between last and current image
+		const lastNdx = images.indexOf(lastSelectedImage);
+		if (lastNdx !== -1) {
+			const start = Math.min(currentNdx, lastNdx);
+			const end = Math.max(currentNdx, lastNdx);
+			for (let i = start; i <= end; i++) selectImage(images[i]);
+		} else selectImage(image);
 	} else {
-		console.log("Image was clicked but returned null.");
+		// Normal image click, only select the one image
+		clearSelections();
+		selectImage(image);
 	}
+	lastSelectedImage = image;
 }
 
 function selectImage(image: HTMLImageElement) {
@@ -431,13 +428,22 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement;
 	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement;
 
-	/* ------------------------ Main container behaviors ------------------------ */
+	// Add global listener for deselection
+	document.body.addEventListener("click", (event) => {
+		console.log(`Clicked somewhere in body at ${new Date().toLocaleTimeString()}`);
+		clearSelections();
+		// TODO: Move me to new branch & PR
+		// TODO: Remove clear functions for container and rows since now its global
+		// TODO: Disable clearing when in text boxes? Look into if this is good or bad design
+	});
+
+	// Main container behaviors
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
 	imageContainer.onclick = clickContainer;
 	imageContainer.ondragover = dragImageOver;
 	imageContainer.ondragend = dragImageEnd;
 
-	/* -------------------------- Text boxes behaviors -------------------------- */
+	// Text boxes behaviors
 	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
 	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
 
