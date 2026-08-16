@@ -8,21 +8,14 @@
 	gap: 5px;
 	width: var(--fullRowWidth);
 	flex-wrap: wrap;
-
-	/* DEBUGGING: */
-	border: 4px rgba(46, 139, 86, 0.3) solid;
-}
-.rankup-view #headerBox > * {
-	/* DEBUGGING: */
-	background-color: rgba(0, 255, 128, 0.05);
 }
 .rankup-view .headerText {
 	background-color: transparent;
-	color: white;
+	color: var(--text--dark);
 	resize: none;
 	border: 3px transparent solid;
 	border-radius: 10px;
-	transition: border var(--animNormMS);
+	transition: border var(--animFastMS);
 }
 .rankup-view #headerTitle {
 	font:
@@ -68,7 +61,6 @@ rowList (containts all rowFulls)
 	/* Center the rows */
 	display: flex;
 	flex-direction: column;
-	border: solid 1px yellow; /* DEBUGGING: Border to see limits*/
 	width: 100%;
 	/* Center children */
 	align-items: center;
@@ -91,7 +83,8 @@ rowList (containts all rowFulls)
 	transition:
 		width var(--animNormMS),
 		padding var(--animNormMS),
-		border-radius var(--animNormMS);
+		border-radius var(--animNormMS),
+		border-width var(--animNormMS);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -101,13 +94,15 @@ rowList (containts all rowFulls)
 	left: 0;
 	transform: translateX(-100%);
 	border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
-	background: repeating-linear-gradient(290deg, rgba(0, 0, 0, 0), rgba(0, 255, 0, 0.4) 5px);
+	border: 3px var(--catppuccin-green) solid;
+	background-color: color-mix(in srgb, var(--catppuccin-green) 20%, transparent 80%);
 	overflow: hidden;
 }
 .rankup-view .rowTab.closed {
 	width: 0;
 	padding: 0;
 	border-radius: 0;
+	border-width: 0px;
 }
 
 .rankup-view .dragContainer {
@@ -179,13 +174,15 @@ rowList (containts all rowFulls)
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
-	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(255, 0, 0, 0.4) 40px);
+	background-color: var(--catppuccin-red);
 }
 
 .rankup-view .rowBody {
 	/* Make the rowBody take up the remaining space in the rowTab */
 	width: var(--rowBodyWidth);
-	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 255, 0.4) 40px);
+	background-color: var(--catppuccin-base);
+	border: 2px var(--catppuccin-red) solid;
+	box-sizing: content-box;
 	/* Align items within to the left */
 	display: flex;
 	flex-direction: row;
@@ -212,20 +209,24 @@ rowList (containts all rowFulls)
 	cursor: grab;
 }
 
-.rankup-view.allow-image-hover .rankingImage:hover {
-	border-radius: 5px;
-	transform: scale(1.1);
-	z-index: 5;
-}
 .rankup-view .image-container .rankingImage.selectedImage {
-	border: solid 5px rgba(255, 255, 255, 0.05);
-	background-color: rgba(255, 255, 255, 0.3);
+	border: solid 5px color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
+	background-color: color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
 	border-radius: 10px;
 	padding: 0px;
 	backdrop-filter: blur(5px);
 	transform: scale(1);
 	z-index: 1;
 }
+
+.rankup-view.allow-image-hover .rankingImage:hover {
+	border-radius: 10px;
+	transform: scale(1.1);
+	z-index: 5;
+	background-color: color-mix(in srgb, var(--catppuccin-text) 20%, transparent 50%);
+	border: 5px solid color-mix(in srgb, var(--catppuccin-text) 50%, transparent 50%);
+}
+
 .rankup-view .image-container .rankingImage.draggingImage {
 	padding: 20px;
 }
@@ -238,7 +239,7 @@ rowList (containts all rowFulls)
 		sans-serif;
 	background-color: transparent;
 	border: none;
-	color: white;
+	color: var(--catppuccin-crust);
 	z-index: 2;
 }
 
@@ -265,12 +266,9 @@ rowList (containts all rowFulls)
 	width: var(--fullRowWidth);
 	min-height: calc(var(--imageRes) * 2); /* Make it start off at least 2 images tall */
 	display: flex;
-	flex-grow: 1;
 	flex-shrink: 0;
 	flex-wrap: wrap;
 	justify-content: center;
-
-	/* DEBUGGING: Border to see limits*/
-	background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) 6px);
-	outline: solid 1px green;
+	background-color: var(--catppuccin-mantle);
+	border-radius: 0 0 var(--radius) var(--radius);
 }

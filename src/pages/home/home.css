@@ -1,12 +1,11 @@
 .home-view #cardbox {
 	display: flex;
 	justify-content: center;
-	background-color: rgba(0, 0, 0, 0.2);
+	background-color: var(--catppuccin-mantle);
 	padding: 15px;
 	margin: 10px;
 	border-radius: 10px;
 	gap: 15px;
-	border: 2px blue dashed;
 }
 
 .home-view .home-cards {
@@ -15,13 +14,15 @@
 	font: inherit;
 	height: 20vh;
 	aspect-ratio: 1;
-	color: white;
-	border: 1px orange dotted;
+	color: var(--catppuccin-text);
+	background-color: var(--catppuccin-base);
+	border: none;
+	border-radius: var(--radius--light);
 	transition: outline 0.2s;
 	outline: 0px transparent solid;
 }
 .home-view .home-cards:is(:hover, :focus-visible) {
-	outline: 3px cyan solid;
+	outline: 3px var(--catppuccin-teal) solid;
 	border-radius: 5px;
 }
 
