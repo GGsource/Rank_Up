@@ -8,6 +8,7 @@
 	--rowBodyWidth: calc(var(--imageRes) * 8); /* The calculated width of the row's body, defaulting to 8 image width */
 	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
 	--radius: 1.8vh;
+	--radius--light: 0.8vh;
 
 	/* ---------------------------- Animation Speeds ---------------------------- */
 	--animSlowMS: 1000ms;
