@@ -18,7 +18,7 @@
 	--rowImageCount: 8; /* How many images a row should be able to fit */
 	--rowBodyWidth: calc(var(--imageRes) * var(--rowImageCount)); /* The calculated width of the row's body */
 	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
-	--radius: 30px;
+	--radius: 1.8vh;
 
 	/* --------------------------------- Speeds --------------------------------- */
 	--animSlowMS: 1000ms;
