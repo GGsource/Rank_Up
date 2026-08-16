@@ -25,6 +25,7 @@ class Row {
 		let rowTab: HTMLDivElement = document.createElement("div");
 		rowTab.className = "rowTab rowPiece closed";
 		rowTab.id = "rowTab" + Row.count;
+		rowTab.onclick = (event) => event.stopPropagation();
 		rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
 		rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
 		// Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
@@ -56,7 +57,6 @@ class Row {
 		rowTitle.id = "rowTitle" + Row.count;
 		rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
 		rowTitle.ondrop = (event) => draggedOntoTextBox(event);
-		rowTitle.onfocus = () => clearSelections();
 		// Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
 		let resetDeleteContainer: HTMLDivElement = document.createElement("div");
 		resetDeleteContainer.className = "resetDeleteContainer";
@@ -73,6 +73,7 @@ class Row {
 		deleteButton.onclick = () => deleteRow(this.rowFull);
 		resetDeleteContainer.appendChild(resetButton);
 		resetDeleteContainer.appendChild(deleteButton);
+		resetDeleteContainer.onclick = (event) => event.stopPropagation();
 		// Add the rowTitle and the resetDeleteContainer to the rowHeader
 		rowHeader.appendChild(rowTab);
 		rowHeader.appendChild(rowTitle);
@@ -81,7 +82,6 @@ class Row {
 		this.rowFull.appendChild(rowHeader);
 		// rowBody will be the element that contains the row's ranking images.
 		this.rowBody.className = "rowBody rowPiece image-container";
-		this.rowBody.onclick = (event) => clickContainer(event);
 		this.rowBody.ondragover = (event) => dragImageOver(event);
 		this.rowBody.ondragend = (event) => dragImageEnd(event);
 		resetButton.onclick = () => resetRow(this.rowBody);
@@ -220,6 +220,7 @@ function resetRow(rowBody: HTMLDivElement) {
 			if (rowBody.firstChild) {
 				// Check firstChild is not null
 				while (rowBody.hasChildNodes()) {
+					deselectImage(rowBody.firstChild as HTMLImageElement);
 					imageContainer.appendChild(rowBody.firstChild);
 				}
 			}
@@ -290,36 +291,33 @@ window.addEventListener("keydown", function (ev: KeyboardEvent) {
 });
 
 function clickImage(ev: MouseEvent) {
-	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
-	if (image) {
-		let container: HTMLDivElement = image.parentNode as HTMLDivElement;
-		let images: HTMLImageElement[] = Array.from(container.children) as HTMLImageElement[];
-		let index: number = images.indexOf(image);
+	ev.stopPropagation(); // Stop event from moving up to prevent clearing
+	const image = ev.target as HTMLImageElement;
+	// Confirm valid targets
+	if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
+	const container = image.parentNode;
+	if (!container) throw new Error("Fatal Error: Image's parent container null...");
 
-		if (ev.ctrlKey)
-			// Ctrl key + click to toggle selected status on an image
-			toggleSelection(image);
-		else if (ev.shiftKey && lastSelectedImage) {
-			// Shift key + click selects all images between last and current image
-			let lastIndex: number = images.indexOf(lastSelectedImage);
-			if (lastIndex !== -1) {
-				let start: number = Math.min(index, lastIndex);
-				let end: number = Math.max(index, lastIndex);
-				for (let i = start; i <= end; i++) {
-					selectImage(images[i]);
-				}
-			} else {
-				selectImage(image);
-			}
-		} else {
-			// Normal image click, only select the one image
-			clearSelections();
-			selectImage(image);
-		}
-		lastSelectedImage = image;
+	// Get our index
+	const images = Array.from(container.children) as HTMLImageElement[];
+	const currentNdx = images.indexOf(image);
+
+	// Ctrl key + click to toggle selected status on an image
+	if (ev.ctrlKey) toggleSelection(image);
+	else if (ev.shiftKey && lastSelectedImage) {
+		// Shift key + click selects all images between last and current image
+		const lastNdx = images.indexOf(lastSelectedImage);
+		if (lastNdx !== -1) {
+			const start = Math.min(currentNdx, lastNdx);
+			const end = Math.max(currentNdx, lastNdx);
+			for (let i = start; i <= end; i++) selectImage(images[i]);
+		} else selectImage(image);
 	} else {
-		console.log("Image was clicked but returned null.");
+		// Normal image click, only select the one image
+		clearSelections();
+		selectImage(image);
 	}
+	lastSelectedImage = image;
 }
 
 function selectImage(image: HTMLImageElement) {
@@ -344,12 +342,6 @@ function clearSelections() {
 	// Clears the list of currently selected images
 	selectedImages.forEach(deselectImage);
 	selectedImages.clear();
-}
-
-function clickContainer(ev: MouseEvent) {
-	// Clears selection when clicking on an empty spot of the container
-	let container: HTMLDivElement | null = ev.target as HTMLDivElement | null;
-	if (container && container.classList.contains("image-container")) clearSelections();
 }
 
 // dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
@@ -431,13 +423,15 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement;
 	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement;
 
-	/* ------------------------ Main container behaviors ------------------------ */
+	// Add global listener for deselection
+	document.body.addEventListener("click", (event) => clearSelections());
+
+	// Main container behaviors
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
-	imageContainer.onclick = clickContainer;
 	imageContainer.ondragover = dragImageOver;
 	imageContainer.ondragend = dragImageEnd;
 
-	/* -------------------------- Text boxes behaviors -------------------------- */
+	// Text boxes behaviors
 	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
 	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
 
