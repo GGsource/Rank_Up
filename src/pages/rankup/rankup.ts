@@ -95,53 +95,30 @@ class Row {
 	}
 }
 
-let draggingImageDiv: HTMLDivElement;
-let emptyImg: HTMLImageElement = new Image();
+const emptyImg: HTMLImageElement = new Image();
 emptyImg.src = emptyImage;
 let selectedImages: Set<HTMLImageElement> = new Set();
 let lastSelectedImage: HTMLImageElement;
 // DragStart - Mouse is now being held on an image; it is being dragged.
-function dragStart(ev: DragEvent) {
+function imageDragStart(ev: DragEvent) {
 	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
 	rankupContainer?.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
-	let image: HTMLImageElement | null = ev.target as HTMLImageElement | null;
-	if (image) {
-		if (!selectedImages.has(image)) clickImage(ev);
-		selectedImages.forEach((selectedImage) => {
-			selectedImage.setAttribute("data-dragging", "true");
-			selectedImage.classList.add("draggingImage");
-		});
-		// At this point selectedImages contains all the items we want to drag. Show the user how many items theyre dragging
-		draggingImageDiv = document.createElement("div");
-		draggingImageDiv.style.position = "absolute";
-		draggingImageDiv.style.zIndex = (1000).toString(); //Arbitrarily high, above anything else.
-		draggingImageDiv.style.width = `${image.width}px`;
-		draggingImageDiv.style.height = `${image.height}px`;
-		draggingImageDiv.style.backgroundColor = "#f0f0f055";
-		draggingImageDiv.style.border = `${1}px solid #000`;
-		draggingImageDiv.style.borderRadius = `${10}%`;
-		draggingImageDiv.style.textAlign = "center";
-		draggingImageDiv.style.font = `${2}em 'Alice', sans-serif`;
-		draggingImageDiv.textContent = selectedImages.size.toString(); // How many images are selected
-		document.body.appendChild(draggingImageDiv);
-		// Update the div position
-		updateDragDivPosition(ev);
-		// Disable the default dragging image
-		if (ev.dataTransfer) {
-			ev.dataTransfer.setDragImage(emptyImg, 0, 0);
-		} else {
-			console.error("ev.dataTransfer is null in DragStart");
-		}
-	} else {
-		console.error("Tried to drag image but it's null in DragStart");
-	}
-}
+	const draggedImage = ev.target as HTMLImageElement;
+	if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
 
-// DragImage - Mouse is being held and dragged.
-function dragImage(ev: DragEvent) {
-	if (draggingImageDiv) {
-		updateDragDivPosition(ev);
-	}
+	// If this image isn't one of the currently selected, click it to select it and deselect the previously selected
+	if (!selectedImages.has(draggedImage)) clickImage(ev);
+
+	// Attach dragging data and class to all participants
+	selectedImages.forEach((selectedImage) => {
+		selectedImage.setAttribute("data-dragging", "true");
+		selectedImage.classList.add("draggingImage");
+	});
+
+	// Disable the default dragging image
+	if (ev.dataTransfer) {
+		ev.dataTransfer.setDragImage(emptyImg, 0, 0);
+	} else console.error("ev.dataTransfer is null in DragStart");
 }
 
 let prevTarget: HTMLElement;
@@ -159,6 +136,7 @@ function dragImageOver(ev: DragEvent) {
 				element.appendChild(source);
 			});
 		} else if (element.classList.contains("rankingImage")) {
+			// IDEA: Animate images sliding past each other
 			let imageElement: HTMLImageElement = element as HTMLImageElement;
 			// The user dragged an image onto another image, place the image next to the target image in its parent.
 			if (selectedImages.has(imageElement)) return; //Selected imgs need to ignore eachother
@@ -180,7 +158,7 @@ function dragImageOver(ev: DragEvent) {
 	}
 }
 
-// DragImageEnd - Mouse dragging ends. The element that the dragging ended on receives this event.
+// DragImageEnd - Mouse dragging ends. The element that was being dragged receives this event.
 function dragImageEnd(ev: DragEvent) {
 	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
 	rankupContainer?.classList.add("allow-image-hover");
@@ -189,13 +167,6 @@ function dragImageEnd(ev: DragEvent) {
 		source.classList.remove("draggingImage");
 		source.removeAttribute("data-dragging");
 	});
-	draggingImageDiv.remove();
-}
-
-// UpdateDragDivPosition - updates where the div should be as mouse moves
-function updateDragDivPosition(ev: DragEvent) {
-	draggingImageDiv.style.left = `${ev.pageX}px`;
-	draggingImageDiv.style.top = `${ev.pageY}px`;
 }
 
 // RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
@@ -370,8 +341,7 @@ function addImageToContainer(url: string) {
 	image.className = "rankingImage";
 	image.src = url;
 	image.onclick = (event) => clickImage(event);
-	image.ondragstart = (event) => dragStart(event);
-	image.ondrag = (event) => dragImage(event);
+	image.ondragstart = (event) => imageDragStart(event);
 	imageContainer.appendChild(image);
 }
 
