@@ -32,19 +32,41 @@ body {
 	justify-content: center;
 	background-color: var(--primary);
 	margin: 0; /* Remove the padding around it */
-	border: 6px red solid; /* DEBUGGING: */
 }
 
 #mode-banner {
 	height: 3%;
-	color: rgb(88, 64, 2);
-	background: repeating-linear-gradient(290deg, rgb(129, 95, 8), goldenrod 5px);
+	color: var(--catppuccin-crust);
+
+	/* Solid text border */
+	text-shadow:
+		2px 0 var(--catppuccin-yellow),
+		-2px 0 var(--catppuccin-yellow),
+		0 2px var(--catppuccin-yellow),
+		0 -2px var(--catppuccin-yellow),
+		1px 1px var(--catppuccin-yellow),
+		-1px -1px var(--catppuccin-yellow),
+		1px -1px var(--catppuccin-yellow),
+		-1px 1px var(--catppuccin-yellow);
+
+	/* Striped banner */
+	background: repeating-linear-gradient(
+		300deg,
+		var(--catppuccin-base),
+		var(--catppuccin-base) 5px,
+		var(--catppuccin-yellow) 5px,
+		var(--catppuccin-yellow) 10px
+	);
+	outline-color: var(--catppuccin-yellow);
+	outline-style: solid;
+	outline-width: 0px 2px 2px 2px;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	font-family: "Alice";
-	font-size: 2em;
+	font-family: "Courier New";
+	font-weight: bold;
+	font-size: 2.8em;
 	border-radius: 0px 0px 20px 20px;
 }
 #page-container {
@@ -54,9 +76,6 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-
-	/* DEBUGGING: */
-	border: 5px blueviolet dotted;
 }
 
 .page-view {
@@ -70,7 +89,4 @@ body {
 	padding: 1%;
 	gap: 1%;
 	justify-content: safe center;
-
-	/* DEBUGGING: */
-	border: palevioletred 6px dashed;
 }

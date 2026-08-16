@@ -144,6 +144,7 @@
 	font-size: 2.5em;
 }
 .form-view #form-submit:hover {
-	background-color: var(--catppuccin-base);
-	border: 3px solid var(--catppuccin-mantle);
+	color: var(--catppuccin-green);
+	background-color: color-mix(in srgb, var(--catppuccin-green) 30%, black 50%);
+	border: 3px solid var(--catppuccin-green);
 }
