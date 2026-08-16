@@ -25,6 +25,7 @@ class Row {
 		let rowTab: HTMLDivElement = document.createElement("div");
 		rowTab.className = "rowTab rowPiece closed";
 		rowTab.id = "rowTab" + Row.count;
+		rowTab.onclick = (event) => event.stopPropagation();
 		rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
 		rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
 		// Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
@@ -56,7 +57,6 @@ class Row {
 		rowTitle.id = "rowTitle" + Row.count;
 		rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
 		rowTitle.ondrop = (event) => draggedOntoTextBox(event);
-		rowTitle.onfocus = () => clearSelections();
 		// Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
 		let resetDeleteContainer: HTMLDivElement = document.createElement("div");
 		resetDeleteContainer.className = "resetDeleteContainer";
@@ -73,6 +73,7 @@ class Row {
 		deleteButton.onclick = () => deleteRow(this.rowFull);
 		resetDeleteContainer.appendChild(resetButton);
 		resetDeleteContainer.appendChild(deleteButton);
+		resetDeleteContainer.onclick = (event) => event.stopPropagation();
 		// Add the rowTitle and the resetDeleteContainer to the rowHeader
 		rowHeader.appendChild(rowTab);
 		rowHeader.appendChild(rowTitle);
@@ -81,7 +82,6 @@ class Row {
 		this.rowFull.appendChild(rowHeader);
 		// rowBody will be the element that contains the row's ranking images.
 		this.rowBody.className = "rowBody rowPiece image-container";
-		this.rowBody.onclick = (event) => clickContainer(event);
 		this.rowBody.ondragover = (event) => dragImageOver(event);
 		this.rowBody.ondragend = (event) => dragImageEnd(event);
 		resetButton.onclick = () => resetRow(this.rowBody);
@@ -220,6 +220,7 @@ function resetRow(rowBody: HTMLDivElement) {
 			if (rowBody.firstChild) {
 				// Check firstChild is not null
 				while (rowBody.hasChildNodes()) {
+					deselectImage(rowBody.firstChild as HTMLImageElement);
 					imageContainer.appendChild(rowBody.firstChild);
 				}
 			}
@@ -343,12 +344,6 @@ function clearSelections() {
 	selectedImages.clear();
 }
 
-function clickContainer(ev: MouseEvent) {
-	// Clears selection when clicking on an empty spot of the container
-	let container: HTMLDivElement | null = ev.target as HTMLDivElement | null;
-	if (container && container.classList.contains("image-container")) clearSelections();
-}
-
 // dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
 function draggedOntoTextBox(ev: DragEvent) {
 	let data = ev.dataTransfer;
@@ -432,14 +427,10 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	document.body.addEventListener("click", (event) => {
 		console.log(`Clicked somewhere in body at ${new Date().toLocaleTimeString()}`);
 		clearSelections();
-		// TODO: Move me to new branch & PR
-		// TODO: Remove clear functions for container and rows since now its global
-		// TODO: Disable clearing when in text boxes? Look into if this is good or bad design
 	});
 
 	// Main container behaviors
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
-	imageContainer.onclick = clickContainer;
 	imageContainer.ondragover = dragImageOver;
 	imageContainer.ondragend = dragImageEnd;
 
