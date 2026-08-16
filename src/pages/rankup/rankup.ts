@@ -424,10 +424,7 @@ function renderRankUpPage(pageContainer: HTMLElement) {
 	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement;
 
 	// Add global listener for deselection
-	document.body.addEventListener("click", (event) => {
-		console.log(`Clicked somewhere in body at ${new Date().toLocaleTimeString()}`);
-		clearSelections();
-	});
+	document.body.addEventListener("click", (event) => clearSelections());
 
 	// Main container behaviors
 	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
