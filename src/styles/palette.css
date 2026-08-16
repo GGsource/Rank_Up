@@ -9,8 +9,8 @@
 	/* ---------------------------- Color Selections ---------------------------- */
 	--primary: var(--catppuccin-crust);
 	--text--dark: var(--catppuccin-text);
-	--colorHovered: rgb(255, 255, 255, 0.5);
-	--colorSelected: rgba(69, 202, 255, 0.5);
+	--colorHovered: var(--catppuccin-text);
+	--colorSelected: var(--catppuccin-blue);
 
 	/* ------------------------------ Color Palette ----------------------------- */
 	--catppuccin-rosewater: #f2d5cf;
