@@ -14,8 +14,6 @@
 
 	/* ---------------------------------- Sizes --------------------------------- */
 	--imageRes: 10vh; /* The size of each image */
-	--ratio: calc(186 / 314);
-	--rowImageCount: 8; /* How many images a row should be able to fit */
 	--rowBodyWidth: calc(var(--imageRes) * var(--rowImageCount)); /* The calculated width of the row's body */
 	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
 	--radius: 1.8vh;
