@@ -79,7 +79,7 @@ rowList (containts all rowFulls)
 .rankup-view .rowFull {
 	display: flex;
 	flex-direction: row;
-	height: var(--imageRes);
+	min-height: var(--imageRes);
 	width: 100%;
 	justify-content: center;
 }
@@ -189,6 +189,7 @@ rowList (containts all rowFulls)
 	/* Align items within to the left */
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 }
 
 .rankup-view .rankingImage {
