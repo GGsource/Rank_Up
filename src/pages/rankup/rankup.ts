@@ -136,7 +136,6 @@ function dragImageOver(ev: DragEvent) {
 				element.appendChild(source);
 			});
 		} else if (element.classList.contains("rankingImage")) {
-			// IDEA: Animate images sliding past each other
 			let imageElement: HTMLImageElement = element as HTMLImageElement;
 			// The user dragged an image onto another image, place the image next to the target image in its parent.
 			if (selectedImages.has(imageElement)) return; //Selected imgs need to ignore eachother
