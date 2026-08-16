@@ -11,16 +11,4 @@
 	--text--dark: white;
 	--colorHovered: rgb(255, 255, 255, 0.5);
 	--colorSelected: rgba(69, 202, 255, 0.5);
-
-	/* ---------------------------------- Sizes --------------------------------- */
-	--imageRes: 10vh; /* The size of each image */
-	--rowBodyWidth: calc(var(--imageRes) * var(--rowImageCount)); /* The calculated width of the row's body */
-	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
-	--radius: 1.8vh;
-
-	/* --------------------------------- Speeds --------------------------------- */
-	--animSlowMS: 1000ms;
-	--animNormMS: 500ms;
-	--animFastMS: 200ms;
-	--animInstMS: 100ms;
 }
