@@ -71,7 +71,6 @@ rowList (containts all rowFulls)
 .rankup-view .rowFull {
 	display: flex;
 	flex-direction: row;
-	min-height: var(--imageRes);
 	width: 100%;
 	justify-content: center;
 }
@@ -180,6 +179,7 @@ rowList (containts all rowFulls)
 .rankup-view .rowBody {
 	/* Make the rowBody take up the remaining space in the rowTab */
 	width: var(--rowBodyWidth);
+	min-height: var(--imageRes);
 	background-color: var(--catppuccin-base);
 	border: 2px var(--catppuccin-red) solid;
 	box-sizing: content-box;
