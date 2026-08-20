@@ -350,13 +350,14 @@ function makeRowsDrag(): void {
 	const rowList = document.getElementById("rowList");
 	if (!rowList) throw new Error("Could not enable row dragging. rowList was not found.");
 
-	let rowSortable = new Sortable(rowList, {
+	new Sortable(rowList, {
 		draggable: ".rowFull", // The thing to be dragged
 		handle: ".dragContainer", // The thing to grab to drag by
 		direction: "vertical",
 		animation: 180,
 		easing: "cubic-bezier(0.22,1,0.36,1)",
 		ghostClass: "rowSortGhost",
+		ignore: "a",
 		onStart(event) {
 			isRowBeingDragged = true;
 			// Add the dragging class for styling
