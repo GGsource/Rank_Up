@@ -1,0 +1,35 @@
+.toast-container {
+	border: 3px solid orangered;
+}
+
+.toast {
+	border: 4px dashed var(--text--dark);
+	opacity: 0;
+	translate: 0 8px;
+	transition:
+		opacity 0.25s ease,
+		translate 0.25s ease;
+}
+
+.toast--visible {
+	opacity: 1;
+	translate: 0 0;
+}
+
+.toast--leaving {
+	opacity: 0;
+	translate: 0 -6px;
+}
+
+.toast--Success {
+	border-color: var(--catppuccin-green);
+}
+.toast--Failure {
+	border-color: var(--catppuccin-red);
+}
+.toast--Warning {
+	border-color: var(--catppuccin-yellow);
+}
+.toast--Info {
+	border-color: var(--catppuccin-sapphire);
+}
