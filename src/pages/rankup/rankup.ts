@@ -254,12 +254,6 @@ function hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
 	}, delayMS);
 }
 
-window.addEventListener("keydown", function (ev: KeyboardEvent) {
-	if (ev.key == "Control" || ev.key == "Shift") {
-		ev.preventDefault();
-	}
-});
-
 function clickImage(ev: MouseEvent) {
 	ev.stopPropagation(); // Stop event from moving up to prevent clearing
 	const image = ev.target as HTMLImageElement;
