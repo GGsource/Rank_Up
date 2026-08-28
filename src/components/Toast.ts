@@ -1,4 +1,4 @@
-export type ToastType = "Success" | "Warning" | "Failure" | "Info";
+type ToastType = "Success" | "Warning" | "Failure" | "Info";
 
 export abstract class ToastBox {
 	private static readonly TOAST_DURATION = 5000; // miliseconds
