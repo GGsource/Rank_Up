@@ -26,6 +26,7 @@
 	border: 3px var(--text--dark) solid;
 	background-color: transparent;
 	border-radius: var(--radius--light);
+	color: inherit;
 }
 
 .form-view #form-title-input {
@@ -79,7 +80,6 @@
 	gap: 0.5cqw;
 	padding: 1%;
 	overflow: scroll;
-	/* container-type: ; */
 }
 
 .form-view .image-wrapper {
@@ -125,6 +125,7 @@
 	height: 5%;
 	width: 100%;
 	font-size: 1.5em;
+	color: inherit;
 }
 .form-view #clear-uploads:disabled {
 	opacity: 0.2;
@@ -140,6 +141,7 @@
 .form-view #form-submit {
 	height: 5vh;
 	font-size: 2.5em;
+	color: inherit;
 }
 .form-view #form-submit:hover {
 	color: var(--catppuccin-green);

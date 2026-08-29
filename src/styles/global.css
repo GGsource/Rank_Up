@@ -23,7 +23,6 @@
 
 * {
 	box-sizing: border-box;
-	color: var(--text--dark);
 }
 
 html,
@@ -37,6 +36,7 @@ body {
 	justify-content: center;
 	background-color: var(--primary);
 	margin: 0; /* Remove the padding around it */
+	color: var(--text--dark);
 }
 
 #mode-banner {
