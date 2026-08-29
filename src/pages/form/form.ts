@@ -77,6 +77,9 @@ class FormPage extends Page {
 				renderPage("rankup");
 			}
 		});
+		// IDEA: Add toast when lacking a form title
+		// IDEA: Disable the image adder when placeholders are enabled
+		// IDEA: Improve styling for toasts
 	}
 
 	/**
