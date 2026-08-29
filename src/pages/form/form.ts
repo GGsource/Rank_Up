@@ -3,6 +3,7 @@ import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
 import { Page } from "@/pages/Page";
+import { ToastBox } from "@/components/Toast";
 
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
@@ -15,6 +16,8 @@ class FormPage extends Page {
 	private titleInput = this.getEl<HTMLInputElement>("form-title-input");
 	private descInput = this.getEl<HTMLInputElement>("form-desc-input");
 	private collectedURLs: string[] = [];
+	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
+	private enablePlaceHolders = false; // Whether placeholders are on or off
 
 	/**
 	 * Default constructor attaches event listeners
@@ -22,6 +25,16 @@ class FormPage extends Page {
 	constructor() {
 		super();
 		/* ------------------------- Add Event Interactions ------------------------- */
+		// Global listener for placeholder shortcut
+		window.addEventListener("keydown", (event) => {
+			if (this.toggleablePlaceHolders && event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p") {
+				this.enablePlaceHolders = !this.enablePlaceHolders;
+				ToastBox.showToast(
+					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
+					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
+				);
+			}
+		});
 		// Form description input
 		this.descInput.addEventListener("keydown", (event) => {
 			if (event.key === "Enter" && event.ctrlKey) {
@@ -55,8 +68,14 @@ class FormPage extends Page {
 		// Form Submission button
 		this.formView.addEventListener("submit", (event) => {
 			event.preventDefault(); // Prevent submission auto-send
-			setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
-			renderPage("rankup");
+			if (!this.enablePlaceHolders && this.collectedURLs.length < 2) {
+				ToastBox.showToast("No images added! Need at least 2", "Failure");
+				// IDEA: Style image box to red border for a second or two to show images missing
+			} else {
+				this.toggleablePlaceHolders = false; // No longer allowed to toggle
+				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
+				renderPage("rankup");
+			}
 		});
 	}
 
