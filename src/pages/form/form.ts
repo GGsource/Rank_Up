@@ -33,6 +33,11 @@ class FormPage extends Page {
 					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
 					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
 				);
+				this.formUploadContainer.inert = this.enablePlaceHolders; // Disable if placeholders are on
+				this.formUploadContainer.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				if (this.enablePlaceHolders) {
+					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
+				}
 			}
 		});
 		// Form description input
@@ -58,12 +63,9 @@ class FormPage extends Page {
 		});
 		// Form Image Clear button
 		this.clearUploadsButton.addEventListener("click", () => {
-			this.uploadsContainer
-				.querySelectorAll("img.uploaded-image")
-				.forEach((image) => URL.revokeObjectURL((image as HTMLImageElement).src));
-			this.uploadsContainer.hidden = true;
-			this.uploadIndicators.hidden = false;
-			this.clearUploadsButton.disabled = true;
+			Array.from(this.uploadsContainer.getElementsByClassName("delete-button")).forEach((deleteButton) =>
+				(deleteButton as HTMLButtonElement).click(),
+			);
 		});
 		// Form Submission button
 		this.formView.addEventListener("submit", (event) => {
@@ -78,9 +80,6 @@ class FormPage extends Page {
 			}
 		});
 		// IDEA: Add toast when lacking a form title
-		// IDEA: Disable the image adder when placeholders are enabled
-		// IDEA: CLEAR the image adder and image list when placeholders enabled
-		// IDEA: Improve styling for toasts
 	}
 
 	/**
