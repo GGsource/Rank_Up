@@ -14,7 +14,6 @@
 	font: inherit;
 	height: 20vh;
 	aspect-ratio: 1;
-	color: var(--catppuccin-text);
 	background-color: var(--catppuccin-base);
 	border: none;
 	border-radius: var(--radius--light);
