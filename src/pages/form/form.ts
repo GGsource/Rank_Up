@@ -67,7 +67,7 @@ class FormPage extends Page {
 				(deleteButton as HTMLButtonElement).click(),
 			);
 		});
-		// Form Submission button
+		// Form Submission
 		this.formView.addEventListener("submit", (event) => {
 			event.preventDefault(); // Prevent submission auto-send
 			if (!this.enablePlaceHolders && this.collectedURLs.length < 2) {
@@ -79,7 +79,8 @@ class FormPage extends Page {
 				renderPage("rankup");
 			}
 		});
-		// IDEA: Add toast when lacking a form title
+		// Invalid Submission
+		this.titleInput.addEventListener("invalid", (event) => ToastBox.showToast("Title is required to submit a new RankUp!", "Failure"));
 	}
 
 	/**
