@@ -22,7 +22,7 @@
 }
 
 .rankup-view #headerDescription {
-	font: 1.5em var(--font-title);
+	font: 1.5em var(--font-text);
 	flex: 1;
 }
 .rankup-view .headerText:hover {
