@@ -1,5 +1,11 @@
 .toast-container {
-	border: 3px solid orangered;
+	position: absolute;
+	top: calc(3% + 2px);
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: 20%;
 }
 
 .toast {
