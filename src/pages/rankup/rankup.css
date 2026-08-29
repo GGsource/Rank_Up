@@ -17,15 +17,12 @@
 	transition: border var(--animFastMS);
 }
 .rankup-view #headerTitle {
-	font:
-		3em "Alice",
-		sans-serif;
+	font: 3em var(--font-title);
 	flex: 1;
 }
 
 .rankup-view #headerDescription {
-	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-	font-size: 1.5em;
+	font: 1.5em var(--font-title);
 	flex: 1;
 }
 .rankup-view .headerText:hover {
@@ -233,9 +230,7 @@ rowList (containts all rowFulls)
 .rankup-view .rowTitle {
 	width: 100%;
 	text-align: center;
-	font:
-		2em "Alice",
-		sans-serif;
+	font: 2em var(--font-title);
 	background-color: transparent;
 	border: none;
 	color: var(--catppuccin-crust);

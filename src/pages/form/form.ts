@@ -79,6 +79,7 @@ class FormPage extends Page {
 		});
 		// IDEA: Add toast when lacking a form title
 		// IDEA: Disable the image adder when placeholders are enabled
+		// IDEA: CLEAR the image adder and image list when placeholders enabled
 		// IDEA: Improve styling for toasts
 	}
 

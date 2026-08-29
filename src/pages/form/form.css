@@ -5,15 +5,14 @@
 	margin-top: auto; /* Snaps last item to bottom*/
 }
 .form-view > * {
-	font-family: "Courier New", Courier, monospace;
+	font-family: var(--font-text);
 	width: 80%;
 	max-width: 1000px;
 }
 
 /* ------------------------------- Page Header ------------------------------ */
 .form-view #form-header {
-	font-size: 5em;
-	font-family: "Alice";
+	font: 5em var(--font-title);
 	text-align: center;
 }
 
