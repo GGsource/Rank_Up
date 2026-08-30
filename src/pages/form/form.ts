@@ -71,8 +71,9 @@ class FormPage extends Page {
 		this.formView.addEventListener("submit", (event) => {
 			event.preventDefault(); // Prevent submission auto-send
 			if (!this.enablePlaceHolders && this.collectedURLs.length < 2) {
-				ToastBox.showToast("No images added! Need at least 2", "Failure");
-				// IDEA: Style image box to red border for a second or two to show images missing
+				ToastBox.showToast("At least 2 images must be selected!", "Failure");
+				this.formUploadContainer.classList.add("input--errored");
+				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
 				this.toggleablePlaceHolders = false; // No longer allowed to toggle
 				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
@@ -80,7 +81,11 @@ class FormPage extends Page {
 			}
 		});
 		// Invalid Submission
-		this.titleInput.addEventListener("invalid", (event) => ToastBox.showToast("Title is required to submit a new RankUp!", "Failure"));
+		this.titleInput.addEventListener("invalid", (event) => {
+			this.titleInput.classList.add("input--errored");
+			setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
+			ToastBox.showToast("Title is required for a new RankUp!", "Failure");
+		});
 	}
 
 	/**

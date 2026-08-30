@@ -32,6 +32,10 @@
 .form-view #form-title-input {
 	height: 5%;
 	font-size: 1.5em;
+	transition:
+		border-color var(--animNormMS),
+		background-color var(--animNormMS),
+		color var(--animNormMS);
 }
 
 .form-view #form-desc-input {
@@ -46,6 +50,11 @@
 	height: 35%;
 	display: flex;
 	flex-direction: row;
+	background-color: transparent;
+	transition:
+		border-color var(--animNormMS),
+		background-color var(--animNormMS),
+		color var(--animNormMS);
 }
 
 .form-view #form-upload-area.drag-active,
@@ -54,6 +63,13 @@
 	background-color: color-mix(in srgb, var(--catppuccin-teal) 10%, transparent 90%);
 	color: var(--catppuccin-teal);
 	cursor: pointer;
+}
+
+.form-view #form-upload-area.input--errored,
+.form-view #form-title-input.input--errored {
+	color: var(--catppuccin-red);
+	border-color: var(--catppuccin-red);
+	background-color: color-mix(in srgb, var(--catppuccin-red) 10%, transparent 90%);
 }
 
 .form-view #upload-indicators {
