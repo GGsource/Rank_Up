@@ -1,5 +1,6 @@
 /* Include the palette file */
 @import url("./palette.css");
+@import url("./toast.css");
 
 /* Global Variables */
 :root {
@@ -15,6 +16,9 @@
 	--animNormMS: 500ms;
 	--animFastMS: 200ms;
 	--animInstMS: 100ms;
+	/* ---------------------------------- Fonts --------------------------------- */
+	--font-title: "Alice";
+	--font-text: "Courier New";
 }
 
 * {
@@ -32,6 +36,7 @@ body {
 	justify-content: center;
 	background-color: var(--primary);
 	margin: 0; /* Remove the padding around it */
+	color: var(--text--dark);
 }
 
 #mode-banner {
@@ -64,9 +69,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	font-family: "Courier New";
-	font-weight: bold;
-	font-size: 2.8em;
+	font: bold 2.8em var(--font-text);
 	border-radius: 0px 0px 20px 20px;
 }
 #page-container {

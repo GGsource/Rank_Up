@@ -14,12 +14,12 @@
 	font: inherit;
 	height: 20vh;
 	aspect-ratio: 1;
-	color: var(--catppuccin-text);
 	background-color: var(--catppuccin-base);
 	border: none;
 	border-radius: var(--radius--light);
 	transition: outline 0.2s;
 	outline: 0px transparent solid;
+	color: inherit;
 }
 .home-view .home-cards:is(:hover, :focus-visible) {
 	outline: 3px var(--catppuccin-teal) solid;

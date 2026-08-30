@@ -3,6 +3,7 @@ import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
 import { Page } from "@/pages/Page";
+import { ToastBox } from "@/components/Toast";
 
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
@@ -15,6 +16,8 @@ class FormPage extends Page {
 	private titleInput = this.getEl<HTMLInputElement>("form-title-input");
 	private descInput = this.getEl<HTMLInputElement>("form-desc-input");
 	private collectedURLs: string[] = [];
+	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
+	private enablePlaceHolders = false; // Whether placeholders are on or off
 
 	/**
 	 * Default constructor attaches event listeners
@@ -22,6 +25,21 @@ class FormPage extends Page {
 	constructor() {
 		super();
 		/* ------------------------- Add Event Interactions ------------------------- */
+		// Global listener for placeholder shortcut
+		window.addEventListener("keydown", (event) => {
+			if (this.toggleablePlaceHolders && event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p") {
+				this.enablePlaceHolders = !this.enablePlaceHolders;
+				ToastBox.showToast(
+					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
+					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
+				);
+				this.formUploadContainer.inert = this.enablePlaceHolders; // Disable if placeholders are on
+				this.formUploadContainer.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				if (this.enablePlaceHolders) {
+					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
+				}
+			}
+		});
 		// Form description input
 		this.descInput.addEventListener("keydown", (event) => {
 			if (event.key === "Enter" && event.ctrlKey) {
@@ -45,18 +63,28 @@ class FormPage extends Page {
 		});
 		// Form Image Clear button
 		this.clearUploadsButton.addEventListener("click", () => {
-			this.uploadsContainer
-				.querySelectorAll("img.uploaded-image")
-				.forEach((image) => URL.revokeObjectURL((image as HTMLImageElement).src));
-			this.uploadsContainer.hidden = true;
-			this.uploadIndicators.hidden = false;
-			this.clearUploadsButton.disabled = true;
+			Array.from(this.uploadsContainer.getElementsByClassName("delete-button")).forEach((deleteButton) =>
+				(deleteButton as HTMLButtonElement).click(),
+			);
 		});
-		// Form Submission button
+		// Form Submission
 		this.formView.addEventListener("submit", (event) => {
 			event.preventDefault(); // Prevent submission auto-send
-			setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
-			renderPage("rankup");
+			if (!this.enablePlaceHolders && this.collectedURLs.length < 2) {
+				ToastBox.showToast("At least 2 images must be selected!", "Failure");
+				this.formUploadContainer.classList.add("input--errored");
+				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
+			} else {
+				this.toggleablePlaceHolders = false; // No longer allowed to toggle
+				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
+				renderPage("rankup");
+			}
+		});
+		// Invalid Submission
+		this.titleInput.addEventListener("invalid", (event) => {
+			this.titleInput.classList.add("input--errored");
+			setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
+			ToastBox.showToast("Title is required for a new RankUp!", "Failure");
 		});
 	}
 

@@ -5,16 +5,14 @@
 	margin-top: auto; /* Snaps last item to bottom*/
 }
 .form-view > * {
-	font-family: "Courier New", Courier, monospace;
+	font-family: var(--font-text);
 	width: 80%;
 	max-width: 1000px;
-	color: var(--text--dark);
 }
 
 /* ------------------------------- Page Header ------------------------------ */
 .form-view #form-header {
-	font-size: 5em;
-	font-family: "Alice";
+	font: 5em var(--font-title);
 	text-align: center;
 }
 
@@ -28,11 +26,16 @@
 	border: 3px var(--text--dark) solid;
 	background-color: transparent;
 	border-radius: var(--radius--light);
+	color: inherit;
 }
 
 .form-view #form-title-input {
 	height: 5%;
 	font-size: 1.5em;
+	transition:
+		border-color var(--animNormMS),
+		background-color var(--animNormMS),
+		color var(--animNormMS);
 }
 
 .form-view #form-desc-input {
@@ -47,6 +50,11 @@
 	height: 35%;
 	display: flex;
 	flex-direction: row;
+	background-color: transparent;
+	transition:
+		border-color var(--animNormMS),
+		background-color var(--animNormMS),
+		color var(--animNormMS);
 }
 
 .form-view #form-upload-area.drag-active,
@@ -55,6 +63,13 @@
 	background-color: color-mix(in srgb, var(--catppuccin-teal) 10%, transparent 90%);
 	color: var(--catppuccin-teal);
 	cursor: pointer;
+}
+
+.form-view #form-upload-area.input--errored,
+.form-view #form-title-input.input--errored {
+	color: var(--catppuccin-red);
+	border-color: var(--catppuccin-red);
+	background-color: color-mix(in srgb, var(--catppuccin-red) 10%, transparent 90%);
 }
 
 .form-view #upload-indicators {
@@ -81,7 +96,6 @@
 	gap: 0.5cqw;
 	padding: 1%;
 	overflow: scroll;
-	/* container-type: ; */
 }
 
 .form-view .image-wrapper {
@@ -127,6 +141,7 @@
 	height: 5%;
 	width: 100%;
 	font-size: 1.5em;
+	color: inherit;
 }
 .form-view #clear-uploads:disabled {
 	opacity: 0.2;
@@ -142,6 +157,7 @@
 .form-view #form-submit {
 	height: 5vh;
 	font-size: 2.5em;
+	color: inherit;
 }
 .form-view #form-submit:hover {
 	color: var(--catppuccin-green);

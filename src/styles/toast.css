@@ -1,0 +1,60 @@
+.toast-container {
+	position: absolute;
+	top: calc(3% + 2px);
+	left: 0;
+	right: 0;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 10%;
+	max-height: calc(100% - (3% + 2px));
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.toast {
+	border: 4px solid var(--text--dark);
+	border-radius: var(--radius--light);
+	min-height: 70px;
+	text-align: center;
+	align-content: center;
+	font: bold 1.4em var(--font-text);
+	color: var(--text--dark);
+	opacity: 0;
+	translate: 0 8px;
+	transition:
+		opacity 0.25s ease,
+		translate 0.25s ease;
+}
+
+.toast--visible {
+	opacity: 1;
+	translate: 0 0;
+}
+
+.toast--leaving {
+	opacity: 0;
+	translate: 0 -6px;
+}
+
+.toast--Success {
+	color: var(--catppuccin-green);
+	border-color: var(--catppuccin-green);
+	background: color-mix(in srgb, var(--catppuccin-green) 30%, black 50%);
+}
+.toast--Failure {
+	color: var(--catppuccin-red);
+	border-color: var(--catppuccin-red);
+	background: color-mix(in srgb, var(--catppuccin-red) 30%, black 50%);
+}
+.toast--Warning {
+	color: var(--catppuccin-yellow);
+	border-color: var(--catppuccin-yellow);
+	background: color-mix(in srgb, var(--catppuccin-yellow) 30%, black 50%);
+}
+.toast--Info {
+	color: var(--catppuccin-sapphire);
+	border-color: var(--catppuccin-sapphire);
+	background: color-mix(in srgb, var(--catppuccin-sapphire) 30%, black 50%);
+}
