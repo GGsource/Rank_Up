@@ -102,7 +102,10 @@ class RankUpPage {
 	// DOCS: AddRow - Adds a new row above or below the specified row.
 	addRow(row: Row, isAbove: boolean) {
 		// First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
-		if (RankUpPage.rowList.childElementCount == 1) row.setEnableDelete(true);
+		if (RankUpPage.rowList.childElementCount == 1) {
+			const onlyRow = RankUpPage.rowList.firstChild as Row;
+			onlyRow.setEnableDelete(true);
+		}
 		// Create the new row
 		const insertDirection = isAbove ? "beforebegin" : "afterend";
 		row.insertAdjacentElement(insertDirection, new Row(this));
@@ -121,7 +124,10 @@ class RankUpPage {
 		this.clearRow(row);
 		row.remove();
 		// If there is only one row remaining disable the delete button and make it look disabled.
-		if (RankUpPage.rowList.childElementCount <= 1) row.setEnableDelete(false);
+		if (RankUpPage.rowList.childElementCount <= 1) {
+			const onlyRow = RankUpPage.rowList.firstChild as Row;
+			onlyRow.setEnableDelete(false);
+		}
 	}
 
 	// DOCS:
@@ -210,11 +216,7 @@ class RankUpPage {
 		if (!this.selectedImages.has(draggedImage)) this.clickImage(event);
 
 		// Attach dragging data and class to all participants
-		this.selectedImages.forEach((selectedImage) => {
-			selectedImage.setAttribute("data-dragging", "true");
-			selectedImage.classList.add("draggingImage");
-		});
-		// TODO: This data-dragging is completely redundant, is it not? Just use class
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.add("draggingImage"));
 
 		// Disable the default dragging image
 		if (!event.dataTransfer) throw new Error("ev.dataTransfer is null in DragStart");
@@ -253,14 +255,13 @@ class RankUpPage {
 		this.prevTarget = element;
 	}
 
+	// TODO: Rename to be in line with other function
 	// DOCS: DragImageEnd - Mouse dragging ends. The element that was being dragged receives this event.
 	dragImageEnd() {
+		this.prevTarget = null;
+		this.isPrevSideLeft = false;
 		RankUpPage.rowView.classList.add("allow-image-hover");
-		var sources = document.querySelectorAll("[data-dragging]");
-		sources.forEach((source) => {
-			source.classList.remove("draggingImage");
-			source.removeAttribute("data-dragging");
-		});
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("draggingImage"));
 	}
 
 	// DOCS: RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
