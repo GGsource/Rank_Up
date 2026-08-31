@@ -2,20 +2,19 @@ import formHTMLRaw from "./form.html?raw";
 import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
-import { Page } from "@/pages/Page";
 import { ToastBox } from "@/components/Toast";
-
-class FormPage extends Page {
+import * as Utils from "@/utils/utils";
+class FormPage {
 	/* ------------------------------ Page elements ----------------------------- */
-	private formFileInput = this.getEl<HTMLInputElement>("form-file-input");
-	private formUploadContainer = this.getEl("form-upload-area");
-	private clearUploadsButton = this.getEl<HTMLButtonElement>("clear-uploads");
-	private uploadsContainer = this.getEl("upload-image-container");
-	private uploadIndicators = this.getEl("upload-indicators");
-	private formView = this.getEl<HTMLFormElement>("form-view");
-	private titleInput = this.getEl<HTMLInputElement>("form-title-input");
-	private descInput = this.getEl<HTMLInputElement>("form-desc-input");
-	private collectedURLs: string[] = [];
+	private formView = Utils.getEl<HTMLFormElement>("form-view");
+	private titleInput = Utils.getEl<HTMLInputElement>("form-title-input");
+	private descInput = Utils.getEl<HTMLInputElement>("form-desc-input");
+	private formFileInput = Utils.getEl<HTMLInputElement>("form-file-input");
+	private formUploadContainer = Utils.getEl("form-upload-area");
+	private uploadsContainer = Utils.getEl("upload-image-container");
+	private uploadIndicators = Utils.getEl("upload-indicators");
+	private clearUploadsButton = Utils.getEl<HTMLButtonElement>("clear-uploads");
+	private collectedURLs: string[] = []; // List of uploaded images
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
 
@@ -23,7 +22,6 @@ class FormPage extends Page {
 	 * Default constructor attaches event listeners
 	 */
 	constructor() {
-		super();
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
 		window.addEventListener("keydown", (event) => {
@@ -151,6 +149,7 @@ class FormPage extends Page {
 	}
 }
 
+// DOCS:
 async function renderFormPage(pageContainer: HTMLElement) {
 	/* --------------------- Inject raw HTML into container --------------------- */
 	pageContainer.innerHTML = formHTMLRaw;
