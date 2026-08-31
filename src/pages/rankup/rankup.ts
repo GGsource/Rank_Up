@@ -114,8 +114,7 @@ class RankUpPage {
 
 	// DOCS: clearRow - Resets a specified row to be empty, moving children back to imageContanier.
 	clearRow(row: Row) {
-		const images = Array.from(row.rowBody.children) as HTMLImageElement[];
-		images.forEach((image) => {
+		row.getImages().forEach((image) => {
 			this.deselectImage(image);
 			RankUpPage.imageContainer.append(image);
 		});
@@ -359,6 +358,9 @@ class Row extends HTMLElement {
 		this.rowBody.ondragover = (event) => rankUpPage.dragImageOver(event);
 		this.rowBody.ondragend = () => rankUpPage.dragImageEnd();
 		this.append(this.rowHeader, this.rowBody);
+	}
+	getImages(): HTMLImageElement[] {
+		return Array.from(this.rowBody.children) as HTMLImageElement[];
 	}
 }
 
