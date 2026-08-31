@@ -102,11 +102,7 @@ class RankUpPage {
 	// DOCS: AddRow - Adds a new row above or below the specified row.
 	addRow(row: Row, isAbove: boolean) {
 		// First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
-		if (RankUpPage.rowList.childElementCount == 1) {
-			row.deleteButton.style.pointerEvents = "auto";
-			row.deleteButton.style.opacity = `${1}`;
-			// TODO: Replace with a class or disabling the button
-		}
+		if (RankUpPage.rowList.childElementCount == 1) row.setEnableDelete(true);
 		// Create the new row
 		const insertDirection = isAbove ? "beforebegin" : "afterend";
 		row.insertAdjacentElement(insertDirection, new Row(this));
@@ -125,11 +121,7 @@ class RankUpPage {
 		this.clearRow(row);
 		row.remove();
 		// If there is only one row remaining disable the delete button and make it look disabled.
-		if (RankUpPage.rowList.childElementCount <= 1) {
-			row.deleteButton.style.pointerEvents = "none";
-			row.deleteButton.style.opacity = `${0.2}`;
-			// TODO: Replace this with just disabling the button
-		}
+		if (RankUpPage.rowList.childElementCount <= 1) row.setEnableDelete(false);
 	}
 
 	// DOCS:
@@ -359,8 +351,17 @@ class Row extends HTMLElement {
 		this.rowBody.ondragend = () => rankUpPage.dragImageEnd();
 		this.append(this.rowHeader, this.rowBody);
 	}
+
+	// DOCS:
 	getImages(): HTMLImageElement[] {
 		return Array.from(this.rowBody.children) as HTMLImageElement[];
+	}
+
+	// DOCS:
+	setEnableDelete(enable: boolean) {
+		// TODO: Replace with an html classname or just disabling the button `disable = true;`
+		this.deleteButton.style.pointerEvents = enable ? "auto" : "none";
+		this.deleteButton.style.opacity = enable ? `${1}` : `${0.2}`;
 	}
 }
 
