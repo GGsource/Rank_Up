@@ -170,7 +170,7 @@ class RankUpPage {
 			if (lastNdx !== -1) {
 				const start = Math.min(currentNdx, lastNdx);
 				const end = Math.max(currentNdx, lastNdx);
-				for (const imageToSelect of images) this.selectImage(imageToSelect);
+				for (let i = start; i <= end; i++) this.selectImage(images[i]);
 			} else this.selectImage(image);
 		} else {
 			// Normal image click, only select the one image
