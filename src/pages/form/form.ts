@@ -149,7 +149,11 @@ class FormPage {
 	}
 }
 
-// DOCS:
+/**
+ * Renders the Form Page and attaches to the view window
+ *
+ * @param pageContainer container onto which to mount this page
+ */
 async function renderFormPage(pageContainer: HTMLElement) {
 	/* --------------------- Inject raw HTML into container --------------------- */
 	pageContainer.innerHTML = formHTMLRaw;
