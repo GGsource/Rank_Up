@@ -13,16 +13,19 @@ import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
 import { getUserData } from "@/state/UserData";
 
+const STARTING_ROW_COUNT = 5;
+const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
+
 interface KeyPairList {
 	[key: string]: number;
 }
 
 class RankUpPage {
-	private static rowView = Utils.getEl("rankup-view");
-	static rowList = Utils.getEl("rowList");
-	static imageContainer = Utils.getEl("imageContainer");
-	private static headerTitle = Utils.getEl<HTMLInputElement>("headerTitle");
-	private static headerDescription = Utils.getEl<HTMLInputElement>("headerDescription");
+	private rowView = Utils.getEl("rankup-view");
+	private rowList = Utils.getEl("rowList");
+	private imageContainer = Utils.getEl("imageContainer");
+	private headerTitle = Utils.getEl<HTMLInputElement>("headerTitle");
+	private headerDescription = Utils.getEl<HTMLInputElement>("headerDescription");
 	private isRowBeingDragged = false;
 	private timeoutIds: KeyPairList = {};
 	private lastHiddenTab: HTMLDivElement | null = null;
@@ -30,42 +33,36 @@ class RankUpPage {
 	private lastSelectedImage: HTMLImageElement | null = null;
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
-	private static userData = getUserData();
-	private static readonly emptyImg = new Image();
-	private static readonly STARTING_ROW_COUNT = 5;
-	private static readonly placeholderImages = [
-		"bird",
-		"bird_evil",
-		"BordBlue",
-		"BordGreen",
-		"BordPink",
-		"BordPorple",
-		"BordRee",
-		"BordWhite",
-		"BordYellow",
-	];
+	private userData = getUserData();
+	private readonly emptyImg = new Image();
+
+	// DOCS: Mounter
+	static mountTo(pageContainer: HTMLElement) {
+		pageContainer.innerHTML = rankupHTMLRaw;
+		return new RankUpPage();
+	}
 
 	// DOCS: Constructor
-	constructor() {
+	private constructor() {
 		/* ------------------------------- Attach Rows ------------------------------ */
-		for (let rowNum: number = 1; rowNum <= RankUpPage.STARTING_ROW_COUNT; rowNum++) RankUpPage.rowList.append(new Row(this, rowNum));
+		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
 		this.makeRowsDraggable();
-		RankUpPage.emptyImg.src = emptyImage;
+		this.emptyImg.src = emptyImage;
 		/* ---------------------------- Attach Listeners ---------------------------- */
-		RankUpPage.rowView.addEventListener("click", () => this.clearSelections());
+		this.rowView.addEventListener("click", () => this.clearSelections());
 		// Main container behaviors
-		RankUpPage.imageContainer.ondragover = this.dragImageOver;
-		RankUpPage.imageContainer.ondragend = this.dragImageEnd;
+		this.imageContainer.ondragover = (event) => this.dragImageOver(event);
+		this.imageContainer.ondragend = () => this.dragImageEnd();
 		// Text boxes behaviors
-		RankUpPage.headerTitle.ondragover = this.draggedOntoTextBox;
-		RankUpPage.headerDescription.ondragover = this.draggedOntoTextBox;
+		this.headerTitle.ondragover = (event) => this.draggedOntoTextBox(event);
+		this.headerDescription.ondragover = (event) => this.draggedOntoTextBox(event);
 		/* ------------------------------ Insert images ----------------------------- */
-		if (RankUpPage.userData) {
-			RankUpPage.headerTitle.value = RankUpPage.userData.title;
-			RankUpPage.headerDescription.value = RankUpPage.userData.desc;
-			if (RankUpPage.userData.imageURLs.length > 0) RankUpPage.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
+		if (this.userData) {
+			this.headerTitle.value = this.userData.title;
+			this.headerDescription.value = this.userData.desc;
+			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
 			else
-				RankUpPage.placeholderImages.forEach((name) =>
+				PLACEHOLDER_IMAGES.forEach((name) =>
 					this.addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href),
 				);
 		}
@@ -73,7 +70,7 @@ class RankUpPage {
 
 	// DOCS: Function to add drag ability with Sortable JS
 	makeRowsDraggable() {
-		new Sortable(RankUpPage.rowList, {
+		new Sortable(this.rowList, {
 			draggable: ".rowFull", // The thing to be dragged
 			handle: ".dragContainer", // The thing to grab to drag by
 			direction: "vertical",
@@ -102,8 +99,8 @@ class RankUpPage {
 	// DOCS: AddRow - Adds a new row above or below the specified row.
 	addRow(row: Row, isAbove: boolean) {
 		// First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
-		if (RankUpPage.rowList.childElementCount == 1) {
-			const onlyRow = RankUpPage.rowList.firstChild as Row;
+		if (this.rowList.childElementCount == 1) {
+			const onlyRow = this.rowList.firstChild as Row;
 			onlyRow.setEnableDelete(true);
 		}
 		// Create the new row
@@ -115,7 +112,7 @@ class RankUpPage {
 	clearRow(row: Row) {
 		row.getImages().forEach((image) => {
 			this.deselectImage(image);
-			RankUpPage.imageContainer.append(image);
+			this.imageContainer.append(image);
 		});
 	}
 
@@ -124,12 +121,13 @@ class RankUpPage {
 		this.clearRow(row);
 		row.remove();
 		// If there is only one row remaining disable the delete button and make it look disabled.
-		if (RankUpPage.rowList.childElementCount <= 1) {
-			const onlyRow = RankUpPage.rowList.firstChild as Row;
+		if (this.rowList.childElementCount <= 1) {
+			const onlyRow = this.rowList.firstChild as Row;
 			onlyRow.setEnableDelete(false);
 		}
 	}
 
+	// FIXME: This is now broken
 	// DOCS:
 	showTab(tab: HTMLDivElement) {
 		if (this.lastHiddenTab && this.lastHiddenTab != tab) {
@@ -162,6 +160,7 @@ class RankUpPage {
 		const images = Array.from(container.children) as HTMLImageElement[];
 		const currentNdx = images.indexOf(image);
 
+		// TESTME: What if you CTRL deselect an image and then shift click to another? What are the bounds?
 		// Ctrl key + click to toggle selected status on an image
 		if (ev.ctrlKey) this.toggleSelection(image);
 		else if (ev.shiftKey && this.lastSelectedImage) {
@@ -180,16 +179,14 @@ class RankUpPage {
 		this.lastSelectedImage = image;
 	}
 
-	// DOCS:
+	// DOCS: // Selects an image
 	private selectImage(image: HTMLImageElement) {
-		// Selects an image
 		this.selectedImages.add(image);
 		image.classList.add("selectedImage");
 	}
 
-	// DOCS:
+	// DOCS: // Unselects an image
 	deselectImage(image: HTMLImageElement) {
-		// Unselects an image
 		this.selectedImages.delete(image);
 		image.classList.remove("selectedImage");
 	}
@@ -199,16 +196,15 @@ class RankUpPage {
 		this.selectedImages.has(image) ? this.deselectImage(image) : this.selectImage(image);
 	}
 
-	// DOCS:
+	// DOCS: // Clears the list of currently selected images
 	private clearSelections() {
-		// Clears the list of currently selected images
 		for (const image of this.selectedImages) this.deselectImage(image);
 		this.selectedImages.clear();
 	}
 
 	// DOCS: DragStart - Mouse is now being held on an image; it is being dragged.
 	imageDragStart(event: DragEvent) {
-		RankUpPage.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
+		this.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 		const draggedImage = event.target as HTMLImageElement;
 		if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
 
@@ -220,7 +216,7 @@ class RankUpPage {
 
 		// Disable the default dragging image
 		if (!event.dataTransfer) throw new Error("ev.dataTransfer is null in DragStart");
-		event.dataTransfer.setDragImage(RankUpPage.emptyImg, 0, 0);
+		event.dataTransfer.setDragImage(this.emptyImg, 0, 0);
 	}
 
 	// DOCS: DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
@@ -260,7 +256,7 @@ class RankUpPage {
 	dragImageEnd() {
 		this.prevTarget = null;
 		this.isPrevSideLeft = false;
-		RankUpPage.rowView.classList.add("allow-image-hover");
+		this.rowView.classList.add("allow-image-hover");
 		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("draggingImage"));
 	}
 
@@ -276,6 +272,7 @@ class RankUpPage {
 			this._recursiveInsert(nextImg.value, iterator);
 		}
 	}
+	// TODO: Replace recursive functions with single one. not necessary
 
 	// DOCS: dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
 	draggedOntoTextBox(event: DragEvent) {
@@ -295,7 +292,7 @@ class RankUpPage {
 		image.src = url;
 		image.onclick = (event) => this.clickImage(event);
 		image.ondragstart = (event) => this.imageDragStart(event);
-		RankUpPage.imageContainer.appendChild(image);
+		this.imageContainer.appendChild(image);
 	}
 }
 
@@ -308,20 +305,20 @@ class Row extends HTMLElement {
 	private addRowBelowButton = document.createElement("img"); // Adds new row below current
 	private rowTitle = document.createElement("input"); // Title for current row
 	private statusBtnsContainer = document.createElement("div"); // Contains buttons for changing row's status
-	deleteButton = document.createElement("div"); // Deletes the current row
+	private deleteButton = document.createElement("div"); // Deletes the current row
 	private clearButton = document.createElement("div"); // Clears out current row
-	rowBody = document.createElement("div"); // Contains the actual images for this row
-	constructor(rankUpPage: RankUpPage, rowNumber = 0) {
+	private rowBody = document.createElement("div"); // Contains the actual images for this row
+	constructor(page: RankUpPage, rowNumber = 0) {
 		super();
 		this.className = "rowFull";
 		this.rowHeader.className = "rowHeader rowPiece";
-		this.rowHeader.onmouseover = () => rankUpPage.showTab(this.rowTab); // show the rowTab
-		this.rowHeader.onmouseout = () => rankUpPage.hideTab(this.rowTab); // hide the rowTab
+		this.rowHeader.onmouseover = () => page.showTab(this.rowTab); // show the rowTab
+		this.rowHeader.onmouseout = () => page.hideTab(this.rowTab); // hide the rowTab
 		this.rowTab.className = "rowTab rowPiece closed";
 		this.rowTab.onclick = (event) => event.stopPropagation();
 		this.addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
 		this.addRowAboveButton.src = addRowAboveIcon;
-		this.addRowAboveButton.onclick = () => rankUpPage.addRow(this, true);
+		this.addRowAboveButton.onclick = () => page.addRow(this, true);
 		this.addRowAboveButton.ondragstart = (event) => event.preventDefault();
 		this.dragContainer.className = "tabButton dragContainer";
 		this.dragHandle.className = "dragHandle";
@@ -331,25 +328,25 @@ class Row extends HTMLElement {
 		this.dragContainer.append(this.dragHandle);
 		this.addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
 		this.addRowBelowButton.src = addRowBelowIcon;
-		this.addRowBelowButton.onclick = () => rankUpPage.addRow(this, false);
+		this.addRowBelowButton.onclick = () => page.addRow(this, false);
 		this.addRowBelowButton.ondragstart = (event) => event.preventDefault();
 		this.rowTab.append(this.addRowAboveButton, this.dragContainer, this.addRowBelowButton);
 		this.rowTitle.className = "rowTitle";
 		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
-		this.rowTitle.ondrop = (event) => rankUpPage.draggedOntoTextBox(event);
+		this.rowTitle.ondrop = (event) => page.draggedOntoTextBox(event);
 		this.statusBtnsContainer.className = "resetDeleteContainer";
 		this.clearButton.className = "resetButton resetDeleteButton";
 		this.clearButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
-		this.clearButton.onclick = () => rankUpPage.clearRow(this);
+		this.clearButton.onclick = () => page.clearRow(this);
 		this.deleteButton.className = "deleteButton resetDeleteButton";
 		this.deleteButton.style.backgroundImage = `url("${rowHeaderDeleteIcon}")`; // Set background image for delete button
-		this.deleteButton.onclick = () => rankUpPage.deleteRow(this);
+		this.deleteButton.onclick = () => page.deleteRow(this);
 		this.statusBtnsContainer.append(this.clearButton, this.deleteButton);
 		this.statusBtnsContainer.onclick = (event) => event.stopPropagation();
 		this.rowHeader.append(this.rowTab, this.rowTitle, this.statusBtnsContainer);
 		this.rowBody.className = "rowBody rowPiece image-container";
-		this.rowBody.ondragover = (event) => rankUpPage.dragImageOver(event);
-		this.rowBody.ondragend = () => rankUpPage.dragImageEnd();
+		this.rowBody.ondragover = (event) => page.dragImageOver(event);
+		this.rowBody.ondragend = () => page.dragImageEnd();
 		this.append(this.rowHeader, this.rowBody);
 	}
 
@@ -367,11 +364,10 @@ class Row extends HTMLElement {
 }
 
 function renderRankUpPage(pageContainer: HTMLElement) {
-	/* ------------------------- Inject RankUp page HTML ------------------------ */
-	pageContainer.innerHTML = rankupHTMLRaw;
-	/* ----------- Populate the page with our default rows and images ----------- */
-	new RankUpPage();
+	RankUpPage.mountTo(pageContainer);
 }
 
+// Define row class as custom element
+customElements.define("rankup-row", Row);
 // Register this page to the renderer
 registerPage("rankup", renderRankUpPage);
