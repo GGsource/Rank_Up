@@ -308,6 +308,13 @@ class Row extends HTMLElement {
 	private deleteButton = document.createElement("div"); // Deletes the current row
 	private clearButton = document.createElement("div"); // Clears out current row
 	private rowBody = document.createElement("div"); // Contains the actual images for this row
+
+	/**
+	 * Creates a Row element
+	 *
+	 * @param page the RankUpPage instance holding this row
+	 * @param rowNumber index to initialize row's name with
+	 */
 	constructor(page: RankUpPage, rowNumber = 0) {
 		super();
 		this.className = "rowFull";
@@ -350,16 +357,22 @@ class Row extends HTMLElement {
 		this.append(this.rowHeader, this.rowBody);
 	}
 
-	// DOCS:
+	/**
+	 * Gets a list of the images inside of the current row
+	 *
+	 * @returns images in row
+	 */
 	getImages(): HTMLImageElement[] {
 		return Array.from(this.rowBody.children) as HTMLImageElement[];
 	}
 
-	// DOCS:
+	/**
+	 * Enables or disables delete button on the row
+	 *
+	 * @param enable whether or not to enable the delete button
+	 */
 	setEnableDelete(enable: boolean) {
-		// TODO: Replace with an html classname or just disabling the button `disable = true;`
-		this.deleteButton.style.pointerEvents = enable ? "auto" : "none";
-		this.deleteButton.style.opacity = enable ? `${1}` : `${0.2}`;
+		enable ? this.deleteButton.classList.remove("disabled") : this.deleteButton.classList.add("disabled");
 	}
 }
 

@@ -253,6 +253,11 @@ rowList (containts all rowFulls)
 	z-index: 3;
 }
 
+.rankup-view .disabled {
+	opacity: 0.2;
+	pointer-events: none;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                          Starter Container Section                         */
 /* -------------------------------------------------------------------------- */
