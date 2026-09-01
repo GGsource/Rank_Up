@@ -39,6 +39,9 @@ export class Row extends HTMLElement {
 	 */
 	constructor(list: RowList, rowNumber = 0) {
 		super();
+		// TODO: Look into renaming all class names
+		// IDEA: Look into static HTML recipe for a row?
+		// TODO: Look into replacing .rowFull class css with rankup-row{} css?
 		this.className = "rowFull";
 		this.rowHeader.className = "rowHeader rowPiece";
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab

@@ -121,7 +121,6 @@ class RankUpPage implements RowList {
 		}
 	}
 
-	// FIXME: This is now broken
 	// DOCS:
 	showTab(tab: HTMLDivElement) {
 		if (this.lastHiddenTab && this.lastHiddenTab != tab) {
@@ -132,6 +131,7 @@ class RankUpPage implements RowList {
 		this.lastHiddenTab = tab;
 	}
 
+	// FIXME: This is now broken, tabs remain visible when moving between rows
 	// DOCS:
 	hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
 		if (this.isRowBeingDragged) return;
@@ -279,7 +279,11 @@ class RankUpPage implements RowList {
 		console.warn("Data: ", data);
 	}
 
-	// DOCS:
+	/**
+	 * Takes an image URL and adds it to starting container as image element
+	 *
+	 * @param url the URL of the image to add
+	 */
 	private addImageToContainer(url: string) {
 		const image = document.createElement("img") as HTMLImageElement;
 		image.className = "rankingImage";
