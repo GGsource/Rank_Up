@@ -55,14 +55,11 @@ rowList (containts all rowFulls)
 */
 
 .rankup-view #rowList {
-	/* Center the rows */
 	display: flex;
 	flex-direction: column;
-	width: 100%;
-	/* Center children */
 	align-items: center;
-
-	gap: calc(var(--imageRes) / 20); /* DEBUGGING: This margin may not be needed later. */
+	width: 100%;
+	gap: calc(var(--imageRes) / 20);
 }
 
 .rankup-view .rowFull {
