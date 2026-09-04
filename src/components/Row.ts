@@ -43,12 +43,12 @@ export class Row extends HTMLElement {
 		// IDEA: Look into static HTML recipe for a row?
 		// TODO: Look into replacing .rowFull class css with rankup-row{} css?
 		this.className = "rowFull";
-		this.rowHeader.className = "rowHeader rowPiece";
+		this.rowHeader.className = "rowHeader";
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab
-		this.rowTab.className = "rowTab rowPiece closed";
+		this.rowTab.className = "rowTab closed";
 		this.rowTab.onclick = (event) => event.stopPropagation();
-		this.addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
+		this.addRowAboveButton.className = "tabButton addRowAboveButton";
 		this.addRowAboveButton.src = addRowAboveIcon;
 		this.addRowAboveButton.onclick = () => list.addRow(this, true);
 		this.addRowAboveButton.ondragstart = (event) => event.preventDefault();
@@ -58,7 +58,7 @@ export class Row extends HTMLElement {
 		this.dragHandle.draggable = false;
 		this.dragHandle.ondragstart = (event) => event.preventDefault();
 		this.dragContainer.append(this.dragHandle);
-		this.addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
+		this.addRowBelowButton.className = "tabButton addRowBelowButton";
 		this.addRowBelowButton.src = addRowBelowIcon;
 		this.addRowBelowButton.onclick = () => list.addRow(this, false);
 		this.addRowBelowButton.ondragstart = (event) => event.preventDefault();
@@ -76,8 +76,8 @@ export class Row extends HTMLElement {
 		this.statusBtnsContainer.append(this.clearButton, this.deleteButton);
 		this.statusBtnsContainer.onclick = (event) => event.stopPropagation();
 		this.rowHeader.append(this.rowTab, this.rowTitle, this.statusBtnsContainer);
-		this.rowBody.className = "rowBody rowPiece image-container";
-		this.rowBody.ondragover = (event) => list.dragImageOver(event);
+		this.rowBody.className = "rowBody image-container";
+		this.rowBody.ondragover = (event) => list.draggedImageOver(event);
 		this.rowBody.ondragend = () => list.dragImageEnd();
 		this.append(this.rowHeader, this.rowBody);
 	}
