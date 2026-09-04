@@ -40,8 +40,8 @@
 /*                              Row List Section                              */
 /* -------------------------------------------------------------------------- */
 /* 
-rowList (containts all rowFulls)
-├── rowFull
+rowList (containts all rankup-row elements)
+├── rankup-row
 │   └── rowHeader
 │       ├── rowTab
 │       │   ├── addRowAboveButton
@@ -51,7 +51,7 @@ rowList (containts all rowFulls)
 │       └── rowOptions
 │           ├── resetRowButton
 │           └── deleteRowButton
-└── (other rowFulls)
+└── (other rankup-rows)
 */
 
 .rankup-view #rowList {
@@ -62,7 +62,7 @@ rowList (containts all rowFulls)
 	gap: calc(var(--imageRes) / 20);
 }
 
-.rankup-view .rowFull {
+rankup-row {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
