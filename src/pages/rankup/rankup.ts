@@ -147,23 +147,25 @@ class RankUpPage implements RowList {
 		ev.stopPropagation(); // Stop event from moving up to prevent clearing
 		const image = ev.target as HTMLImageElement;
 		if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
-		const container = image.parentNode;
-		if (!container) throw new Error("Fatal Error: Image's parent container null...");
 
-		// Get our index
-		const images = Array.from(container.children) as HTMLImageElement[];
-		const currentNdx = images.indexOf(image);
-
-		// TESTME: What if you CTRL deselect an image and then shift click to another? What are the bounds?
+		// TODO: Style last selected image for visual purposes
 		// Ctrl key + click to toggle selected status on an image
 		if (ev.ctrlKey) this.toggleSelection(image);
 		else if (ev.shiftKey && this.lastSelectedImage) {
 			// Shift key + click selects all images between last and current image
+			this.clearSelections();
+			const container = image.parentNode;
+			if (!container) throw new Error("Fatal Error: Image's parent container null...");
+			// Get our index
+			const images = Array.from(container.children) as HTMLImageElement[];
+			const currentNdx = images.indexOf(image);
 			const lastNdx = images.indexOf(this.lastSelectedImage);
 			if (lastNdx !== -1) {
+				// Select all images between indexes
 				const start = Math.min(currentNdx, lastNdx);
 				const end = Math.max(currentNdx, lastNdx);
 				for (let i = start; i <= end; i++) this.selectImage(images[i]);
+				return;
 			} else this.selectImage(image);
 		} else {
 			// Normal image click, only select the one image
