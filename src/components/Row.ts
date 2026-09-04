@@ -13,7 +13,7 @@ export interface RowList {
 	addRow(row: Row, isAbove: boolean): void;
 	clearRow(row: Row): void;
 	deleteRow(row: Row): void;
-	dragImageOver(event: DragEvent): void;
+	draggedImageOver(event: DragEvent): void;
 	dragImageEnd(): void;
 	draggedOntoTextBox(event: DragEvent): void;
 }
@@ -41,8 +41,6 @@ export class Row extends HTMLElement {
 		super();
 		// TODO: Look into renaming all class names
 		// IDEA: Look into static HTML recipe for a row?
-		// TODO: Look into replacing .rowFull class css with rankup-row{} css?
-		this.className = "rowFull";
 		this.rowHeader.className = "rowHeader";
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab

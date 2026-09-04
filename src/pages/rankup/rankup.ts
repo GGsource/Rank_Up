@@ -30,13 +30,20 @@ class RankUpPage implements RowList {
 	private userData = getUserData();
 	private readonly emptyImg = new Image();
 
-	// DOCS: Mounter
-	static mountTo(pageContainer: HTMLElement) {
-		pageContainer.innerHTML = rankupHTMLRaw;
+	/**
+	 * Takes a target element and populates it with the raw HTML for this page and instantiates it
+	 *
+	 * @param mountingTarget Element onto which to mount this page
+	 * @returns the created instance of this class that has been mounted
+	 */
+	static mountTo(mountingTarget: HTMLElement) {
+		mountingTarget.innerHTML = rankupHTMLRaw;
 		return new RankUpPage();
 	}
 
-	// DOCS: Constructor
+	/**
+	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
+	 */
 	private constructor() {
 		/* ------------------------------- Attach Rows ------------------------------ */
 		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
@@ -45,7 +52,7 @@ class RankUpPage implements RowList {
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => this.clearSelections());
 		// Main container behaviors
-		this.imageContainer.ondragover = (event) => this.dragImageOver(event);
+		this.imageContainer.ondragover = (event) => this.draggedImageOver(event);
 		this.imageContainer.ondragend = () => this.dragImageEnd();
 		// Text boxes behaviors
 		this.headerTitle.ondragover = (event) => this.draggedOntoTextBox(event);
@@ -62,10 +69,12 @@ class RankUpPage implements RowList {
 		}
 	}
 
-	// DOCS: Function to add drag ability with Sortable JS
+	/**
+	 * Applies dragging behavior to all rows in the rankup page list via Sortable JS
+	 */
 	makeRowsDraggable() {
 		new Sortable(this.rowList, {
-			draggable: ".rowFull", // The thing to be dragged
+			draggable: "rankup-row", // The thing to be dragged
 			handle: ".dragContainer", // The thing to grab to drag by
 			direction: "vertical",
 			animation: 180,
@@ -90,19 +99,28 @@ class RankUpPage implements RowList {
 		});
 	}
 
-	// DOCS: AddRow - Adds a new row above or below the specified row.
-	addRow(row: Row, isAbove: boolean) {
-		// First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
+	/**
+	 * Inserts a new row adjacent to the targetRow
+	 *
+	 * @param targetRow The row we are inserting a new row relative to
+	 * @param isAbove Whether new row will be above or below targetRow
+	 */
+	addRow(targetRow: Row, isAbove: boolean) {
+		// First check if there is only one existing row, if so, enable the delete button as there will now be multiple
 		if (this.rowList.childElementCount == 1) {
 			const onlyRow = this.rowList.firstChild as Row;
 			onlyRow.setEnableDelete(true);
 		}
 		// Create the new row
 		const insertDirection = isAbove ? "beforebegin" : "afterend";
-		row.insertAdjacentElement(insertDirection, new Row(this));
+		targetRow.insertAdjacentElement(insertDirection, new Row(this));
 	}
 
-	// DOCS: clearRow - Resets a specified row to be empty, moving children back to imageContanier.
+	/**
+	 * Clears out all images within a given row. Moves held images to starter container.
+	 *
+	 * @param row the row to clear
+	 */
 	clearRow(row: Row) {
 		row.getImages().forEach((image) => {
 			this.deselectImage(image);
@@ -110,7 +128,11 @@ class RankUpPage implements RowList {
 		});
 	}
 
-	// DOCS: DeleteRow - Deletes a specified row and moves any contents to the imageContainer at the bottom of the page.
+	/**
+	 * Deletes a given row from the row list. Moves held images to starter container.
+	 *
+	 * @param row the row to delete
+	 */
 	deleteRow(row: Row) {
 		this.clearRow(row);
 		row.remove();
@@ -121,7 +143,11 @@ class RankUpPage implements RowList {
 		}
 	}
 
-	// DOCS:
+	/**
+	 * Makes the given tab become visible on screen
+	 *
+	 * @param tab The tab to display
+	 */
 	showTab(tab: HTMLDivElement) {
 		if (this.lastHiddenTab && this.lastHiddenTab != tab) {
 			this.hideTab(this.lastHiddenTab, false);
@@ -132,7 +158,12 @@ class RankUpPage implements RowList {
 	}
 
 	// FIXME: This is now broken, tabs remain visible when moving between rows
-	// DOCS:
+	/**
+	 * Makes the given tab become hidden on screen
+	 *
+	 * @param tab The tab to hide
+	 * @param useDelay whether or not to have a delay on hiding
+	 */
 	hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
 		if (this.isRowBeingDragged) return;
 		if (this.timeoutIds[tab.id]) clearTimeout(this.timeoutIds[tab.id]); // Clear any existing timeout
@@ -215,8 +246,12 @@ class RankUpPage implements RowList {
 		event.dataTransfer.setDragImage(this.emptyImg, 0, 0);
 	}
 
-	// DOCS: DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
-	dragImageOver(event: DragEvent) {
+	/**
+	 * Called when an image is dragged over another element on the RankUp screen, primarily dealing with other images and image containers
+	 *
+	 * @param event The drag event of the element being dragged upon
+	 */
+	draggedImageOver(event: DragEvent) {
 		// For change to be necessary one of these must have changed: target changed, targetside changed.
 		event.preventDefault();
 
