@@ -10,10 +10,6 @@ import { Row, RowList } from "@/components/Row";
 const STARTING_ROW_COUNT = 5;
 const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
 
-interface KeyPairList {
-	[key: string]: number;
-}
-
 class RankUpPage implements RowList {
 	private rowView = Utils.getEl("rankup-view");
 	private rowList = Utils.getEl("rowList");
@@ -21,8 +17,8 @@ class RankUpPage implements RowList {
 	private headerTitle = Utils.getEl<HTMLInputElement>("headerTitle");
 	private headerDescription = Utils.getEl<HTMLInputElement>("headerDescription");
 	private isRowBeingDragged = false;
-	private timeoutIds: KeyPairList = {};
-	private lastHiddenTab: HTMLDivElement | null = null;
+	private timeoutIds = new Map<HTMLDivElement, number>();
+	private lastShownTab: HTMLDivElement | null = null;
 	private selectedImages: Set<HTMLImageElement> = new Set();
 	private lastSelectedImage: HTMLImageElement | null = null;
 	private prevTarget: HTMLElement | null = null;
@@ -149,15 +145,12 @@ class RankUpPage implements RowList {
 	 * @param tab The tab to display
 	 */
 	showTab(tab: HTMLDivElement) {
-		if (this.lastHiddenTab && this.lastHiddenTab != tab) {
-			this.hideTab(this.lastHiddenTab, false);
-		}
-		clearTimeout(this.timeoutIds[tab.id]);
+		if (this.lastShownTab && this.lastShownTab != tab) this.hideTab(this.lastShownTab, false);
+		clearTimeout(this.timeoutIds.get(tab));
 		tab.classList.remove("closed");
-		this.lastHiddenTab = tab;
+		this.lastShownTab = tab;
 	}
 
-	// FIXME: This is now broken, tabs remain visible when moving between rows
 	/**
 	 * Makes the given tab become hidden on screen
 	 *
@@ -166,11 +159,14 @@ class RankUpPage implements RowList {
 	 */
 	hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
 		if (this.isRowBeingDragged) return;
-		if (this.timeoutIds[tab.id]) clearTimeout(this.timeoutIds[tab.id]); // Clear any existing timeout
+		if (this.timeoutIds.get(tab)) clearTimeout(this.timeoutIds.get(tab)); // Clear any existing timeout
 		let delayMS: number = useDelay ? 500 : 0; // If delay is enabled, then we'll do half a second
-		this.timeoutIds[tab.id] = setTimeout(() => {
-			tab.classList.add("closed");
-		}, delayMS);
+		this.timeoutIds.set(
+			tab,
+			setTimeout(() => {
+				tab.classList.add("closed");
+			}, delayMS),
+		);
 	}
 
 	/**
