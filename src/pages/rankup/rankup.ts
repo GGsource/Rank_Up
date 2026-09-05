@@ -50,7 +50,7 @@ class RankUpPage implements RowList {
 		this.makeRowsDraggable();
 		this.emptyImg.src = emptyImage;
 		/* ---------------------------- Attach Listeners ---------------------------- */
-		this.rowView.addEventListener("click", () => this.clearSelections());
+		this.rowView.addEventListener("click", () => this.deselectAllImages());
 		// Main container behaviors
 		this.imageContainer.ondragover = (event) => this.draggedImageOver(event);
 		this.imageContainer.ondragend = () => this.dragImageEnd();
@@ -173,18 +173,22 @@ class RankUpPage implements RowList {
 		}, delayMS);
 	}
 
-	// DOCS:
-	clickImage(ev: MouseEvent) {
-		ev.stopPropagation(); // Stop event from moving up to prevent clearing
-		const image = ev.target as HTMLImageElement;
+	/**
+	 * Called when a rankup image is clicked.Selects normally, toggle selects with CTRL,
+	 * and group selects a range with SHIFT. Modeled after Windows file explorer behavior.
+	 *
+	 * @param event the mouse click event on the image
+	 */
+	clickImage(event: MouseEvent) {
+		event.stopPropagation(); // Stop event from moving up to prevent clearing
+		const image = event.target as HTMLImageElement;
 		if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
 
-		// TODO: Style last selected image for visual purposes
 		// Ctrl key + click to toggle selected status on an image
-		if (ev.ctrlKey) this.toggleSelection(image);
-		else if (ev.shiftKey && this.lastSelectedImage) {
+		if (event.ctrlKey) this.toggleSelected(image);
+		else if (event.shiftKey && this.lastSelectedImage) {
 			// Shift key + click selects all images between last and current image
-			this.clearSelections();
+			this.deselectAllImages();
 			const container = image.parentNode;
 			if (!container) throw new Error("Fatal Error: Image's parent container null...");
 			// Get our index
@@ -200,33 +204,46 @@ class RankUpPage implements RowList {
 			} else this.selectImage(image);
 		} else {
 			// Normal image click, only select the one image
-			this.clearSelections();
+			this.deselectAllImages();
 			this.selectImage(image);
 		}
 		this.lastSelectedImage = image;
 	}
 
-	// DOCS: // Selects an image
+	/**
+	 * Selects a given image
+	 *
+	 * @param image image to select
+	 */
 	private selectImage(image: HTMLImageElement) {
 		this.selectedImages.add(image);
 		image.classList.add("selectedImage");
 	}
 
-	// DOCS: // Unselects an image
+	/**
+	 * Deselects a given image
+	 *
+	 * @param image image to deselect
+	 */
 	deselectImage(image: HTMLImageElement) {
 		this.selectedImages.delete(image);
 		image.classList.remove("selectedImage");
 	}
 
-	// DOCS: Flips selected status on a given image
-	private toggleSelection(image: HTMLImageElement) {
+	/**
+	 * Toggles selected status of given image
+	 *
+	 * @param image image to toggle
+	 */
+	private toggleSelected(image: HTMLImageElement) {
 		this.selectedImages.has(image) ? this.deselectImage(image) : this.selectImage(image);
 	}
 
-	// DOCS: // Clears the list of currently selected images
-	private clearSelections() {
+	/**
+	 * Deselects all images
+	 */
+	private deselectAllImages() {
 		for (const image of this.selectedImages) this.deselectImage(image);
-		this.selectedImages.clear();
 	}
 
 	// DOCS: DragStart - Mouse is now being held on an image; it is being dragged.
