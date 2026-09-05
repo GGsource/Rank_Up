@@ -1,417 +1,372 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
-
-// Import our Images
-import addRowAboveIcon from "@/assets/images/addRowAboveIcon.png";
-import addRowBelowIcon from "@/assets/images/addRowBelowIcon.png";
-import dragHandleIcon from "@/assets/images/DragHandleIcon.png";
-import rowHeaderClearIcon from "@/assets/images/RowHeaderClear.png";
-import rowHeaderDeleteIcon from "@/assets/images/RowHeaderDelete.png";
 import emptyImage from "@/assets/images/empty.png";
+import * as Utils from "@/utils/utils";
+import rankupHTMLRaw from "./rankup.html?raw";
+import { registerPage } from "@/components/renderPage";
+import { getUserData } from "@/state/UserData";
+import { Row, RowList } from "@/components/Row";
 
-class Row {
-	static count: number = 1; // Keep track of number of rows created
-	rowFull: HTMLDivElement = document.createElement("div");
-	rowBody: HTMLDivElement = document.createElement("div");
-	constructor(isNewRow = false) {
-		// RowFull is the main container for the row. It contains the rowHeader and the rowBody.
-		this.rowFull.className = "rowFull";
-		this.rowFull.id = "rowFull" + Row.count;
-		// rowHeader consists of the title on the left, and the delete and reset buttons on the right side corners. The reset button is in the top right corner, and the delete button is in the bottom right corner. This can be done with a flexbox and an empty between the two buttons vertically.
-		let rowHeader: HTMLDivElement = document.createElement("div");
-		rowHeader.className = "rowHeader rowPiece";
-		rowHeader.id = "rowHeader" + Row.count;
-		// rowTab consists of an addRowAbove button, an addRowBelow button, and a drag handle in between, stacked vertically.
-		let rowTab: HTMLDivElement = document.createElement("div");
-		rowTab.className = "rowTab rowPiece closed";
-		rowTab.id = "rowTab" + Row.count;
-		rowTab.onclick = (event) => event.stopPropagation();
-		rowHeader.onmouseover = () => showTab(rowTab); // show the rowTab
-		rowHeader.onmouseout = () => hideTab(rowTab); // hide the rowTab
-		// Add the addRowAbove button, the addRowBelow button, and the drag handle to the rowTab
-		let addRowAboveButton: HTMLImageElement = document.createElement("img");
-		addRowAboveButton.className = "tabButton addRowButton addRowAboveButton";
-		addRowAboveButton.src = addRowAboveIcon;
-		addRowAboveButton.onclick = () => addRow(this.rowFull, true);
-		addRowAboveButton.ondragstart = (event) => event.preventDefault();
-		let dragContainer: HTMLDivElement = document.createElement("div");
-		dragContainer.className = "tabButton dragContainer";
-		let dragHandle: HTMLImageElement = document.createElement("img");
-		dragHandle.className = "dragHandle";
-		dragHandle.src = dragHandleIcon;
-		dragHandle.draggable = false;
-		dragHandle.ondragstart = (event) => event.preventDefault();
-		dragContainer.appendChild(dragHandle);
-		let addRowBelowButton: HTMLImageElement = document.createElement("img");
-		addRowBelowButton.className = "tabButton addRowButton addRowBelowButton";
-		addRowBelowButton.src = addRowBelowIcon;
-		addRowBelowButton.onclick = () => addRow(this.rowFull, false);
-		addRowBelowButton.ondragstart = (event) => event.preventDefault();
-		// Add the buttons to the rowTab
-		rowTab.appendChild(addRowAboveButton);
-		rowTab.appendChild(dragContainer);
-		rowTab.appendChild(addRowBelowButton);
-		// Add the title to the rowHeader
-		let rowTitle: HTMLInputElement = document.createElement("input");
-		rowTitle.className = "rowTitle";
-		rowTitle.id = "rowTitle" + Row.count;
-		rowTitle.placeholder = isNewRow ? "New Row" : "Row " + Row.count;
-		rowTitle.ondrop = (event) => draggedOntoTextBox(event);
-		// Add a vertical div containing the reset button, an empty div, and the delete button to the rowHeader
-		let resetDeleteContainer: HTMLDivElement = document.createElement("div");
-		resetDeleteContainer.className = "resetDeleteContainer";
-		resetDeleteContainer.id = "resetDeleteContainer" + Row.count;
-		let resetButton: HTMLDivElement = document.createElement("div");
-		resetButton.className = "resetButton resetDeleteButton";
-		resetButton.id = "resetButton" + Row.count;
-		resetButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
-		resetButton.onclick = () => resetRow(this.rowBody);
-		let deleteButton: HTMLDivElement = document.createElement("div");
-		deleteButton.className = "deleteButton resetDeleteButton";
-		deleteButton.id = "deleteButton" + Row.count;
-		deleteButton.style.backgroundImage = `url("${rowHeaderDeleteIcon}")`; // Set background image for delete button
-		deleteButton.onclick = () => deleteRow(this.rowFull);
-		resetDeleteContainer.appendChild(resetButton);
-		resetDeleteContainer.appendChild(deleteButton);
-		resetDeleteContainer.onclick = (event) => event.stopPropagation();
-		// Add the rowTitle and the resetDeleteContainer to the rowHeader
-		rowHeader.appendChild(rowTab);
-		rowHeader.appendChild(rowTitle);
-		rowHeader.appendChild(resetDeleteContainer);
-		// Add the rowHeader to the full row
-		this.rowFull.appendChild(rowHeader);
-		// rowBody will be the element that contains the row's ranking images.
-		this.rowBody.className = "rowBody rowPiece image-container";
-		this.rowBody.ondragover = (event) => dragImageOver(event);
-		this.rowBody.ondragend = (event) => dragImageEnd(event);
-		resetButton.onclick = () => resetRow(this.rowBody);
-		// Add the rowBody to the Row
-		this.rowFull.appendChild(this.rowBody);
-		Row.count++;
-	}
-	// Function for appending this row to a parent element
-	appendTo(parent: HTMLElement) {
-		parent.appendChild(this.rowFull);
-	}
-}
-
-const emptyImg: HTMLImageElement = new Image();
-emptyImg.src = emptyImage;
-let selectedImages: Set<HTMLImageElement> = new Set();
-let lastSelectedImage: HTMLImageElement;
-// DragStart - Mouse is now being held on an image; it is being dragged.
-function imageDragStart(ev: DragEvent) {
-	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
-	rankupContainer?.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
-	const draggedImage = ev.target as HTMLImageElement;
-	if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
-
-	// If this image isn't one of the currently selected, click it to select it and deselect the previously selected
-	if (!selectedImages.has(draggedImage)) clickImage(ev);
-
-	// Attach dragging data and class to all participants
-	selectedImages.forEach((selectedImage) => {
-		selectedImage.setAttribute("data-dragging", "true");
-		selectedImage.classList.add("draggingImage");
-	});
-
-	// Disable the default dragging image
-	if (ev.dataTransfer) {
-		ev.dataTransfer.setDragImage(emptyImg, 0, 0);
-	} else console.error("ev.dataTransfer is null in DragStart");
-}
-
-let prevTarget: HTMLElement;
-let isPrevSideLeft: boolean;
-// DragImageOver - Mouse is being held and dragged over some target. That target receives this event.
-function dragImageOver(ev: DragEvent) {
-	// For change to be necessary one of these must have changed: target changed, targetside changed.
-	ev.preventDefault();
-	let sources: NodeListOf<Element> = document.querySelectorAll("[data-dragging]");
-	let element: HTMLElement | null = ev.target as HTMLElement | null; // The element being dragged into.
-	if (element) {
-		if (element.classList.contains("image-container")) {
-			sources.forEach((source) => {
-				if (prevTarget == element && source.nextElementSibling == null) return; //Same container & position, nothin should change.
-				element.appendChild(source);
-			});
-		} else if (element.classList.contains("rankingImage")) {
-			let imageElement: HTMLImageElement = element as HTMLImageElement;
-			// The user dragged an image onto another image, place the image next to the target image in its parent.
-			if (selectedImages.has(imageElement)) return; //Selected imgs need to ignore eachother
-			// Check if the image was dragged to the left or right of the target image
-			let targetImageRect: DOMRect = imageElement.getBoundingClientRect();
-			let targetImageCenter: number = targetImageRect.left + targetImageRect.width / 2;
-			// If the user dragged the image to the left of the target image, insert the image before the target image
-			let isCurSideLeft: boolean = ev.clientX < targetImageCenter ? true : false;
-			if (prevTarget == element && isCurSideLeft == isPrevSideLeft) return;
-			sources.forEach((source) => {
-				if (isCurSideLeft) imageElement.insertAdjacentElement("beforebegin", source);
-				else recursiveInsert(imageElement);
-			});
-			isPrevSideLeft = isCurSideLeft;
-		}
-		prevTarget = element;
-	} else {
-		console.error("ev.target is is null in DragImageOver");
-	}
-}
-
-// DragImageEnd - Mouse dragging ends. The element that was being dragged receives this event.
-function dragImageEnd(ev: DragEvent) {
-	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
-	rankupContainer?.classList.add("allow-image-hover");
-	var sources = document.querySelectorAll("[data-dragging]");
-	sources.forEach((source) => {
-		source.classList.remove("draggingImage");
-		source.removeAttribute("data-dragging");
-	});
-}
-
-// RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
-function recursiveInsert(image: HTMLImageElement) {
-	let iterator: IterableIterator<HTMLImageElement> = selectedImages.values();
-	_recursiveInsert(image, iterator);
-}
-function _recursiveInsert(image: HTMLImageElement, iterator: IterableIterator<HTMLImageElement>) {
-	let nextImg = iterator.next();
-	if (!nextImg.done) {
-		image.insertAdjacentElement("afterend", nextImg.value);
-		_recursiveInsert(nextImg.value, iterator);
-	}
-}
-
-// ResetRow - Resets a specified row to be empty, moving children back to imageContanier.
-function resetRow(rowBody: HTMLDivElement) {
-	if (rowBody.hasChildNodes()) {
-		let imageContainer = document.getElementById("imageContainer");
-		if (imageContainer) {
-			// Check the container is not null
-			if (rowBody.firstChild) {
-				// Check firstChild is not null
-				while (rowBody.hasChildNodes()) {
-					deselectImage(rowBody.firstChild as HTMLImageElement);
-					imageContainer.appendChild(rowBody.firstChild);
-				}
-			}
-		} else {
-			console.error("Tried to get imageCountainer while resetting a row but it's null.");
-		}
-	}
-}
-
-// DeleteRow - Deletes a specified row and moves any contents to the imageContainer at the bottom of the page.
-function deleteRow(row: HTMLDivElement) {
-	// First check if this row had any images in it, if so, move them to the imageContainer
-	let rowBody: HTMLDivElement = row.getElementsByClassName("rowBody")[0] as HTMLDivElement;
-	resetRow(rowBody);
-	// Remove the row from the rowList
-	row.remove();
-	// If there is only one row remaining disable the delete button and make it look disabled.
-	let rowList = document.getElementById("rowList");
-	if (rowList && rowList.childElementCount == 1) {
-		let deleteButton: HTMLDivElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLDivElement;
-		deleteButton.style.pointerEvents = "none";
-		deleteButton.style.opacity = `${0.2}`;
-	}
-}
-
-// AddRow - Adds a new row above or below the specified row.
-function addRow(row: HTMLDivElement, isAbove: boolean) {
-	// First check if there is only one row remaining, if so, enable the delete button and make it look enabled.
-	var rowList = document.getElementById("rowList");
-	if (rowList && rowList.childElementCount == 1) {
-		let deleteButton: HTMLDivElement = rowList.getElementsByClassName("deleteButton")[0] as HTMLDivElement;
-		deleteButton.style.pointerEvents = "auto";
-		deleteButton.style.opacity = `${1}`;
-	}
-	// Create the new row
-	if (isAbove) row.insertAdjacentElement("beforebegin", new Row(true).rowFull);
-	else row.insertAdjacentElement("afterend", new Row(true).rowFull);
-}
+const STARTING_ROW_COUNT = 5;
+const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
 
 interface KeyPairList {
 	[key: string]: number;
 }
-let timeoutIds: KeyPairList = {};
-let lastHiddenTab: HTMLDivElement;
 
-function showTab(tab: HTMLDivElement) {
-	if (lastHiddenTab && lastHiddenTab != tab) {
-		hideTab(lastHiddenTab, false);
+class RankUpPage implements RowList {
+	private rowView = Utils.getEl("rankup-view");
+	private rowList = Utils.getEl("rowList");
+	private imageContainer = Utils.getEl("imageContainer");
+	private headerTitle = Utils.getEl<HTMLInputElement>("headerTitle");
+	private headerDescription = Utils.getEl<HTMLInputElement>("headerDescription");
+	private isRowBeingDragged = false;
+	private timeoutIds: KeyPairList = {};
+	private lastHiddenTab: HTMLDivElement | null = null;
+	private selectedImages: Set<HTMLImageElement> = new Set();
+	private lastSelectedImage: HTMLImageElement | null = null;
+	private prevTarget: HTMLElement | null = null;
+	private isPrevSideLeft: boolean = false;
+	private userData = getUserData();
+	private readonly emptyImg = new Image();
+
+	/**
+	 * Takes a target element and populates it with the raw HTML for this page and instantiates it
+	 *
+	 * @param mountingTarget Element onto which to mount this page
+	 * @returns the created instance of this class that has been mounted
+	 */
+	static mountTo(mountingTarget: HTMLElement) {
+		mountingTarget.innerHTML = rankupHTMLRaw;
+		return new RankUpPage();
 	}
-	clearTimeout(timeoutIds[tab.id]);
-	tab.classList.remove("closed");
-	lastHiddenTab = tab;
-}
 
-function hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
-	if (isRowBeingDragged) return;
-	if (timeoutIds[tab.id]) clearTimeout(timeoutIds[tab.id]); // Clear any existing timeout
-	let delayMS: number = useDelay ? 500 : 0; // If delay is enabled, then we'll do half a second
-	timeoutIds[tab.id] = setTimeout(() => {
-		tab.classList.add("closed");
-	}, delayMS);
-}
-
-function clickImage(ev: MouseEvent) {
-	ev.stopPropagation(); // Stop event from moving up to prevent clearing
-	const image = ev.target as HTMLImageElement;
-	// Confirm valid targets
-	if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
-	const container = image.parentNode;
-	if (!container) throw new Error("Fatal Error: Image's parent container null...");
-
-	// Get our index
-	const images = Array.from(container.children) as HTMLImageElement[];
-	const currentNdx = images.indexOf(image);
-
-	// Ctrl key + click to toggle selected status on an image
-	if (ev.ctrlKey) toggleSelection(image);
-	else if (ev.shiftKey && lastSelectedImage) {
-		// Shift key + click selects all images between last and current image
-		const lastNdx = images.indexOf(lastSelectedImage);
-		if (lastNdx !== -1) {
-			const start = Math.min(currentNdx, lastNdx);
-			const end = Math.max(currentNdx, lastNdx);
-			for (let i = start; i <= end; i++) selectImage(images[i]);
-		} else selectImage(image);
-	} else {
-		// Normal image click, only select the one image
-		clearSelections();
-		selectImage(image);
+	/**
+	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
+	 */
+	private constructor() {
+		/* ------------------------------- Attach Rows ------------------------------ */
+		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
+		this.makeRowsDraggable();
+		this.emptyImg.src = emptyImage;
+		/* ---------------------------- Attach Listeners ---------------------------- */
+		this.rowView.addEventListener("click", () => this.deselectAllImages());
+		// Main container behaviors
+		this.imageContainer.ondragover = (event) => this.draggedImageOverElement(event);
+		this.imageContainer.ondragend = () => this.stopDraggingImage();
+		// Text boxes behaviors
+		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
+		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
+		/* ------------------------------ Insert images ----------------------------- */
+		if (this.userData) {
+			this.headerTitle.value = this.userData.title;
+			this.headerDescription.value = this.userData.desc;
+			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
+			else
+				PLACEHOLDER_IMAGES.forEach((name) =>
+					this.addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href),
+				);
+		}
 	}
-	lastSelectedImage = image;
-}
 
-function selectImage(image: HTMLImageElement) {
-	// Selects an image
-	selectedImages.add(image);
-	image.classList.add("selectedImage");
-}
-
-function deselectImage(image: HTMLImageElement) {
-	// Unselects an image
-	selectedImages.delete(image);
-	image.classList.remove("selectedImage");
-}
-
-function toggleSelection(image: HTMLImageElement) {
-	// Flips selected status on a given image
-	if (selectedImages.has(image)) deselectImage(image);
-	else selectImage(image);
-}
-
-function clearSelections() {
-	// Clears the list of currently selected images
-	selectedImages.forEach(deselectImage);
-	selectedImages.clear();
-}
-
-// dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
-function draggedOntoTextBox(ev: DragEvent) {
-	let data = ev.dataTransfer;
-	if (data && (data.types.length != 1 || data.types[0] != "text/plain")) {
-		ev.preventDefault();
+	/**
+	 * Applies dragging behavior to all rows in the rankup page list via Sortable JS
+	 */
+	makeRowsDraggable() {
+		new Sortable(this.rowList, {
+			draggable: "rankup-row", // The thing to be dragged
+			handle: ".dragContainer", // The thing to grab to drag by
+			direction: "vertical",
+			animation: 180,
+			easing: "cubic-bezier(0.22,1,0.36,1)",
+			ghostClass: "rowSortGhost",
+			ignore: "a",
+			onStart: (event) => {
+				this.isRowBeingDragged = true;
+				// Add the dragging class for styling
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+				dragContainer?.classList.add("is-row-dragging");
+			},
+			onEnd: (event) => {
+				this.isRowBeingDragged = false;
+				// Hide the row tab when drag has ended
+				const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
+				if (rowTab) this.hideTab(rowTab);
+				// Remove the dragging class for styling
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+				dragContainer?.classList.remove("is-row-dragging");
+			},
+		});
 	}
-	let element = ev.target as HTMLElement;
-	console.log(`Dragged something over ${element.id} but this is an invalid drag target`);
-	console.log("Data: ", data);
+
+	/**
+	 * Inserts a new row adjacent to the targetRow
+	 *
+	 * @param targetRow The row we are inserting a new row relative to
+	 * @param isAbove Whether new row will be above or below targetRow
+	 */
+	addRow(targetRow: Row, isAbove: boolean) {
+		// First check if there is only one existing row, if so, enable the delete button as there will now be multiple
+		if (this.rowList.childElementCount == 1) {
+			const onlyRow = this.rowList.firstChild as Row;
+			onlyRow.setEnableDelete(true);
+		}
+		// Create the new row
+		const insertDirection = isAbove ? "beforebegin" : "afterend";
+		targetRow.insertAdjacentElement(insertDirection, new Row(this));
+	}
+
+	/**
+	 * Clears out all images within a given row. Moves held images to starter container.
+	 *
+	 * @param row the row to clear
+	 */
+	clearRow(row: Row) {
+		row.getImages().forEach((image) => {
+			this.deselectImage(image);
+			this.imageContainer.append(image);
+		});
+	}
+
+	/**
+	 * Deletes a given row from the row list. Moves held images to starter container.
+	 *
+	 * @param row the row to delete
+	 */
+	deleteRow(row: Row) {
+		this.clearRow(row);
+		row.remove();
+		// If there is only one row remaining disable the delete button and make it look disabled.
+		if (this.rowList.childElementCount <= 1) {
+			const onlyRow = this.rowList.firstChild as Row;
+			onlyRow.setEnableDelete(false);
+		}
+	}
+
+	/**
+	 * Makes the given tab become visible on screen
+	 *
+	 * @param tab The tab to display
+	 */
+	showTab(tab: HTMLDivElement) {
+		if (this.lastHiddenTab && this.lastHiddenTab != tab) {
+			this.hideTab(this.lastHiddenTab, false);
+		}
+		clearTimeout(this.timeoutIds[tab.id]);
+		tab.classList.remove("closed");
+		this.lastHiddenTab = tab;
+	}
+
+	// FIXME: This is now broken, tabs remain visible when moving between rows
+	/**
+	 * Makes the given tab become hidden on screen
+	 *
+	 * @param tab The tab to hide
+	 * @param useDelay whether or not to have a delay on hiding
+	 */
+	hideTab(tab: HTMLDivElement, useDelay: boolean = true) {
+		if (this.isRowBeingDragged) return;
+		if (this.timeoutIds[tab.id]) clearTimeout(this.timeoutIds[tab.id]); // Clear any existing timeout
+		let delayMS: number = useDelay ? 500 : 0; // If delay is enabled, then we'll do half a second
+		this.timeoutIds[tab.id] = setTimeout(() => {
+			tab.classList.add("closed");
+		}, delayMS);
+	}
+
+	/**
+	 * Called when a rankup image is clicked.Selects normally, toggle selects with CTRL,
+	 * and group selects a range with SHIFT. Modeled after Windows file explorer behavior.
+	 *
+	 * @param event the mouse click event on the image
+	 */
+	clickImage(event: MouseEvent) {
+		event.stopPropagation(); // Stop event from moving up to prevent clearing
+		const image = event.target as HTMLImageElement;
+		if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
+
+		// Ctrl key + click to toggle selected status on an image
+		if (event.ctrlKey) this.toggleSelected(image);
+		else if (event.shiftKey && this.lastSelectedImage) {
+			// Shift key + click selects all images between last and current image
+			this.deselectAllImages();
+			const container = image.parentNode;
+			if (!container) throw new Error("Fatal Error: Image's parent container null...");
+			// Get our index
+			const images = Array.from(container.children) as HTMLImageElement[];
+			const currentNdx = images.indexOf(image);
+			const lastNdx = images.indexOf(this.lastSelectedImage);
+			if (lastNdx !== -1) {
+				// Select all images between indexes
+				const start = Math.min(currentNdx, lastNdx);
+				const end = Math.max(currentNdx, lastNdx);
+				for (let i = start; i <= end; i++) this.selectImage(images[i]);
+				return;
+			} else this.selectImage(image);
+		} else {
+			// Normal image click, only select the one image
+			this.deselectAllImages();
+			this.selectImage(image);
+		}
+		this.lastSelectedImage = image;
+	}
+
+	/**
+	 * Selects a given image
+	 *
+	 * @param image image to select
+	 */
+	private selectImage(image: HTMLImageElement) {
+		this.selectedImages.add(image);
+		image.classList.add("selectedImage");
+	}
+
+	/**
+	 * Deselects a given image
+	 *
+	 * @param image image to deselect
+	 */
+	deselectImage(image: HTMLImageElement) {
+		this.selectedImages.delete(image);
+		image.classList.remove("selectedImage");
+	}
+
+	/**
+	 * Toggles selected status of given image
+	 *
+	 * @param image image to toggle
+	 */
+	private toggleSelected(image: HTMLImageElement) {
+		this.selectedImages.has(image) ? this.deselectImage(image) : this.selectImage(image);
+	}
+
+	/**
+	 * Deselects all images
+	 */
+	private deselectAllImages() {
+		for (const image of this.selectedImages) this.deselectImage(image);
+	}
+
+	/**
+	 * Called when user begins to drag an image
+	 *
+	 * @param event the dragging event
+	 */
+	startDraggingImage(event: DragEvent) {
+		this.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
+		const draggedImage = event.target as HTMLImageElement;
+		if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
+
+		// If this image isn't one of the currently selected, click it to select it and deselect the previously selected
+		if (!this.selectedImages.has(draggedImage)) this.clickImage(event);
+
+		// Attach dragging data and class to all participants
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.add("draggingImage"));
+
+		// Disable the default dragging image
+		if (!event.dataTransfer) throw new Error("ev.dataTransfer is null in DragStart");
+		event.dataTransfer.setDragImage(this.emptyImg, 0, 0);
+	}
+
+	/**
+	 * Called when an image is dragged over another element on the RankUp screen, primarily dealing with other images and image containers
+	 *
+	 * @param event The drag event of the element being dragged upon
+	 */
+	draggedImageOverElement(event: DragEvent) {
+		// TODO: This actually has no reason to be doing both jobs?! Split into 2 functions
+		// For change to be necessary one of these must have changed: target changed, targetside changed.
+		event.preventDefault();
+
+		const targetElement = event.target as HTMLElement; // The element being dragged into.
+		if (!targetElement) console.error("ev.target is is null in DragImageOver");
+
+		if (targetElement.classList.contains("image-container")) {
+			// Dragging over an image container element
+			this.selectedImages.forEach((selectedImage) => {
+				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
+				targetElement.append(selectedImage);
+			});
+		} else if (targetElement.classList.contains("rankingImage")) {
+			// Dragging over a rankup image element - figure out which side to place on
+			const targetImage = targetElement as HTMLImageElement;
+			if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
+			// Check if the image was dragged to the left or right of the target image
+			const targetImageRect = targetImage.getBoundingClientRect();
+			const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
+			// If the user dragged the image to the left of the target image, insert the image before the target image
+			const isCurSideLeft = event.clientX < targetImageCenter;
+			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
+			this.selectedImages.forEach((selectedImage) => {
+				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
+				else this.recursiveInsert(targetImage);
+			});
+			this.isPrevSideLeft = isCurSideLeft;
+		}
+		this.prevTarget = targetElement;
+	}
+
+	/**
+	 * Called when user stops dragging an image
+	 */
+	stopDraggingImage() {
+		this.prevTarget = null;
+		this.isPrevSideLeft = false;
+		this.rowView.classList.add("allow-image-hover");
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("draggingImage"));
+	}
+
+	// DOCS: RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
+	private recursiveInsert(targetImage: HTMLImageElement) {
+		let iterator: IterableIterator<HTMLImageElement> = this.selectedImages.values();
+		this._recursiveInsert(targetImage, iterator);
+	}
+	private _recursiveInsert(targetImage: HTMLImageElement, iterator: IterableIterator<HTMLImageElement>) {
+		let nextImg = iterator.next();
+		if (!nextImg.done) {
+			targetImage.insertAdjacentElement("afterend", nextImg.value);
+			this._recursiveInsert(nextImg.value, iterator);
+		}
+	}
+	// TODO: Replace recursive functions with single one. not necessary
+
+	/**
+	 * Called when the user drags and drops something over a textbox. Rejects anything that isn't plain text.
+	 *
+	 * @param event the drag event
+	 */
+	draggedOverTextbox(event: DragEvent) {
+		// TODO: Improve this function, it is not doing much of use right now
+		const data = event.dataTransfer;
+		// Reject non-text
+		if (data && (data.types.length != 1 || data.types[0] != "text/plain")) event.preventDefault();
+
+		const textBox = event.target as HTMLElement;
+		// DEBUGGING:
+		console.warn(`Dragged something over ${textBox} but this is an invalid drag target`);
+		console.warn("Data: ", data);
+	}
+
+	/**
+	 * Takes an image URL and adds it to starting container as image element
+	 *
+	 * @param url the URL of the image to add
+	 */
+	private addImageToContainer(url: string) {
+		const image = document.createElement("img") as HTMLImageElement;
+		image.className = "rankingImage";
+		image.src = url;
+		image.onclick = (event) => this.clickImage(event);
+		image.ondragstart = (event) => this.startDraggingImage(event);
+		image.ondragend = () => this.stopDraggingImage();
+		this.imageContainer.appendChild(image);
+	}
 }
-
-// Function to make the rows on the main page
-function populateInitialRows(rowCount: number) {
-	let rowList = document.getElementById("rowList") as HTMLDivElement;
-	if (rowList) for (let i: number = 0; i < rowCount; i++) new Row().appendTo(rowList);
-}
-
-const placeholderImages = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
-
-function addImageToContainer(url: string) {
-	const imageContainer = document.getElementById("imageContainer");
-	if (!imageContainer) throw new Error("Fatal Error: Failed to locate #imageContainer");
-	const image = document.createElement("img") as HTMLImageElement;
-	image.className = "rankingImage";
-	image.src = url;
-	image.onclick = (event) => clickImage(event);
-	image.ondragstart = (event) => imageDragStart(event);
-	imageContainer.appendChild(image);
-}
-
-let isRowBeingDragged: boolean = false;
-// Function to add drag ability with Sortable JS
-function makeRowsDrag(): void {
-	const rowList = document.getElementById("rowList");
-	if (!rowList) throw new Error("Could not enable row dragging. rowList was not found.");
-
-	new Sortable(rowList, {
-		draggable: ".rowFull", // The thing to be dragged
-		handle: ".dragContainer", // The thing to grab to drag by
-		direction: "vertical",
-		animation: 180,
-		easing: "cubic-bezier(0.22,1,0.36,1)",
-		ghostClass: "rowSortGhost",
-		ignore: "a",
-		onStart(event) {
-			isRowBeingDragged = true;
-			// Add the dragging class for styling
-			const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
-			dragContainer?.classList.add("is-row-dragging");
-		},
-		onEnd(event) {
-			isRowBeingDragged = false;
-			// Hide the row tab when drag has ended
-			const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
-			if (rowTab) hideTab(rowTab);
-			// Remove the dragging class for styling
-			const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
-			dragContainer?.classList.remove("is-row-dragging");
-		},
-	});
-}
-
-import rankupHTMLRaw from "./rankup.html?raw";
-import { registerPage } from "@/components/renderPage";
-import { getUserData } from "@/state/UserData";
 
 function renderRankUpPage(pageContainer: HTMLElement) {
-	/* ------------------------- Inject RankUp page HTML ------------------------ */
-	pageContainer.innerHTML = rankupHTMLRaw;
-
-	/* ---------------- Attach class to allow hovering on images ---------------- */
-	const rankupContainer = document.getElementsByClassName("rankup-view")[0];
-	rankupContainer?.classList.add("allow-image-hover");
-
-	/* ---------------------------- Attach Listeners ---------------------------- */
-	const imageContainer = document.getElementById("imageContainer") as HTMLDivElement;
-	const headerTitle = document.getElementById("headerTitle") as HTMLInputElement;
-	const headerDescription = document.getElementById("headerDescription") as HTMLTextAreaElement;
-
-	// Add global listener for deselection
-	document.body.addEventListener("click", (event) => clearSelections());
-
-	// Main container behaviors
-	if (!imageContainer) throw new Error("Could not find imageContainer, cannot proceed.");
-	imageContainer.ondragover = dragImageOver;
-	imageContainer.ondragend = dragImageEnd;
-
-	// Text boxes behaviors
-	if (headerTitle) headerTitle.ondragover = draggedOntoTextBox;
-	if (headerDescription) headerDescription.ondragover = draggedOntoTextBox;
-
-	/* ----------- Populate the page with our default rows and images ----------- */
-	populateInitialRows(5); // Make the original starting rows
-	makeRowsDrag();
-
-	/* ------------------------------ Insert images ----------------------------- */
-	const userData = getUserData();
-	if (userData) {
-		headerTitle.value = userData.title;
-		headerDescription.value = userData.desc;
-		if (userData.imageURLs.length > 0) userData.imageURLs.forEach((url) => addImageToContainer(url));
-		else placeholderImages.forEach((name) => addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href));
-	}
+	RankUpPage.mountTo(pageContainer);
 }
 
+// Define row class as custom element
+customElements.define("rankup-row", Row);
 // Register this page to the renderer
 registerPage("rankup", renderRankUpPage);
