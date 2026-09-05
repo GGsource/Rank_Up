@@ -26,7 +26,7 @@ export class Row extends HTMLElement {
 	private dragHandle = document.createElement("img"); // Image to indicate dragable row
 	private addRowBelowButton = document.createElement("img"); // Adds new row below current
 	private rowTitle = document.createElement("input"); // Title for current row
-	private statusBtnsContainer = document.createElement("div"); // Contains buttons for changing row's status
+	private rowOptions = document.createElement("div"); // Contains buttons for changing row's status
 	private deleteButton = document.createElement("div"); // Deletes the current row
 	private clearButton = document.createElement("div"); // Clears out current row
 	private rowBody = document.createElement("div"); // Contains the actual images for this row
@@ -39,8 +39,6 @@ export class Row extends HTMLElement {
 	 */
 	constructor(list: RowList, rowNumber = 0) {
 		super();
-		// TODO: Look into renaming all class names
-		// IDEA: Look into static HTML recipe for a row?
 		this.rowHeader.className = "rowHeader";
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab
@@ -64,16 +62,16 @@ export class Row extends HTMLElement {
 		this.rowTitle.className = "rowTitle";
 		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
-		this.statusBtnsContainer.className = "resetDeleteContainer";
+		this.rowOptions.className = "resetDeleteContainer";
 		this.clearButton.className = "resetButton resetDeleteButton";
 		this.clearButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
 		this.clearButton.onclick = () => list.clearRow(this);
 		this.deleteButton.className = "deleteButton resetDeleteButton";
 		this.deleteButton.style.backgroundImage = `url("${rowHeaderDeleteIcon}")`; // Set background image for delete button
 		this.deleteButton.onclick = () => list.deleteRow(this);
-		this.statusBtnsContainer.append(this.clearButton, this.deleteButton);
-		this.statusBtnsContainer.onclick = (event) => event.stopPropagation();
-		this.rowHeader.append(this.rowTab, this.rowTitle, this.statusBtnsContainer);
+		this.rowOptions.append(this.clearButton, this.deleteButton);
+		this.rowOptions.onclick = (event) => event.stopPropagation();
+		this.rowHeader.append(this.rowTab, this.rowTitle, this.rowOptions);
 		this.rowBody.className = "rowBody image-container";
 		this.rowBody.ondragover = (event) => list.draggedImageOverElement(event);
 		this.append(this.rowHeader, this.rowBody);

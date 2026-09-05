@@ -273,7 +273,6 @@ class RankUpPage implements RowList {
 	 * @param event The drag event of the element being dragged upon
 	 */
 	draggedImageOverElement(event: DragEvent) {
-		// TODO: This actually has no reason to be doing both jobs?! Split into 2 functions
 		// For change to be necessary one of these must have changed: target changed, targetside changed.
 		event.preventDefault();
 
@@ -296,13 +295,28 @@ class RankUpPage implements RowList {
 			// If the user dragged the image to the left of the target image, insert the image before the target image
 			const isCurSideLeft = event.clientX < targetImageCenter;
 			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
-			this.selectedImages.forEach((selectedImage) => {
-				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
-				else this.recursiveInsert(targetImage);
-			});
+			if (isCurSideLeft) {
+				this.selectedImages.forEach((selectedImage) => {
+					if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
+				});
+			} else this.insertAllAfter(targetImage);
+
 			this.isPrevSideLeft = isCurSideLeft;
 		}
 		this.prevTarget = targetElement;
+	}
+
+	/**
+	 * Inserts all images after target image, preserving order
+	 *
+	 * @param targetImage image to insert after
+	 */
+	private insertAllAfter(targetImage: HTMLImageElement) {
+		let anchor = targetImage;
+		this.selectedImages.forEach((selectedImage) => {
+			anchor.insertAdjacentElement("afterend", selectedImage);
+			anchor = selectedImage;
+		});
 	}
 
 	/**
@@ -315,33 +329,17 @@ class RankUpPage implements RowList {
 		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("draggingImage"));
 	}
 
-	// DOCS: RecursiveInsert - Recursively places images one after the other. Required to avoid looping behavior
-	private recursiveInsert(targetImage: HTMLImageElement) {
-		let iterator: IterableIterator<HTMLImageElement> = this.selectedImages.values();
-		this._recursiveInsert(targetImage, iterator);
-	}
-	private _recursiveInsert(targetImage: HTMLImageElement, iterator: IterableIterator<HTMLImageElement>) {
-		let nextImg = iterator.next();
-		if (!nextImg.done) {
-			targetImage.insertAdjacentElement("afterend", nextImg.value);
-			this._recursiveInsert(nextImg.value, iterator);
-		}
-	}
-	// TODO: Replace recursive functions with single one. not necessary
-
 	/**
 	 * Called when the user drags and drops something over a textbox. Rejects anything that isn't plain text.
 	 *
 	 * @param event the drag event
 	 */
 	draggedOverTextbox(event: DragEvent) {
-		// TODO: Improve this function, it is not doing much of use right now
 		const data = event.dataTransfer;
 		// Reject non-text
 		if (data && (data.types.length != 1 || data.types[0] != "text/plain")) event.preventDefault();
 
 		const textBox = event.target as HTMLElement;
-		// DEBUGGING:
 		console.warn(`Dragged something over ${textBox} but this is an invalid drag target`);
 		console.warn("Data: ", data);
 	}
