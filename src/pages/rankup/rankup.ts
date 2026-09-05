@@ -9,6 +9,9 @@ import { Row, RowList } from "@/components/Row";
 
 const STARTING_ROW_COUNT = 5;
 const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
+const EMPTY_IMG = Object.assign(new Image(), {
+	src: emptyImage,
+});
 
 class RankUpPage implements RowList {
 	private rowView = Utils.getEl("rankup-view");
@@ -24,7 +27,6 @@ class RankUpPage implements RowList {
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
 	private userData = getUserData();
-	private readonly emptyImg = new Image();
 
 	/**
 	 * Takes a target element and populates it with the raw HTML for this page and instantiates it
@@ -44,7 +46,6 @@ class RankUpPage implements RowList {
 		/* ------------------------------- Attach Rows ------------------------------ */
 		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
 		this.makeRowsDraggable();
-		this.emptyImg.src = emptyImage;
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => this.deselectAllImages());
 		// Main container behaviors
@@ -260,7 +261,7 @@ class RankUpPage implements RowList {
 
 		// Disable the default dragging image
 		if (!event.dataTransfer) throw new Error("ev.dataTransfer is null in DragStart");
-		event.dataTransfer.setDragImage(this.emptyImg, 0, 0);
+		event.dataTransfer.setDragImage(EMPTY_IMG, 0, 0);
 	}
 
 	/**
