@@ -52,11 +52,11 @@ class RankUpPage implements RowList {
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => this.deselectAllImages());
 		// Main container behaviors
-		this.imageContainer.ondragover = (event) => this.draggedImageOver(event);
-		this.imageContainer.ondragend = () => this.dragImageEnd();
+		this.imageContainer.ondragover = (event) => this.draggedImageOverElement(event);
+		this.imageContainer.ondragend = () => this.stopDraggingImage();
 		// Text boxes behaviors
-		this.headerTitle.ondragover = (event) => this.draggedOntoTextBox(event);
-		this.headerDescription.ondragover = (event) => this.draggedOntoTextBox(event);
+		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
+		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
 		/* ------------------------------ Insert images ----------------------------- */
 		if (this.userData) {
 			this.headerTitle.value = this.userData.title;
@@ -246,8 +246,12 @@ class RankUpPage implements RowList {
 		for (const image of this.selectedImages) this.deselectImage(image);
 	}
 
-	// DOCS: DragStart - Mouse is now being held on an image; it is being dragged.
-	imageDragStart(event: DragEvent) {
+	/**
+	 * Called when user begins to drag an image
+	 *
+	 * @param event the dragging event
+	 */
+	startDraggingImage(event: DragEvent) {
 		this.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 		const draggedImage = event.target as HTMLImageElement;
 		if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
@@ -268,40 +272,43 @@ class RankUpPage implements RowList {
 	 *
 	 * @param event The drag event of the element being dragged upon
 	 */
-	draggedImageOver(event: DragEvent) {
+	draggedImageOverElement(event: DragEvent) {
+		// TODO: This actually has no reason to be doing both jobs?! Split into 2 functions
 		// For change to be necessary one of these must have changed: target changed, targetside changed.
 		event.preventDefault();
 
-		const element = event.target as HTMLElement; // The element being dragged into.
-		if (!element) console.error("ev.target is is null in DragImageOver");
+		const targetElement = event.target as HTMLElement; // The element being dragged into.
+		if (!targetElement) console.error("ev.target is is null in DragImageOver");
 
-		if (element.classList.contains("image-container")) {
+		if (targetElement.classList.contains("image-container")) {
+			// Dragging over an image container element
 			this.selectedImages.forEach((selectedImage) => {
-				if (this.prevTarget == element && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
-				element.append(selectedImage);
+				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
+				targetElement.append(selectedImage);
 			});
-		} else if (element.classList.contains("rankingImage")) {
-			const targetImage = element as HTMLImageElement;
-			// The user dragged an image onto another image, place the image next to the target image in its parent.
+		} else if (targetElement.classList.contains("rankingImage")) {
+			// Dragging over a rankup image element - figure out which side to place on
+			const targetImage = targetElement as HTMLImageElement;
 			if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
 			// Check if the image was dragged to the left or right of the target image
 			const targetImageRect = targetImage.getBoundingClientRect();
 			const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
 			// If the user dragged the image to the left of the target image, insert the image before the target image
 			const isCurSideLeft = event.clientX < targetImageCenter;
-			if (this.prevTarget == element && isCurSideLeft == this.isPrevSideLeft) return;
+			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
 			this.selectedImages.forEach((selectedImage) => {
 				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
 				else this.recursiveInsert(targetImage);
 			});
 			this.isPrevSideLeft = isCurSideLeft;
 		}
-		this.prevTarget = element;
+		this.prevTarget = targetElement;
 	}
 
-	// TODO: Rename to be in line with other function
-	// DOCS: DragImageEnd - Mouse dragging ends. The element that was being dragged receives this event.
-	dragImageEnd() {
+	/**
+	 * Called when user stops dragging an image
+	 */
+	stopDraggingImage() {
 		this.prevTarget = null;
 		this.isPrevSideLeft = false;
 		this.rowView.classList.add("allow-image-hover");
@@ -322,14 +329,20 @@ class RankUpPage implements RowList {
 	}
 	// TODO: Replace recursive functions with single one. not necessary
 
-	// DOCS: dragOverTextBox - drop function for dragging something onto an object that should only hold text, such as a row header.
-	draggedOntoTextBox(event: DragEvent) {
+	/**
+	 * Called when the user drags and drops something over a textbox. Rejects anything that isn't plain text.
+	 *
+	 * @param event the drag event
+	 */
+	draggedOverTextbox(event: DragEvent) {
+		// TODO: Improve this function, it is not doing much of use right now
 		const data = event.dataTransfer;
+		// Reject non-text
 		if (data && (data.types.length != 1 || data.types[0] != "text/plain")) event.preventDefault();
 
-		const element = event.target as HTMLElement;
+		const textBox = event.target as HTMLElement;
 		// DEBUGGING:
-		console.warn(`Dragged something over ${element.id} but this is an invalid drag target`);
+		console.warn(`Dragged something over ${textBox} but this is an invalid drag target`);
 		console.warn("Data: ", data);
 	}
 
@@ -343,7 +356,8 @@ class RankUpPage implements RowList {
 		image.className = "rankingImage";
 		image.src = url;
 		image.onclick = (event) => this.clickImage(event);
-		image.ondragstart = (event) => this.imageDragStart(event);
+		image.ondragstart = (event) => this.startDraggingImage(event);
+		image.ondragend = () => this.stopDraggingImage();
 		this.imageContainer.appendChild(image);
 	}
 }

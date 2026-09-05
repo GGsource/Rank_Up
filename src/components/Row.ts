@@ -13,9 +13,9 @@ export interface RowList {
 	addRow(row: Row, isAbove: boolean): void;
 	clearRow(row: Row): void;
 	deleteRow(row: Row): void;
-	draggedImageOver(event: DragEvent): void;
-	dragImageEnd(): void;
-	draggedOntoTextBox(event: DragEvent): void;
+	draggedImageOverElement(event: DragEvent): void;
+	stopDraggingImage(): void;
+	draggedOverTextbox(event: DragEvent): void;
 }
 
 export class Row extends HTMLElement {
@@ -63,7 +63,7 @@ export class Row extends HTMLElement {
 		this.rowTab.append(this.addRowAboveButton, this.dragContainer, this.addRowBelowButton);
 		this.rowTitle.className = "rowTitle";
 		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
-		this.rowTitle.ondrop = (event) => list.draggedOntoTextBox(event);
+		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.statusBtnsContainer.className = "resetDeleteContainer";
 		this.clearButton.className = "resetButton resetDeleteButton";
 		this.clearButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
@@ -75,8 +75,7 @@ export class Row extends HTMLElement {
 		this.statusBtnsContainer.onclick = (event) => event.stopPropagation();
 		this.rowHeader.append(this.rowTab, this.rowTitle, this.statusBtnsContainer);
 		this.rowBody.className = "rowBody image-container";
-		this.rowBody.ondragover = (event) => list.draggedImageOver(event);
-		this.rowBody.ondragend = () => list.dragImageEnd();
+		this.rowBody.ondragover = (event) => list.draggedImageOverElement(event);
 		this.append(this.rowHeader, this.rowBody);
 	}
 
