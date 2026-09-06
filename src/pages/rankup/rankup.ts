@@ -1,11 +1,12 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 import emptyImage from "@/assets/images/empty.png";
-import * as Utils from "@/utils/utils";
+import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
 import { getUserData } from "@/state/UserData";
 import { Row, RowList } from "@/components/Row";
+import { Page } from "@/pages/Page";
 
 const STARTING_ROW_COUNT = 5;
 const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
@@ -13,12 +14,13 @@ const EMPTY_IMG = Object.assign(new Image(), {
 	src: emptyImage,
 });
 
-class RankUpPage implements RowList {
-	private rowView = Utils.getEl("rankup-view");
-	private rowList = Utils.getEl("rowList");
-	private imageContainer = Utils.getEl("imageContainer");
-	private headerTitle = Utils.getEl<HTMLInputElement>("headerTitle");
-	private headerDescription = Utils.getEl<HTMLInputElement>("headerDescription");
+class RankUpPage extends Page implements RowList {
+	static rawHTML = rankupHTMLRaw;
+	private rowView = getEl("rankup-view");
+	private rowList = getEl("rowList");
+	private imageContainer = getEl("imageContainer");
+	private headerTitle = getEl<HTMLInputElement>("headerTitle");
+	private headerDescription = getEl<HTMLInputElement>("headerDescription");
 	private isRowBeingDragged = false;
 	private timeoutIds = new Map<HTMLDivElement, number>();
 	private lastShownTab: HTMLDivElement | null = null;
@@ -29,20 +31,10 @@ class RankUpPage implements RowList {
 	private userData = getUserData();
 
 	/**
-	 * Takes a target element and populates it with the raw HTML for this page and instantiates it
-	 *
-	 * @param mountingTarget Element onto which to mount this page
-	 * @returns the created instance of this class that has been mounted
-	 */
-	static mountTo(mountingTarget: HTMLElement) {
-		mountingTarget.innerHTML = rankupHTMLRaw;
-		return new RankUpPage();
-	}
-
-	/**
 	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
 	 */
-	private constructor() {
+	constructor() {
+		super();
 		/* ------------------------------- Attach Rows ------------------------------ */
 		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
 		this.makeRowsDraggable();
@@ -57,6 +49,7 @@ class RankUpPage implements RowList {
 		/* ------------------------------ Insert images ----------------------------- */
 		if (this.userData) {
 			this.headerTitle.value = this.userData.title;
+			this.setTitle(this.headerTitle.value);
 			this.headerDescription.value = this.userData.desc;
 			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
 			else
@@ -357,11 +350,7 @@ class RankUpPage implements RowList {
 	}
 }
 
-function renderRankUpPage(pageContainer: HTMLElement) {
-	RankUpPage.mountTo(pageContainer);
-}
-
 // Define row class as custom element
 customElements.define("rankup-row", Row);
 // Register this page to the renderer
-registerPage("rankup", renderRankUpPage);
+registerPage("rankup", RankUpPage);

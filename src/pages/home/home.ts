@@ -2,21 +2,23 @@ import homeHTMLRaw from "./home.html?raw";
 import "./home.css";
 import plusIconImage from "@/assets/images/icon_plus.png";
 import { registerPage, renderPage } from "@/components/renderPage";
+import { getEl } from "@/utils/utils";
+import { Page } from "../Page";
 
-function renderHomePage(pageContainer: HTMLElement) {
-	/* -------------------------- Inject Home Page HTML ------------------------- */
-	pageContainer.innerHTML = homeHTMLRaw;
+class HomePage extends Page {
+	static rawHTML = homeHTMLRaw;
 
-	/* ------------------------------ Insert icons ------------------------------ */
-	const plusIconElement = document.getElementById("icon-plus") as HTMLImageElement | null;
-	if (!plusIconElement) console.error("Error: Failed to locate #icon-plus element to attach image source.");
-	else plusIconElement.src = plusIconImage;
-
-	/* ----------------------- Attach new rankup listener ----------------------- */
-	const newRankUpBtn = document.getElementById("create-new-rankup-card");
-	if (!newRankUpBtn) throw new Error("Fatal Error: Failed to locate #create-new-rankup-card element to attach listener.");
-	newRankUpBtn.addEventListener("click", (event) => renderPage("form"));
+	constructor() {
+		super();
+		this.setTitle();
+		/* ------------------------------ Insert icons ------------------------------ */
+		const plusIconElement = getEl<HTMLImageElement>("icon-plus");
+		plusIconElement.src = plusIconImage;
+		/* ----------------------- Attach new rankup listener ----------------------- */
+		const newRankUpBtn = getEl("create-new-rankup-card");
+		newRankUpBtn.addEventListener("click", () => renderPage("form"));
+	}
 }
 
 // Register this page to the renderer
-registerPage("home", renderHomePage);
+registerPage("home", HomePage);

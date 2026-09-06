@@ -1,31 +1,43 @@
-type RenderFunction = (container: HTMLElement) => void;
-const pageRegistry = new Map<string, RenderFunction>();
+import { PageClass } from "@/pages/Page";
+import { getEl } from "@/utils/utils";
 
-export function registerPage(pageName: string, func: RenderFunction) {
-	pageRegistry.set(pageName, func);
+const pageRegistry = new Map<string, PageClass>();
+
+/**
+ * Registers the given page in our known map
+ *
+ * @param pageName Name of the page
+ * @param pageClass Class of the Page
+ */
+export function registerPage(pageName: string, pageClass: PageClass) {
+	pageRegistry.set(pageName, pageClass);
 }
 
+/**
+ * Attaches the given page to the container to display it
+ *
+ * @param pageName name of the page to show
+ */
 export async function renderPage(pageName: string) {
 	// Get the container
-	let pageContainer = document.getElementById("page-container");
-	if (!pageContainer) throw new Error("Fatal Error: Failed to fetch #page-container, cannot render page.");
+	const pageContainer = getEl("page-container");
 
 	// Import appropriate render function
-	const pageKey = pageName.toLocaleLowerCase();
+	const pageKey = pageName.toLowerCase();
 	if (!pageRegistry.has(pageKey)) {
 		try {
 			await import(`../pages/${pageKey}/${pageKey}.ts`);
 		} catch (err) {
-			console.error(`Fatal Error: Failed to import @/pages/${pageKey}/${pageKey}`);
+			console.error(`Fatal Error: Failed to import ${pageKey}`);
 			throw err;
 		}
 	}
 
-	// Call the render function
-	const renderFunc = pageRegistry.get(pageKey);
-	if (!renderFunc) {
+	// Mount the page
+	const pageClass = pageRegistry.get(pageKey);
+	if (!pageClass) {
 		pageContainer.innerHTML = "I didn't find shit!!! Fuh 😩";
 		throw new Error(`Fatal Error: Page ${pageKey} imported but never registered.`);
 	}
-	renderFunc(pageContainer);
+	pageClass.mountTo(pageContainer);
 }
