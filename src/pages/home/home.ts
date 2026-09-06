@@ -10,6 +10,7 @@ class HomePage extends Page {
 
 	constructor() {
 		super();
+		this.setTitle();
 		/* ------------------------------ Insert icons ------------------------------ */
 		const plusIconElement = getEl<HTMLImageElement>("icon-plus");
 		plusIconElement.src = plusIconImage;

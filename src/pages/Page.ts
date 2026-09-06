@@ -15,10 +15,10 @@ export abstract class Page {
 	/**
 	 * Sets the window's tab title
 	 *
-	 * @param tabTitle title to set
+	 * @param tabTitle title to set. Can be null.
 	 */
-	setTitle(tabTitle: string) {
-		document.title = (MODE ? `${MODE}: ` : "") + `${tabTitle} - RankUp`;
+	setTitle(tabTitle: string | null = null) {
+		document.title = (MODE ? `${MODE}: ` : "") + `${tabTitle ? `${tabTitle} - ` : ""}RankUp`;
 	}
 
 	/**
