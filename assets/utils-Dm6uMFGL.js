@@ -1,1 +1,0 @@
-var e=null;function t(t,n,r){e={title:t,desc:n,imageURLs:r}}function n(){return e}function r(e){let t=document.getElementById(e);if(!t)throw Error(`Fatal Error: Failed to locate #${e}`);return t}export{n,t as r,r as t};
