@@ -1,12 +1,13 @@
 import { renderPage } from "@/components/renderPage";
+import { getEl } from "@/utils/utils";
+import { MODE } from "@/utils/const";
 import "@/styles/global.css";
 
 document.addEventListener("DOMContentLoaded", () => {
 	/* ----------------------------- Set Mode Banner ---------------------------- */
-	const modeBanner = document.getElementById("mode-banner");
-	if (!modeBanner) throw new Error("Couldn't find the mode banner to set :/");
-	if (window.location.hostname.startsWith("rankup.ggsource")) modeBanner.remove();
-	else modeBanner.innerText = import.meta.env.DEV ? "Dev Mode" : "Build Preview";
+	const modeBanner = getEl("mode-banner");
+	if (!MODE) modeBanner.remove();
+	else modeBanner.innerText = `${MODE} Mode`;
 
 	/* --------------------------- Render the homepage -------------------------- */
 	renderPage("home");

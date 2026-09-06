@@ -3,17 +3,19 @@ import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { setUserData } from "@/state/UserData";
 import { ToastBox } from "@/components/Toast";
-import * as Utils from "@/utils/utils";
-class FormPage {
+import { getEl } from "@/utils/utils";
+import { Page } from "../Page";
+class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
-	private formView = Utils.getEl<HTMLFormElement>("form-view");
-	private titleInput = Utils.getEl<HTMLInputElement>("form-title-input");
-	private descInput = Utils.getEl<HTMLInputElement>("form-desc-input");
-	private formFileInput = Utils.getEl<HTMLInputElement>("form-file-input");
-	private formUploadContainer = Utils.getEl("form-upload-area");
-	private uploadsContainer = Utils.getEl("upload-image-container");
-	private uploadIndicators = Utils.getEl("upload-indicators");
-	private clearUploadsButton = Utils.getEl<HTMLButtonElement>("clear-uploads");
+	static rawHTML = formHTMLRaw;
+	private formView = getEl<HTMLFormElement>("form-view");
+	private titleInput = getEl<HTMLInputElement>("form-title-input");
+	private descInput = getEl<HTMLInputElement>("form-desc-input");
+	private formFileInput = getEl<HTMLInputElement>("form-file-input");
+	private formUploadContainer = getEl("form-upload-area");
+	private uploadsContainer = getEl("upload-image-container");
+	private uploadIndicators = getEl("upload-indicators");
+	private clearUploadsButton = getEl<HTMLButtonElement>("clear-uploads");
 	private collectedURLs: string[] = []; // List of uploaded images
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
@@ -22,6 +24,8 @@ class FormPage {
 	 * Default constructor attaches event listeners
 	 */
 	constructor() {
+		super();
+		this.setTitle("Creation Form");
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
 		window.addEventListener("keydown", (event) => {
@@ -149,17 +153,5 @@ class FormPage {
 	}
 }
 
-/**
- * Renders the Form Page and attaches to the view window
- *
- * @param pageContainer container onto which to mount this page
- */
-async function renderFormPage(pageContainer: HTMLElement) {
-	/* --------------------- Inject raw HTML into container --------------------- */
-	pageContainer.innerHTML = formHTMLRaw;
-	/* ----------------------- Add functionality via class ---------------------- */
-	new FormPage();
-}
-
 // Register this page to the page renderer
-registerPage("form", renderFormPage);
+registerPage("form", FormPage);
