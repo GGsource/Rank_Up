@@ -6,7 +6,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
-	width: var(--fullRowWidth);
+	width: var(--row-width);
 	flex-wrap: wrap;
 }
 .rankup-view .headerText {
@@ -27,12 +27,12 @@
 	flex: 1;
 }
 .rankup-view .headerText:hover {
-	border-color: var(--colorHovered);
+	border-color: var(--theme-item--hover);
 	transition: border-color var(--animNormMS);
 }
 .rankup-view .headerText:focus {
 	outline: none;
-	border-color: var(--colorSelected);
+	border-color: var(--theme-item--focus);
 	transition: border var(--animSlowMS);
 }
 
@@ -59,7 +59,7 @@ rowList (containts all rankup-row elements)
 	flex-direction: column;
 	align-items: center;
 	width: 100%;
-	gap: calc(var(--imageRes) / 20);
+	gap: calc(var(--image-res) / 20);
 }
 
 rankup-row {
@@ -72,7 +72,7 @@ rankup-row {
 .rankup-view .rowTab {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
-	width: calc(var(--imageRes) / 2);
+	width: calc(var(--image-res) / 2);
 	transition:
 		width var(--animNormMS),
 		padding var(--animNormMS),
@@ -110,10 +110,7 @@ rankup-row {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE 10 and IE 11 */
-	user-select: none; /* Standard syntax */
+	user-select: none;
 }
 .rankup-view .tabButton:hover {
 	z-index: 2;
@@ -130,7 +127,7 @@ rankup-row {
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;
-	max-width: calc(var(--imageRes) / 4);
+	max-width: calc(var(--image-res) / 4);
 	padding: 0px 4px;
 	cursor: grab;
 }
@@ -163,7 +160,7 @@ rankup-row {
 
 .rankup-view .rowHeader {
 	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
-	width: var(--imageRes); /* Make the header be a square */
+	width: var(--image-res); /* Make the header be a square */
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
@@ -172,8 +169,8 @@ rankup-row {
 
 .rankup-view .rowBody {
 	/* Make the rowBody take up the remaining space in the rowTab */
-	width: var(--rowBodyWidth);
-	min-height: var(--imageRes);
+	width: var(--row-body-width);
+	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
 	border: 2px var(--catppuccin-red) solid;
 	box-sizing: content-box;
@@ -184,8 +181,8 @@ rankup-row {
 }
 
 .rankup-view .rankingImage {
-	width: var(--imageRes);
-	height: var(--imageRes);
+	width: var(--image-res);
+	height: var(--image-res);
 	object-position: center;
 	object-fit: cover;
 	border: solid 0px transparent;
@@ -245,8 +242,8 @@ rankup-row {
 }
 
 .rankup-view .resetDeleteButton {
-	width: calc(var(--imageRes) / 3);
-	height: calc(var(--imageRes) / 3);
+	width: calc(var(--image-res) / 3);
+	height: calc(var(--image-res) / 3);
 	z-index: 3;
 }
 
@@ -260,8 +257,8 @@ rankup-row {
 /* -------------------------------------------------------------------------- */
 
 .rankup-view #imageContainer {
-	width: var(--fullRowWidth);
-	min-height: calc(var(--imageRes) * 2); /* Make it start off at least 2 images tall */
+	width: var(--row-width);
+	min-height: calc(var(--image-res) * 2); /* Make it start off at least 2 images tall */
 	display: flex;
 	flex-shrink: 0;
 	flex-wrap: wrap;

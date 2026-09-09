@@ -23,7 +23,7 @@
 }
 
 .form-view .form-input {
-	border: 3px var(--text--dark) solid;
+	border: 3px var(--theme-text) solid;
 	background-color: transparent;
 	border-radius: var(--radius--light);
 	color: inherit;
@@ -45,7 +45,7 @@
 /* ------------------------------- User Images ------------------------------ */
 
 .form-view #form-upload-area {
-	border: 3px var(--text--dark) dashed;
+	border: 3px var(--theme-text) dashed;
 	border-radius: var(--radius--light);
 	height: 35%;
 	display: flex;
