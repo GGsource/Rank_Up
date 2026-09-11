@@ -39,19 +39,19 @@
 }
 
 .toast--Success {
-	color: var(--catppuccin-green);
-	border-color: var(--catppuccin-green);
-	background: color-mix(in srgb, var(--catppuccin-green) 30%, black 50%);
+	color: var(--theme-success);
+	border-color: var(--theme-success);
+	background: color-mix(in srgb, var(--theme-success) 30%, black 50%);
 }
 .toast--Failure {
-	color: var(--catppuccin-red);
-	border-color: var(--catppuccin-red);
-	background: color-mix(in srgb, var(--catppuccin-red) 30%, black 50%);
+	color: var(--theme-failure);
+	border-color: var(--theme-failure);
+	background: color-mix(in srgb, var(--theme-failure) 30%, black 50%);
 }
 .toast--Warning {
-	color: var(--catppuccin-yellow);
-	border-color: var(--catppuccin-yellow);
-	background: color-mix(in srgb, var(--catppuccin-yellow) 30%, black 50%);
+	color: var(--theme-warning);
+	border-color: var(--theme-warning);
+	background: color-mix(in srgb, var(--theme-warning) 30%, black 50%);
 }
 .toast--Info {
 	color: var(--catppuccin-sapphire);

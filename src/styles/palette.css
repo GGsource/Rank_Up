@@ -9,6 +9,9 @@
 	/* ---------------------------- Color Selections ---------------------------- */
 	--theme-bg: var(--catppuccin-crust);
 	--theme-text: var(--catppuccin-text);
+	--theme-success: var(--catppuccin-green);
+	--theme-warning: var(--catppuccin-yellow);
+	--theme-failure: var(--catppuccin-red);
 	--theme-item--hover: var(--catppuccin-text);
 	--theme-item--focus: var(--catppuccin-blue);
 

@@ -45,24 +45,24 @@ body {
 
 	/* Solid text border */
 	text-shadow:
-		2px 0 var(--catppuccin-yellow),
-		-2px 0 var(--catppuccin-yellow),
-		0 2px var(--catppuccin-yellow),
-		0 -2px var(--catppuccin-yellow),
-		1px 1px var(--catppuccin-yellow),
-		-1px -1px var(--catppuccin-yellow),
-		1px -1px var(--catppuccin-yellow),
-		-1px 1px var(--catppuccin-yellow);
+		2px 0 var(--theme-warning),
+		-2px 0 var(--theme-warning),
+		0 2px var(--theme-warning),
+		0 -2px var(--theme-warning),
+		1px 1px var(--theme-warning),
+		-1px -1px var(--theme-warning),
+		1px -1px var(--theme-warning),
+		-1px 1px var(--theme-warning);
 
 	/* Striped banner */
 	background: repeating-linear-gradient(
 		300deg,
 		var(--catppuccin-base),
 		var(--catppuccin-base) 5px,
-		var(--catppuccin-yellow) 5px,
-		var(--catppuccin-yellow) 10px
+		var(--theme-warning) 5px,
+		var(--theme-warning) 10px
 	);
-	outline-color: var(--catppuccin-yellow);
+	outline-color: var(--theme-warning);
 	outline-style: solid;
 	outline-width: 0px 2px 2px 2px;
 	text-align: center;

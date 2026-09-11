@@ -87,8 +87,8 @@ rankup-row {
 	left: 0;
 	transform: translateX(-100%);
 	border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
-	border: 3px var(--catppuccin-green) solid;
-	background-color: color-mix(in srgb, var(--catppuccin-green) 20%, transparent 80%);
+	border: 3px var(--theme-success) solid;
+	background-color: color-mix(in srgb, var(--theme-success) 20%, transparent 80%);
 	overflow: hidden;
 }
 .rankup-view .rowTab.closed {
@@ -164,7 +164,7 @@ rankup-row {
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
-	background-color: var(--catppuccin-red);
+	background-color: var(--theme-failure);
 }
 
 .rankup-view .rowBody {
@@ -172,7 +172,7 @@ rankup-row {
 	width: var(--row-body-width);
 	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
-	border: 2px var(--catppuccin-red) solid;
+	border: 2px var(--theme-failure) solid;
 	box-sizing: content-box;
 	/* Align items within to the left */
 	display: flex;

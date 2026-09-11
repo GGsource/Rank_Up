@@ -67,9 +67,9 @@
 
 .form-view #form-upload-area.input--errored,
 .form-view #form-title-input.input--errored {
-	color: var(--catppuccin-red);
-	border-color: var(--catppuccin-red);
-	background-color: color-mix(in srgb, var(--catppuccin-red) 10%, transparent 90%);
+	color: var(--theme-failure);
+	border-color: var(--theme-failure);
+	background-color: color-mix(in srgb, var(--theme-failure) 10%, transparent 90%);
 }
 
 .form-view #upload-indicators {
@@ -113,9 +113,9 @@
 	inset: 0;
 	position: absolute;
 	border-radius: inherit;
-	background-color: color-mix(in srgb, var(--catppuccin-red) 30%, black 50%);
+	background-color: color-mix(in srgb, var(--theme-failure) 30%, black 50%);
 	opacity: 0;
-	border: 4px solid var(--catppuccin-red);
+	border: 4px solid var(--theme-failure);
 	transition: border opacity 100ms;
 	display: flex;
 }
@@ -125,7 +125,7 @@
 }
 
 .form-view .delete-button svg {
-	color: var(--catppuccin-red);
+	color: var(--theme-failure);
 	flex: 1;
 	padding: 3%;
 }
@@ -147,9 +147,9 @@
 	opacity: 0.2;
 }
 .form-view #clear-uploads:hover:not(:disabled) {
-	background-color: color-mix(in srgb, var(--catppuccin-red) 30%, black 50%);
-	color: var(--catppuccin-red);
-	border: 3px solid var(--catppuccin-red);
+	background-color: color-mix(in srgb, var(--theme-failure) 30%, black 50%);
+	color: var(--theme-failure);
+	border: 3px solid var(--theme-failure);
 }
 
 /* ------------------------------- Submission ------------------------------- */
@@ -160,7 +160,7 @@
 	color: inherit;
 }
 .form-view #form-submit:hover {
-	color: var(--catppuccin-green);
-	background-color: color-mix(in srgb, var(--catppuccin-green) 30%, black 50%);
-	border: 3px solid var(--catppuccin-green);
+	color: var(--theme-success);
+	background-color: color-mix(in srgb, var(--theme-success) 30%, black 50%);
+	border: 3px solid var(--theme-success);
 }
