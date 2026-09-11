@@ -131,8 +131,8 @@
 }
 
 .form-view .form-button {
-	background-color: var(--catppuccin-mantle);
-	border: 3px solid var(--catppuccin-base);
+	background-color: var(--theme-material-1);
+	border: 3px solid var(--theme-material-2);
 	border-radius: 10px;
 	cursor: pointer;
 }
