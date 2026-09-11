@@ -1,6 +1,6 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
-import emptyImage from "@/assets/images/empty.png";
+import emptyImage from "@/assets/images/icons/empty.png";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
@@ -9,7 +9,6 @@ import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
 
 const STARTING_ROW_COUNT = 5;
-const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
 const EMPTY_IMG = Object.assign(new Image(), {
 	src: emptyImage,
 });
@@ -17,10 +16,10 @@ const EMPTY_IMG = Object.assign(new Image(), {
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
 	private rowView = getEl("rankup-view");
-	private rowList = getEl("rowList");
-	private imageContainer = getEl("imageContainer");
-	private headerTitle = getEl<HTMLInputElement>("headerTitle");
-	private headerDescription = getEl<HTMLInputElement>("headerDescription");
+	private rowList = getEl("row-list");
+	private starterContainer = getEl("starter-container");
+	private headerTitle = getEl<HTMLInputElement>("header-title");
+	private headerDescription = getEl<HTMLInputElement>("header-description");
 	private isRowBeingDragged = false;
 	private timeoutIds = new Map<HTMLDivElement, number>();
 	private lastShownTab: HTMLDivElement | null = null;
@@ -41,8 +40,8 @@ class RankUpPage extends Page implements RowList {
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => this.deselectAllImages());
 		// Main container behaviors
-		this.imageContainer.ondragover = (event) => this.draggedImageOverElement(event);
-		this.imageContainer.ondragend = () => this.stopDraggingImage();
+		this.starterContainer.ondragover = (event) => this.draggedImageOverElement(event);
+		this.starterContainer.ondragend = () => this.stopDraggingImage();
 		// Text boxes behaviors
 		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
 		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
@@ -52,10 +51,10 @@ class RankUpPage extends Page implements RowList {
 			this.setTitle(this.headerTitle.value);
 			this.headerDescription.value = this.userData.desc;
 			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-			else
-				PLACEHOLDER_IMAGES.forEach((name) =>
-					this.addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href),
-				);
+			else {
+				const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+				Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
+			}
 		}
 	}
 
@@ -65,7 +64,7 @@ class RankUpPage extends Page implements RowList {
 	makeRowsDraggable() {
 		new Sortable(this.rowList, {
 			draggable: "rankup-row", // The thing to be dragged
-			handle: ".dragContainer", // The thing to grab to drag by
+			handle: ".drag-handle", // The thing to grab to drag by
 			direction: "vertical",
 			animation: 180,
 			easing: "cubic-bezier(0.22,1,0.36,1)",
@@ -74,17 +73,17 @@ class RankUpPage extends Page implements RowList {
 			onStart: (event) => {
 				this.isRowBeingDragged = true;
 				// Add the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
-				dragContainer?.classList.add("is-row-dragging");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-handle");
+				dragContainer?.classList.add("active");
 			},
 			onEnd: (event) => {
 				this.isRowBeingDragged = false;
 				// Hide the row tab when drag has ended
-				const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
+				const rowTab = event.item.querySelector<HTMLDivElement>(".row-tab");
 				if (rowTab) this.hideTab(rowTab);
 				// Remove the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
-				dragContainer?.classList.remove("is-row-dragging");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-handle");
+				dragContainer?.classList.remove("active");
 			},
 		});
 	}
@@ -114,7 +113,7 @@ class RankUpPage extends Page implements RowList {
 	clearRow(row: Row) {
 		row.getImages().forEach((image) => {
 			this.deselectImage(image);
-			this.imageContainer.append(image);
+			this.starterContainer.append(image);
 		});
 	}
 
@@ -207,7 +206,7 @@ class RankUpPage extends Page implements RowList {
 	 */
 	private selectImage(image: HTMLImageElement) {
 		this.selectedImages.add(image);
-		image.classList.add("selectedImage");
+		image.classList.add("selected");
 	}
 
 	/**
@@ -217,7 +216,7 @@ class RankUpPage extends Page implements RowList {
 	 */
 	deselectImage(image: HTMLImageElement) {
 		this.selectedImages.delete(image);
-		image.classList.remove("selectedImage");
+		image.classList.remove("selected");
 	}
 
 	/**
@@ -250,7 +249,7 @@ class RankUpPage extends Page implements RowList {
 		if (!this.selectedImages.has(draggedImage)) this.clickImage(event);
 
 		// Attach dragging data and class to all participants
-		this.selectedImages.forEach((selectedImage) => selectedImage.classList.add("draggingImage"));
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.add("being-dragged"));
 
 		// Disable the default dragging image
 		if (!event.dataTransfer) throw new Error("ev.dataTransfer is null in DragStart");
@@ -275,7 +274,7 @@ class RankUpPage extends Page implements RowList {
 				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
 				targetElement.append(selectedImage);
 			});
-		} else if (targetElement.classList.contains("rankingImage")) {
+		} else if (targetElement.classList.contains("rankup-image")) {
 			// Dragging over a rankup image element - figure out which side to place on
 			const targetImage = targetElement as HTMLImageElement;
 			if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
@@ -316,7 +315,7 @@ class RankUpPage extends Page implements RowList {
 		this.prevTarget = null;
 		this.isPrevSideLeft = false;
 		this.rowView.classList.add("allow-image-hover");
-		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("draggingImage"));
+		this.selectedImages.forEach((selectedImage) => selectedImage.classList.remove("being-dragged"));
 	}
 
 	/**
@@ -341,12 +340,12 @@ class RankUpPage extends Page implements RowList {
 	 */
 	private addImageToContainer(url: string) {
 		const image = document.createElement("img") as HTMLImageElement;
-		image.className = "rankingImage";
+		image.className = "rankup-image";
 		image.src = url;
 		image.onclick = (event) => this.clickImage(event);
 		image.ondragstart = (event) => this.startDraggingImage(event);
 		image.ondragend = () => this.stopDraggingImage();
-		this.imageContainer.appendChild(image);
+		this.starterContainer.appendChild(image);
 	}
 }
 

@@ -7,10 +7,16 @@
 
 :root {
 	/* ---------------------------- Color Selections ---------------------------- */
-	--primary: var(--catppuccin-crust);
-	--text--dark: var(--catppuccin-text);
-	--colorHovered: var(--catppuccin-text);
-	--colorSelected: var(--catppuccin-blue);
+	--theme-bg: var(--catppuccin-crust);
+	--theme-material-1: var(--catppuccin-mantle);
+	--theme-material-2: var(--catppuccin-base);
+	--theme-text: var(--catppuccin-text);
+	--theme-success: var(--catppuccin-green);
+	--theme-warning: var(--catppuccin-yellow);
+	--theme-failure: var(--catppuccin-red);
+	--theme-item--hover: var(--catppuccin-text);
+	--theme-item--focus: var(--catppuccin-sapphire);
+	--theme-item--selected: var(--catppuccin-blue);
 
 	/* ------------------------------ Color Palette ----------------------------- */
 	--catppuccin-rosewater: #f2d5cf;

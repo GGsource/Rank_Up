@@ -5,17 +5,17 @@
 /* Global Variables */
 :root {
 	/* ---------------------------------- Sizes --------------------------------- */
-	--imageRes: 10vh; /* The size of each image */
-	--rowBodyWidth: calc(var(--imageRes) * 8); /* The calculated width of the row's body, defaulting to 8 image width */
-	--fullRowWidth: calc(var(--rowBodyWidth) + var(--imageRes)); /* Total width of body + header */
+	--image-res: 10vh; /* The size of each image */
+	--row-body-width: calc(var(--image-res) * 8); /* The calculated width of the row's body, defaulting to 8 image width */
+	--row-width: calc(var(--row-body-width) + var(--image-res)); /* Total width of body + header */
 	--radius: 1.8vh;
 	--radius--light: 0.8vh;
 
 	/* ---------------------------- Animation Speeds ---------------------------- */
-	--animSlowMS: 1000ms;
-	--animNormMS: 500ms;
-	--animFastMS: 200ms;
-	--animInstMS: 100ms;
+	--anim-ms--slow: 1000ms;
+	--anim-ms--norm: 500ms;
+	--anim-ms--fast: 200ms;
+	--anim-ms--inst: 100ms;
 	/* ---------------------------------- Fonts --------------------------------- */
 	--font-title: "Alice";
 	--font-text: "Courier New";
@@ -34,9 +34,9 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	background-color: var(--primary);
+	background-color: var(--theme-bg);
 	margin: 0; /* Remove the padding around it */
-	color: var(--text--dark);
+	color: var(--theme-text);
 }
 
 #mode-banner {
@@ -45,24 +45,24 @@ body {
 
 	/* Solid text border */
 	text-shadow:
-		2px 0 var(--catppuccin-yellow),
-		-2px 0 var(--catppuccin-yellow),
-		0 2px var(--catppuccin-yellow),
-		0 -2px var(--catppuccin-yellow),
-		1px 1px var(--catppuccin-yellow),
-		-1px -1px var(--catppuccin-yellow),
-		1px -1px var(--catppuccin-yellow),
-		-1px 1px var(--catppuccin-yellow);
+		2px 0 var(--theme-warning),
+		-2px 0 var(--theme-warning),
+		0 2px var(--theme-warning),
+		0 -2px var(--theme-warning),
+		1px 1px var(--theme-warning),
+		-1px -1px var(--theme-warning),
+		1px -1px var(--theme-warning),
+		-1px 1px var(--theme-warning);
 
 	/* Striped banner */
 	background: repeating-linear-gradient(
 		300deg,
 		var(--catppuccin-base),
 		var(--catppuccin-base) 5px,
-		var(--catppuccin-yellow) 5px,
-		var(--catppuccin-yellow) 10px
+		var(--theme-warning) 5px,
+		var(--theme-warning) 10px
 	);
-	outline-color: var(--catppuccin-yellow);
+	outline-color: var(--theme-warning);
 	outline-style: solid;
 	outline-width: 0px 2px 2px 2px;
 	text-align: center;

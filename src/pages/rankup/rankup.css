@@ -2,64 +2,65 @@
 /*                            RankUp Header Section                           */
 /* -------------------------------------------------------------------------- */
 
-.rankup-view #headerBox {
+.rankup-view #header-box {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
-	width: var(--fullRowWidth);
+	width: var(--row-width);
 	flex-wrap: wrap;
 }
-.rankup-view .headerText {
+.rankup-view .header-text {
 	background-color: transparent;
 	resize: none;
 	border: 3px transparent solid;
 	border-radius: 10px;
-	transition: border var(--animFastMS);
+	transition: border var(--anim-ms--fast);
 	color: inherit;
 }
-.rankup-view #headerTitle {
+.rankup-view #header-title {
 	font: 3em var(--font-title);
 	flex: 1;
 }
 
-.rankup-view #headerDescription {
+.rankup-view #header-description {
 	font: 1.5em var(--font-text);
 	flex: 1;
 }
-.rankup-view .headerText:hover {
-	border-color: var(--colorHovered);
-	transition: border-color var(--animNormMS);
+.rankup-view .header-text:hover {
+	border-color: var(--theme-item--hover);
+	transition: border-color var(--anim-ms--norm);
 }
-.rankup-view .headerText:focus {
+.rankup-view .header-text:focus {
 	outline: none;
-	border-color: var(--colorSelected);
-	transition: border var(--animSlowMS);
+	border-color: var(--theme-item--focus);
+	transition: border var(--anim-ms--slow);
 }
 
 /* -------------------------------------------------------------------------- */
 /*                              Row List Section                              */
 /* -------------------------------------------------------------------------- */
 /* 
-rowList (containts all rankup-row elements)
+row-list (containts all rankup-row elements)
 ├── rankup-row
-│   └── rowHeader
-│       ├── rowTab
-│       │   ├── addRowAboveButton
-│       │   ├── dragHandle
-│       │   └── addRowBelowButton
-│       ├── rowTitle
-│       └── rowOptions
-│           ├── resetRowButton
-│           └── deleteRowButton
+│   ├── row-header
+│   │   ├── row-tab
+│   │   │   ├── add-row-above-button
+│   │   │   ├── drag-handle-icon
+│   │   │   └── add-row-below-button
+│   │   ├── row-title
+│   │   └── row-options
+│   │       ├── clear-button
+│   │       └── delete-button
+│   └── row-body
 └── (other rankup-rows)
 */
 
-.rankup-view #rowList {
+.rankup-view #row-list {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	width: 100%;
-	gap: calc(var(--imageRes) / 20);
+	gap: calc(var(--image-res) / 20);
 }
 
 rankup-row {
@@ -69,15 +70,24 @@ rankup-row {
 	justify-content: center;
 }
 
-.rankup-view .rowTab {
+.rankup-view .row-header {
+	position: relative; /* Allows the row-options to be positioned relative to this */
+	width: var(--image-res); /* Make the header be a square */
+	/* Make its contents be listed horizontally */
+	display: flex;
+	flex-direction: row;
+	background-color: var(--theme-failure);
+}
+
+.rankup-view .row-tab {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
-	width: calc(var(--imageRes) / 2);
+	width: calc(var(--image-res) / 2);
 	transition:
-		width var(--animNormMS),
-		padding var(--animNormMS),
-		border-radius var(--animNormMS),
-		border-width var(--animNormMS);
+		width var(--anim-ms--norm),
+		padding var(--anim-ms--norm),
+		border-radius var(--anim-ms--norm),
+		border-width var(--anim-ms--norm);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -87,145 +97,56 @@ rankup-row {
 	left: 0;
 	transform: translateX(-100%);
 	border-radius: var(--radius) 0 0 var(--radius); /* Round corners off left side */
-	border: 3px var(--catppuccin-green) solid;
-	background-color: color-mix(in srgb, var(--catppuccin-green) 20%, transparent 80%);
+	border: 3px var(--theme-success) solid;
+	background-color: color-mix(in srgb, var(--theme-success) 20%, transparent 80%);
 	overflow: hidden;
 }
-.rankup-view .rowTab.closed {
+.rankup-view .row-tab.closed {
 	width: 0;
 	padding: 0;
 	border-radius: 0;
 	border-width: 0px;
 }
 
-.rankup-view .dragContainer {
+.rankup-view .tab-button {
+	width: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	user-select: none;
+}
+.rankup-view .tab-button:hover {
+	z-index: 2;
+}
+
+.rankup-view .drag-handle {
 	flex-grow: 1;
 	min-height: 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
-.rankup-view .tabButton {
-	width: 100%;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: contain;
-	-webkit-user-select: none; /* Safari */
-	-moz-user-select: none; /* Firefox */
-	-ms-user-select: none; /* IE 10 and IE 11 */
-	user-select: none; /* Standard syntax */
-}
-.rankup-view .tabButton:hover {
-	z-index: 2;
-}
-.rankup-view .addRowAboveButton {
-	padding: 5px 5px 0px 5px;
-}
-.rankup-view .addRowBelowButton {
-	padding: 0px 5px 5px 5px;
-}
-.rankup-view .dragHandle {
+
+.rankup-view .drag-handle-icon {
 	min-height: 0;
 	min-width: 0;
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: center;
-	max-width: calc(var(--imageRes) / 4);
+	max-width: calc(var(--image-res) / 4);
 	padding: 0px 4px;
 	cursor: grab;
 }
 
-.rankup-view .resetDeleteButton,
-.rankup-view .tabButton {
-	filter: brightness(60%);
-	background-size: contain;
-	background-position: center;
-	background-repeat: no-repeat;
-	transition:
-		transform var(--animInstMS),
-		filter var(--animInstMS);
-}
-.rankup-view .resetDeleteButton:hover,
-.rankup-view .tabButton:hover {
-	filter: brightness(80%);
-	transform: scale(1.1) rotate(0);
-}
-.rankup-view .resetDeleteButton:active,
-.rankup-view .tabButton:active,
-.rankup-view .dragContainer.is-row-dragging {
-	filter: brightness(100%);
-	transform: scale(0.9) rotate(0);
+.rankup-view .add-row-above-button {
+	padding: 5px 5px 0px 5px;
 }
 
-.rankup-view .resetDeleteButton.resetButton:active {
-	transform: scale(0.9) rotate(-1turn);
+.rankup-view .add-row-below-button {
+	padding: 0px 5px 5px 5px;
 }
 
-.rankup-view .rowHeader {
-	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
-	width: var(--imageRes); /* Make the header be a square */
-	/* Make its contents be listed horizontally */
-	display: flex;
-	flex-direction: row;
-	background-color: var(--catppuccin-red);
-}
-
-.rankup-view .rowBody {
-	/* Make the rowBody take up the remaining space in the rowTab */
-	width: var(--rowBodyWidth);
-	min-height: var(--imageRes);
-	background-color: var(--catppuccin-base);
-	border: 2px var(--catppuccin-red) solid;
-	box-sizing: content-box;
-	/* Align items within to the left */
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-}
-
-.rankup-view .rankingImage {
-	width: var(--imageRes);
-	height: var(--imageRes);
-	object-position: center;
-	object-fit: cover;
-	border: solid 0px transparent;
-	background-color: transparent;
-	border-radius: 0px;
-	padding: 0px;
-	backdrop-filter: none;
-	transition:
-		border var(--animFastMS),
-		background-color var(--animFastMS),
-		border-radius var(--animFastMS),
-		padding var(--animFastMS),
-		transform var(--animFastMS),
-		backdrop-filter var(--animFastMS);
-	cursor: grab;
-}
-
-.rankup-view .image-container .rankingImage.selectedImage {
-	border: solid 5px color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
-	background-color: color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
-	border-radius: 10px;
-	padding: 0px;
-	backdrop-filter: blur(5px);
-	transform: scale(1);
-	z-index: 1;
-}
-
-.rankup-view.allow-image-hover .rankingImage:hover {
-	border-radius: 10px;
-	transform: scale(1.1);
-	z-index: 5;
-	background-color: color-mix(in srgb, var(--catppuccin-text) 20%, transparent 50%);
-	border: 5px solid color-mix(in srgb, var(--catppuccin-text) 50%, transparent 50%);
-}
-
-.rankup-view .image-container .rankingImage.draggingImage {
-	padding: 20px;
-}
-
-.rankup-view .rowTitle {
+.rankup-view .row-title {
 	width: 100%;
 	text-align: center;
 	font: 2em var(--font-title);
@@ -235,7 +156,29 @@ rankup-row {
 	z-index: 2;
 }
 
-.rankup-view .resetDeleteContainer {
+.rankup-view .row-option,
+.rankup-view .tab-button {
+	filter: brightness(60%);
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition:
+		transform var(--anim-ms--inst),
+		filter var(--anim-ms--inst);
+}
+.rankup-view .row-option:hover,
+.rankup-view .tab-button:hover {
+	filter: brightness(80%);
+	transform: scale(1.1) rotate(0);
+}
+.rankup-view .row-option:active,
+.rankup-view .tab-button:active,
+.rankup-view .drag-handle.active {
+	filter: brightness(100%);
+	transform: scale(0.9) rotate(0);
+}
+
+.rankup-view .row-options {
 	height: 100%;
 	display: flex;
 	flex-direction: column;
@@ -244,24 +187,83 @@ rankup-row {
 	right: 0;
 }
 
-.rankup-view .resetDeleteButton {
-	width: calc(var(--imageRes) / 3);
-	height: calc(var(--imageRes) / 3);
+.rankup-view .row-option {
+	width: calc(var(--image-res) / 3);
+	height: calc(var(--image-res) / 3);
 	z-index: 3;
 }
 
-.rankup-view .disabled {
+.rankup-view .row-option.clear-button:active {
+	transform: scale(0.9) rotate(-1turn);
+}
+
+.rankup-view .row-option.disabled {
 	opacity: 0.2;
 	pointer-events: none;
+}
+
+.rankup-view .row-body {
+	/* Make the row-body take up the remaining space in the row-tab */
+	width: var(--row-body-width);
+	min-height: var(--image-res);
+	background-color: var(--catppuccin-base);
+	border: 2px var(--theme-failure) solid;
+	box-sizing: content-box;
+	/* Align items within to the left */
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+
+.rankup-view .rankup-image {
+	width: var(--image-res);
+	height: var(--image-res);
+	object-position: center;
+	object-fit: cover;
+	border: solid 0px transparent;
+	background-color: transparent;
+	border-radius: 0px;
+	padding: 0px;
+	backdrop-filter: none;
+	transition:
+		border var(--anim-ms--fast),
+		background-color var(--anim-ms--fast),
+		border-radius var(--anim-ms--fast),
+		padding var(--anim-ms--fast),
+		transform var(--anim-ms--fast),
+		backdrop-filter var(--anim-ms--fast);
+	cursor: grab;
+}
+
+.rankup-view.allow-image-hover .rankup-image:hover {
+	border-radius: 10px;
+	transform: scale(1.1);
+	z-index: 5;
+	background-color: color-mix(in srgb, var(--theme-item--hover) 20%, transparent 50%);
+	border: 5px solid color-mix(in srgb, var(--theme-item--hover) 50%, transparent 50%);
+}
+
+.rankup-view .image-container .rankup-image.selected {
+	border: solid 5px color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
+	background-color: color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
+	border-radius: 10px;
+	padding: 0px;
+	backdrop-filter: blur(5px);
+	transform: scale(1);
+	z-index: 1;
+}
+
+.rankup-view .image-container .rankup-image.being-dragged {
+	padding: 20px;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                          Starter Container Section                         */
 /* -------------------------------------------------------------------------- */
 
-.rankup-view #imageContainer {
-	width: var(--fullRowWidth);
-	min-height: calc(var(--imageRes) * 2); /* Make it start off at least 2 images tall */
+.rankup-view #starter-container {
+	width: var(--row-width);
+	min-height: calc(var(--image-res) * 2); /* Make it start off at least 2 images tall */
 	display: flex;
 	flex-shrink: 0;
 	flex-wrap: wrap;
