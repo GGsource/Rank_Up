@@ -63,10 +63,10 @@ export class Row extends HTMLElement {
 		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.rowOptions.className = "row-options";
-		this.clearButton.className = "resetButton row-option";
+		this.clearButton.className = "row-option clear-button";
 		this.clearButton.style.backgroundImage = `url("${rowClearIcon}")`; // Set background image for clear button
 		this.clearButton.onclick = () => list.clearRow(this);
-		this.deleteButton.className = "deleteButton row-option";
+		this.deleteButton.className = "row-option";
 		this.deleteButton.style.backgroundImage = `url("${rowDeleteIcon}")`; // Set background image for delete button
 		this.deleteButton.onclick = () => list.deleteRow(this);
 		this.rowOptions.append(this.clearButton, this.deleteButton);

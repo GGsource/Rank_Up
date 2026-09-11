@@ -49,8 +49,8 @@ row-list (containts all rankup-row elements)
 │   │   │   └── add-row-below-button
 │   │   ├── row-title
 │   │   └── row-options
-│   │       ├── resetRowButton
-│   │       └── deleteRowButton
+│   │       ├── clear-button
+│   │       └── delete-button
 │   └── row-body
 └── (other rankup-rows)
 */
@@ -163,8 +163,8 @@ rankup-row {
 	background-position: center;
 	background-repeat: no-repeat;
 	transition:
-		transform var(--animInstMS),
-		filter var(--animInstMS);
+		transform var(--anim-ms--inst),
+		filter var(--anim-ms--inst);
 }
 .rankup-view .row-option:hover,
 .rankup-view .tab-button:hover {
@@ -173,13 +173,9 @@ rankup-row {
 }
 .rankup-view .row-option:active,
 .rankup-view .tab-button:active,
-.rankup-view .drag-handle.is-row-dragging {
+.rankup-view .drag-handle.active {
 	filter: brightness(100%);
 	transform: scale(0.9) rotate(0);
-}
-
-.rankup-view .row-option.resetButton:active {
-	transform: scale(0.9) rotate(-1turn);
 }
 
 .rankup-view .row-options {
@@ -195,6 +191,10 @@ rankup-row {
 	width: calc(var(--image-res) / 3);
 	height: calc(var(--image-res) / 3);
 	z-index: 3;
+}
+
+.rankup-view .row-option.clear-button:active {
+	transform: scale(0.9) rotate(-1turn);
 }
 
 .rankup-view .row-option.disabled {
@@ -215,7 +215,7 @@ rankup-row {
 	flex-wrap: wrap;
 }
 
-.rankup-view .rankingImage {
+.rankup-view .rankup-image {
 	width: var(--image-res);
 	height: var(--image-res);
 	object-position: center;
@@ -235,7 +235,15 @@ rankup-row {
 	cursor: grab;
 }
 
-.rankup-view .image-container .rankingImage.selectedImage {
+.rankup-view.allow-image-hover .rankup-image:hover {
+	border-radius: 10px;
+	transform: scale(1.1);
+	z-index: 5;
+	background-color: color-mix(in srgb, var(--theme-item--hover) 20%, transparent 50%);
+	border: 5px solid color-mix(in srgb, var(--theme-item--hover) 50%, transparent 50%);
+}
+
+.rankup-view .image-container .rankup-image.selected {
 	border: solid 5px color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
 	background-color: color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
 	border-radius: 10px;
@@ -245,15 +253,7 @@ rankup-row {
 	z-index: 1;
 }
 
-.rankup-view.allow-image-hover .rankingImage:hover {
-	border-radius: 10px;
-	transform: scale(1.1);
-	z-index: 5;
-	background-color: color-mix(in srgb, var(--theme-item--hover) 20%, transparent 50%);
-	border: 5px solid color-mix(in srgb, var(--theme-item--hover) 50%, transparent 50%);
-}
-
-.rankup-view .image-container .rankingImage.draggingImage {
+.rankup-view .image-container .rankup-image.being-dragged {
 	padding: 20px;
 }
 
@@ -261,7 +261,7 @@ rankup-row {
 /*                          Starter Container Section                         */
 /* -------------------------------------------------------------------------- */
 
-.rankup-view #imageContainer {
+.rankup-view #starter-container {
 	width: var(--row-width);
 	min-height: calc(var(--image-res) * 2); /* Make it start off at least 2 images tall */
 	display: flex;
