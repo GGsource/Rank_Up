@@ -1,28 +1,30 @@
 .home-view #cardbox {
 	display: flex;
 	justify-content: center;
-	background-color: var(--catppuccin-mantle);
-	padding: 15px;
-	margin: 10px;
-	border-radius: 10px;
-	gap: 15px;
+	background-color: var(--theme-material-1);
+	border-radius: var(--radius);
+	padding: 20px;
+	gap: 20px;
 }
 
 .home-view .home-cards {
-	appearance: none;
-	background: none;
-	font: inherit;
+	font: 2vh var(--font-text);
 	height: 20vh;
 	aspect-ratio: 1;
-	background-color: var(--catppuccin-base);
+	background-color: var(--theme-material-2);
 	border: none;
 	border-radius: var(--radius--light);
 	transition: outline 0.2s;
 	outline: 0px transparent solid;
 	color: inherit;
+	padding: 2vh;
 }
-.home-view .home-cards:is(:hover, :focus-visible) {
-	outline: 3px var(--catppuccin-teal) solid;
+.home-view .home-cards:hover {
+	outline: 3px var(--theme-item--hover) solid;
+	border-radius: 5px;
+}
+.home-view .home-cards:focus {
+	outline: 3px var(--theme-item--focus) solid;
 	border-radius: 5px;
 }
 

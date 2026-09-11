@@ -59,9 +59,9 @@
 
 .form-view #form-upload-area.drag-active,
 .form-view #form-upload-area:hover {
-	border-color: var(--catppuccin-teal);
-	background-color: color-mix(in srgb, var(--catppuccin-teal) 10%, transparent 90%);
-	color: var(--catppuccin-teal);
+	border-color: var(--theme-item--focus);
+	background-color: color-mix(in srgb, var(--theme-item--focus) 10%, transparent 90%);
+	color: var(--theme-item--focus);
 	cursor: pointer;
 }
 

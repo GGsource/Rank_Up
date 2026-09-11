@@ -201,8 +201,8 @@ rankup-row {
 }
 
 .rankup-view .image-container .rankingImage.selectedImage {
-	border: solid 5px color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
-	background-color: color-mix(in srgb, var(--catppuccin-blue) 100%, transparent 50%);
+	border: solid 5px color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
+	background-color: color-mix(in srgb, var(--theme-item--selected) 100%, transparent 50%);
 	border-radius: 10px;
 	padding: 0px;
 	backdrop-filter: blur(5px);
@@ -214,8 +214,8 @@ rankup-row {
 	border-radius: 10px;
 	transform: scale(1.1);
 	z-index: 5;
-	background-color: color-mix(in srgb, var(--catppuccin-text) 20%, transparent 50%);
-	border: 5px solid color-mix(in srgb, var(--catppuccin-text) 50%, transparent 50%);
+	background-color: color-mix(in srgb, var(--theme-item--hover) 20%, transparent 50%);
+	border: 5px solid color-mix(in srgb, var(--theme-item--hover) 50%, transparent 50%);
 }
 
 .rankup-view .image-container .rankingImage.draggingImage {
