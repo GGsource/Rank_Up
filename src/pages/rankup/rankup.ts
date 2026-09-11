@@ -1,6 +1,6 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
-import emptyImage from "@/assets/images/empty.png";
+import emptyImage from "@/assets/images/icons/empty.png";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
@@ -9,7 +9,6 @@ import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
 
 const STARTING_ROW_COUNT = 5;
-const PLACEHOLDER_IMAGES = ["bird", "bird_evil", "BordBlue", "BordGreen", "BordPink", "BordPorple", "BordRee", "BordWhite", "BordYellow"];
 const EMPTY_IMG = Object.assign(new Image(), {
 	src: emptyImage,
 });
@@ -52,10 +51,10 @@ class RankUpPage extends Page implements RowList {
 			this.setTitle(this.headerTitle.value);
 			this.headerDescription.value = this.userData.desc;
 			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-			else
-				PLACEHOLDER_IMAGES.forEach((name) =>
-					this.addImageToContainer(new URL(`../../assets/images/${name}.png`, import.meta.url).href),
-				);
+			else {
+				const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+				Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
+			}
 		}
 	}
 
@@ -65,7 +64,7 @@ class RankUpPage extends Page implements RowList {
 	makeRowsDraggable() {
 		new Sortable(this.rowList, {
 			draggable: "rankup-row", // The thing to be dragged
-			handle: ".dragContainer", // The thing to grab to drag by
+			handle: ".drag-container", // The thing to grab to drag by
 			direction: "vertical",
 			animation: 180,
 			easing: "cubic-bezier(0.22,1,0.36,1)",
@@ -74,7 +73,7 @@ class RankUpPage extends Page implements RowList {
 			onStart: (event) => {
 				this.isRowBeingDragged = true;
 				// Add the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-container");
 				dragContainer?.classList.add("is-row-dragging");
 			},
 			onEnd: (event) => {
@@ -83,7 +82,7 @@ class RankUpPage extends Page implements RowList {
 				const rowTab = event.item.querySelector<HTMLDivElement>(".row-tab");
 				if (rowTab) this.hideTab(rowTab);
 				// Remove the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-container");
 				dragContainer?.classList.remove("is-row-dragging");
 			},
 		});

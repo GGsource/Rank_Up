@@ -1,8 +1,8 @@
-import addRowAboveIcon from "@/assets/images/addRowAboveIcon.png";
-import addRowBelowIcon from "@/assets/images/addRowBelowIcon.png";
-import dragHandleIcon from "@/assets/images/DragHandleIcon.png";
-import rowHeaderClearIcon from "@/assets/images/RowHeaderClear.png";
-import rowHeaderDeleteIcon from "@/assets/images/RowHeaderDelete.png";
+import addRowAboveIcon from "@/assets/images/icons/row-add-above.png";
+import addRowBelowIcon from "@/assets/images/icons/row-add-below.png";
+import dragHandleIcon from "@/assets/images/icons/drag-handle.png";
+import rowClearIcon from "@/assets/images/icons/row-clear.png";
+import rowDeleteIcon from "@/assets/images/icons/row-delete.png";
 
 /**
  * Defines signature of abilities a list of rows must contain
@@ -48,7 +48,7 @@ export class Row extends HTMLElement {
 		this.addRowAboveButton.src = addRowAboveIcon;
 		this.addRowAboveButton.onclick = () => list.addRow(this, true);
 		this.addRowAboveButton.ondragstart = (event) => event.preventDefault();
-		this.dragContainer.className = "tabButton dragContainer";
+		this.dragContainer.className = "tabButton drag-container";
 		this.dragHandle.className = "dragHandle";
 		this.dragHandle.src = dragHandleIcon;
 		this.dragHandle.draggable = false;
@@ -64,10 +64,10 @@ export class Row extends HTMLElement {
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.rowOptions.className = "resetDeleteContainer";
 		this.clearButton.className = "resetButton resetDeleteButton";
-		this.clearButton.style.backgroundImage = `url("${rowHeaderClearIcon}")`; // Set background image for clear button
+		this.clearButton.style.backgroundImage = `url("${rowClearIcon}")`; // Set background image for clear button
 		this.clearButton.onclick = () => list.clearRow(this);
 		this.deleteButton.className = "deleteButton resetDeleteButton";
-		this.deleteButton.style.backgroundImage = `url("${rowHeaderDeleteIcon}")`; // Set background image for delete button
+		this.deleteButton.style.backgroundImage = `url("${rowDeleteIcon}")`; // Set background image for delete button
 		this.deleteButton.onclick = () => list.deleteRow(this);
 		this.rowOptions.append(this.clearButton, this.deleteButton);
 		this.rowOptions.onclick = (event) => event.stopPropagation();

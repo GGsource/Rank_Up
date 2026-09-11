@@ -1,6 +1,6 @@
 import homeHTMLRaw from "./home.html?raw";
 import "./home.css";
-import plusIconImage from "@/assets/images/icon_plus.png";
+import plusIconImage from "@/assets/images/icons/plus.png";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";

@@ -69,6 +69,15 @@ rankup-row {
 	justify-content: center;
 }
 
+.rankup-view .rowHeader {
+	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
+	width: var(--image-res); /* Make the header be a square */
+	/* Make its contents be listed horizontally */
+	display: flex;
+	flex-direction: row;
+	background-color: var(--theme-failure);
+}
+
 .rankup-view .row-tab {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
@@ -98,7 +107,7 @@ rankup-row {
 	border-width: 0px;
 }
 
-.rankup-view .dragContainer {
+.rankup-view .drag-container {
 	flex-grow: 1;
 	min-height: 0;
 	display: flex;
@@ -149,22 +158,13 @@ rankup-row {
 }
 .rankup-view .resetDeleteButton:active,
 .rankup-view .tabButton:active,
-.rankup-view .dragContainer.is-row-dragging {
+.rankup-view .drag-container.is-row-dragging {
 	filter: brightness(100%);
 	transform: scale(0.9) rotate(0);
 }
 
 .rankup-view .resetDeleteButton.resetButton:active {
 	transform: scale(0.9) rotate(-1turn);
-}
-
-.rankup-view .rowHeader {
-	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
-	width: var(--image-res); /* Make the header be a square */
-	/* Make its contents be listed horizontally */
-	display: flex;
-	flex-direction: row;
-	background-color: var(--theme-failure);
 }
 
 .rankup-view .rowBody {
