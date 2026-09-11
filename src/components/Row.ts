@@ -42,7 +42,7 @@ export class Row extends HTMLElement {
 		this.rowHeader.className = "rowHeader";
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab
-		this.rowTab.className = "rowTab closed";
+		this.rowTab.className = "row-tab closed";
 		this.rowTab.onclick = (event) => event.stopPropagation();
 		this.addRowAboveButton.className = "tabButton addRowAboveButton";
 		this.addRowAboveButton.src = addRowAboveIcon;

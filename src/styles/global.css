@@ -12,9 +12,9 @@
 	--radius--light: 0.8vh;
 
 	/* ---------------------------- Animation Speeds ---------------------------- */
-	--animSlowMS: 1000ms;
-	--animNormMS: 500ms;
-	--animFastMS: 200ms;
+	--anim-ms--slow: 1000ms;
+	--anim-ms--norm: 500ms;
+	--anim-ms--fast: 200ms;
 	--animInstMS: 100ms;
 	/* ---------------------------------- Fonts --------------------------------- */
 	--font-title: "Alice";

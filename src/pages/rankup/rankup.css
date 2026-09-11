@@ -2,48 +2,48 @@
 /*                            RankUp Header Section                           */
 /* -------------------------------------------------------------------------- */
 
-.rankup-view #headerBox {
+.rankup-view #header-box {
 	display: flex;
 	flex-direction: column;
 	gap: 5px;
 	width: var(--row-width);
 	flex-wrap: wrap;
 }
-.rankup-view .headerText {
+.rankup-view .header-text {
 	background-color: transparent;
 	resize: none;
 	border: 3px transparent solid;
 	border-radius: 10px;
-	transition: border var(--animFastMS);
+	transition: border var(--anim-ms--fast);
 	color: inherit;
 }
-.rankup-view #headerTitle {
+.rankup-view #header-title {
 	font: 3em var(--font-title);
 	flex: 1;
 }
 
-.rankup-view #headerDescription {
+.rankup-view #header-description {
 	font: 1.5em var(--font-text);
 	flex: 1;
 }
-.rankup-view .headerText:hover {
+.rankup-view .header-text:hover {
 	border-color: var(--theme-item--hover);
-	transition: border-color var(--animNormMS);
+	transition: border-color var(--anim-ms--norm);
 }
-.rankup-view .headerText:focus {
+.rankup-view .header-text:focus {
 	outline: none;
 	border-color: var(--theme-item--focus);
-	transition: border var(--animSlowMS);
+	transition: border var(--anim-ms--slow);
 }
 
 /* -------------------------------------------------------------------------- */
 /*                              Row List Section                              */
 /* -------------------------------------------------------------------------- */
 /* 
-rowList (containts all rankup-row elements)
+row-list (containts all rankup-row elements)
 ├── rankup-row
 │   └── rowHeader
-│       ├── rowTab
+│       ├── row-tab
 │       │   ├── addRowAboveButton
 │       │   ├── dragHandle
 │       │   └── addRowBelowButton
@@ -54,7 +54,7 @@ rowList (containts all rankup-row elements)
 └── (other rankup-rows)
 */
 
-.rankup-view #rowList {
+.rankup-view #row-list {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -69,15 +69,15 @@ rankup-row {
 	justify-content: center;
 }
 
-.rankup-view .rowTab {
+.rankup-view .row-tab {
 	/* Size it to parent height and half the width and list children as column */
 	height: 100%;
 	width: calc(var(--image-res) / 2);
 	transition:
-		width var(--animNormMS),
-		padding var(--animNormMS),
-		border-radius var(--animNormMS),
-		border-width var(--animNormMS);
+		width var(--anim-ms--norm),
+		padding var(--anim-ms--norm),
+		border-radius var(--anim-ms--norm),
+		border-width var(--anim-ms--norm);
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -91,7 +91,7 @@ rankup-row {
 	background-color: color-mix(in srgb, var(--theme-success) 20%, transparent 80%);
 	overflow: hidden;
 }
-.rankup-view .rowTab.closed {
+.rankup-view .row-tab.closed {
 	width: 0;
 	padding: 0;
 	border-radius: 0;
@@ -168,7 +168,7 @@ rankup-row {
 }
 
 .rankup-view .rowBody {
-	/* Make the rowBody take up the remaining space in the rowTab */
+	/* Make the rowBody take up the remaining space in the row-tab */
 	width: var(--row-body-width);
 	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
@@ -191,12 +191,12 @@ rankup-row {
 	padding: 0px;
 	backdrop-filter: none;
 	transition:
-		border var(--animFastMS),
-		background-color var(--animFastMS),
-		border-radius var(--animFastMS),
-		padding var(--animFastMS),
-		transform var(--animFastMS),
-		backdrop-filter var(--animFastMS);
+		border var(--anim-ms--fast),
+		background-color var(--anim-ms--fast),
+		border-radius var(--anim-ms--fast),
+		padding var(--anim-ms--fast),
+		transform var(--anim-ms--fast),
+		backdrop-filter var(--anim-ms--fast);
 	cursor: grab;
 }
 

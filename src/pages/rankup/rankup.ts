@@ -17,10 +17,10 @@ const EMPTY_IMG = Object.assign(new Image(), {
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
 	private rowView = getEl("rankup-view");
-	private rowList = getEl("rowList");
+	private rowList = getEl("row-list");
 	private imageContainer = getEl("imageContainer");
-	private headerTitle = getEl<HTMLInputElement>("headerTitle");
-	private headerDescription = getEl<HTMLInputElement>("headerDescription");
+	private headerTitle = getEl<HTMLInputElement>("header-title");
+	private headerDescription = getEl<HTMLInputElement>("header-description");
 	private isRowBeingDragged = false;
 	private timeoutIds = new Map<HTMLDivElement, number>();
 	private lastShownTab: HTMLDivElement | null = null;
@@ -80,7 +80,7 @@ class RankUpPage extends Page implements RowList {
 			onEnd: (event) => {
 				this.isRowBeingDragged = false;
 				// Hide the row tab when drag has ended
-				const rowTab = event.item.querySelector<HTMLDivElement>(".rowTab");
+				const rowTab = event.item.querySelector<HTMLDivElement>(".row-tab");
 				if (rowTab) this.hideTab(rowTab);
 				// Remove the dragging class for styling
 				const dragContainer = event.item.querySelector<HTMLDivElement>(".dragContainer");
