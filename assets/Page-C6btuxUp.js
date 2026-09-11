@@ -1,0 +1,1 @@
+import{t as e}from"./index-EdYvUqPm.js";var t=class{setTitle(t=null){document.title=(e?`${e}: `:``)+`${t?`${t} - `:``}RankUp`}static mountTo(e){return e.innerHTML=this.rawHTML,new this}};export{t};

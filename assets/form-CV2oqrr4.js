@@ -1,4 +1,4 @@
-import{i as e,n as t,r as n}from"./index-BDnx1zw8.js";import{n as r}from"./UserData-BtkTIZNg.js";import{t as i}from"./Page-BrIwwyZb.js";var a=`<form id="form-view" class="page-view form-view">
+import{i as e,n as t,r as n}from"./index-EdYvUqPm.js";import{n as r}from"./UserData-BtkTIZNg.js";import{t as i}from"./Page-C6btuxUp.js";var a=`<form id="form-view" class="page-view form-view">
 	<!-- ------------------------------- Header -------------------------------- -->
 	<div id="form-header">RankUp Creation Form</div>
 	<!-- ----------------------------- Input Title ----------------------------- -->

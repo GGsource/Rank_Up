@@ -1,4 +1,4 @@
-import{i as e,n as t,r as n}from"./index-BDnx1zw8.js";import{t as r}from"./Page-BrIwwyZb.js";var i=`<!-- This is the main page we first arrive at. Since guest experience is priority, this page should work whether or not you are logged in -->
+import{i as e,n as t,r as n}from"./index-EdYvUqPm.js";import{t as r}from"./Page-C6btuxUp.js";var i=`<!-- This is the main page we first arrive at. Since guest experience is priority, this page should work whether or not you are logged in -->
 <!-- Therefore the layout should be: -->
 <!-- Just a basic centered horizontal list of cards displaying the 3 most recently created lists by this guest/user. -->
 <!-- On the right of these is a card with a "+" Icon, which can be selected to start creating a new rankup. -->
@@ -13,4 +13,4 @@ import{i as e,n as t,r as n}from"./index-BDnx1zw8.js";import{t as r}from"./Page-
 		</button>
 	</div>
 </section>
-`,a=`/assets/icon_plus-C2tQjR3N.png`;t(`home`,class extends r{static{this.rawHTML=i}constructor(){super(),this.setTitle();let t=e(`icon-plus`);t.src=a,e(`create-new-rankup-card`).addEventListener(`click`,()=>n(`form`))}});
+`,a=`/assets/plus-C2tQjR3N.png`;t(`home`,class extends r{static{this.rawHTML=i}constructor(){super(),this.setTitle();let t=e(`icon-plus`);t.src=a,e(`create-new-rankup-card`).addEventListener(`click`,()=>n(`form`))}});
