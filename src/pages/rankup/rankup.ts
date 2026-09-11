@@ -64,7 +64,7 @@ class RankUpPage extends Page implements RowList {
 	makeRowsDraggable() {
 		new Sortable(this.rowList, {
 			draggable: "rankup-row", // The thing to be dragged
-			handle: ".drag-container", // The thing to grab to drag by
+			handle: ".drag-handle", // The thing to grab to drag by
 			direction: "vertical",
 			animation: 180,
 			easing: "cubic-bezier(0.22,1,0.36,1)",
@@ -73,7 +73,7 @@ class RankUpPage extends Page implements RowList {
 			onStart: (event) => {
 				this.isRowBeingDragged = true;
 				// Add the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-container");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-handle");
 				dragContainer?.classList.add("is-row-dragging");
 			},
 			onEnd: (event) => {
@@ -82,7 +82,7 @@ class RankUpPage extends Page implements RowList {
 				const rowTab = event.item.querySelector<HTMLDivElement>(".row-tab");
 				if (rowTab) this.hideTab(rowTab);
 				// Remove the dragging class for styling
-				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-container");
+				const dragContainer = event.item.querySelector<HTMLDivElement>(".drag-handle");
 				dragContainer?.classList.remove("is-row-dragging");
 			},
 		});

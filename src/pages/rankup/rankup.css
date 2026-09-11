@@ -42,15 +42,16 @@
 /* 
 row-list (containts all rankup-row elements)
 ├── rankup-row
-│   └── rowHeader
-│       ├── row-tab
-│       │   ├── addRowAboveButton
-│       │   ├── dragHandle
-│       │   └── addRowBelowButton
-│       ├── rowTitle
-│       └── rowOptions
-│           ├── resetRowButton
-│           └── deleteRowButton
+│   ├── row-header
+│   │   ├── row-tab
+│   │   │   ├── add-row-above-button
+│   │   │   ├── drag-handle-icon
+│   │   │   └── add-row-below-button
+│   │   ├── row-title
+│   │   └── row-options
+│   │       ├── resetRowButton
+│   │       └── deleteRowButton
+│   └── row-body
 └── (other rankup-rows)
 */
 
@@ -69,8 +70,8 @@ rankup-row {
 	justify-content: center;
 }
 
-.rankup-view .rowHeader {
-	position: relative; /* Allows the resetDeleteContainer to be positioned relative to this */
+.rankup-view .row-header {
+	position: relative; /* Allows the row-options to be positioned relative to this */
 	width: var(--image-res); /* Make the header be a square */
 	/* Make its contents be listed horizontally */
 	display: flex;
@@ -107,30 +108,26 @@ rankup-row {
 	border-width: 0px;
 }
 
-.rankup-view .drag-container {
-	flex-grow: 1;
-	min-height: 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-.rankup-view .tabButton {
+.rankup-view .tab-button {
 	width: 100%;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
 	user-select: none;
 }
-.rankup-view .tabButton:hover {
+.rankup-view .tab-button:hover {
 	z-index: 2;
 }
-.rankup-view .addRowAboveButton {
-	padding: 5px 5px 0px 5px;
+
+.rankup-view .drag-handle {
+	flex-grow: 1;
+	min-height: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
-.rankup-view .addRowBelowButton {
-	padding: 0px 5px 5px 5px;
-}
-.rankup-view .dragHandle {
+
+.rankup-view .drag-handle-icon {
 	min-height: 0;
 	min-width: 0;
 	background-repeat: no-repeat;
@@ -141,8 +138,26 @@ rankup-row {
 	cursor: grab;
 }
 
-.rankup-view .resetDeleteButton,
-.rankup-view .tabButton {
+.rankup-view .add-row-above-button {
+	padding: 5px 5px 0px 5px;
+}
+
+.rankup-view .add-row-below-button {
+	padding: 0px 5px 5px 5px;
+}
+
+.rankup-view .row-title {
+	width: 100%;
+	text-align: center;
+	font: 2em var(--font-title);
+	background-color: transparent;
+	border: none;
+	color: var(--catppuccin-crust);
+	z-index: 2;
+}
+
+.rankup-view .row-option,
+.rankup-view .tab-button {
 	filter: brightness(60%);
 	background-size: contain;
 	background-position: center;
@@ -151,24 +166,44 @@ rankup-row {
 		transform var(--animInstMS),
 		filter var(--animInstMS);
 }
-.rankup-view .resetDeleteButton:hover,
-.rankup-view .tabButton:hover {
+.rankup-view .row-option:hover,
+.rankup-view .tab-button:hover {
 	filter: brightness(80%);
 	transform: scale(1.1) rotate(0);
 }
-.rankup-view .resetDeleteButton:active,
-.rankup-view .tabButton:active,
-.rankup-view .drag-container.is-row-dragging {
+.rankup-view .row-option:active,
+.rankup-view .tab-button:active,
+.rankup-view .drag-handle.is-row-dragging {
 	filter: brightness(100%);
 	transform: scale(0.9) rotate(0);
 }
 
-.rankup-view .resetDeleteButton.resetButton:active {
+.rankup-view .row-option.resetButton:active {
 	transform: scale(0.9) rotate(-1turn);
 }
 
-.rankup-view .rowBody {
-	/* Make the rowBody take up the remaining space in the row-tab */
+.rankup-view .row-options {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	position: absolute;
+	right: 0;
+}
+
+.rankup-view .row-option {
+	width: calc(var(--image-res) / 3);
+	height: calc(var(--image-res) / 3);
+	z-index: 3;
+}
+
+.rankup-view .row-option.disabled {
+	opacity: 0.2;
+	pointer-events: none;
+}
+
+.rankup-view .row-body {
+	/* Make the row-body take up the remaining space in the row-tab */
 	width: var(--row-body-width);
 	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
@@ -220,36 +255,6 @@ rankup-row {
 
 .rankup-view .image-container .rankingImage.draggingImage {
 	padding: 20px;
-}
-
-.rankup-view .rowTitle {
-	width: 100%;
-	text-align: center;
-	font: 2em var(--font-title);
-	background-color: transparent;
-	border: none;
-	color: var(--catppuccin-crust);
-	z-index: 2;
-}
-
-.rankup-view .resetDeleteContainer {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	position: absolute;
-	right: 0;
-}
-
-.rankup-view .resetDeleteButton {
-	width: calc(var(--image-res) / 3);
-	height: calc(var(--image-res) / 3);
-	z-index: 3;
-}
-
-.rankup-view .disabled {
-	opacity: 0.2;
-	pointer-events: none;
 }
 
 /* -------------------------------------------------------------------------- */
