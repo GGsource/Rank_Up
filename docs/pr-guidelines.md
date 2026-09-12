@@ -28,7 +28,7 @@ A rework of code that isn't necessarily broken but needs improvement
 
 #### Infra
 
-Any work relating to the GitHub infrastructureEx: deployment actions or Continuous Integration workflows.
+Any work relating to the GitHub/CloudFlare infrastructure Ex: deployment actions or Continuous Integration workflows.
 
 #### Chore
 
