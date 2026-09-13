@@ -68,6 +68,25 @@ rankup-row {
 	flex-direction: row;
 	width: 100%;
 	justify-content: center;
+	--row-color: var(--theme-white);
+}
+.rankup-view rankup-row.row-red {
+	--row-color: var(--theme-red);
+}
+.rankup-view rankup-row.row-orange {
+	--row-color: var(--theme-orange);
+}
+.rankup-view rankup-row.row-yellow {
+	--row-color: var(--theme-yellow);
+}
+.rankup-view rankup-row.row-green {
+	--row-color: var(--theme-green);
+}
+.rankup-view rankup-row.row-blue {
+	--row-color: var(--theme-blue);
+}
+.rankup-view rankup-row.row-purple {
+	--row-color: var(--theme-purple);
 }
 
 .rankup-view .row-header {
@@ -76,7 +95,7 @@ rankup-row {
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
-	background-color: var(--theme-failure);
+	background-color: var(--row-color);
 }
 
 .rankup-view .row-tab {
@@ -207,7 +226,7 @@ rankup-row {
 	width: var(--row-body-width);
 	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
-	border: 2px var(--theme-failure) solid;
+	border: 2px var(--row-color) solid;
 	box-sizing: content-box;
 	/* Align items within to the left */
 	display: flex;

@@ -1,17 +1,12 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
-import emptyImage from "@/assets/images/icons/empty.png";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
 import { getUserData } from "@/state/UserData";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
-
-const STARTING_ROW_COUNT = 5;
-const EMPTY_IMG = Object.assign(new Image(), {
-	src: emptyImage,
-});
+import { EMPTY_IMG } from "@/utils/const";
 
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
@@ -34,8 +29,9 @@ class RankUpPage extends Page implements RowList {
 	 */
 	constructor() {
 		super();
+		if (!this.userData) throw new Error("Failed to retrieve user data from form");
 		/* ------------------------------- Attach Rows ------------------------------ */
-		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
+		for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
 		this.makeRowsDraggable();
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => this.deselectAllImages());
@@ -46,15 +42,13 @@ class RankUpPage extends Page implements RowList {
 		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
 		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
 		/* ------------------------------ Insert images ----------------------------- */
-		if (this.userData) {
-			this.headerTitle.value = this.userData.title;
-			this.setTitle(this.headerTitle.value);
-			this.headerDescription.value = this.userData.desc;
-			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-			else {
-				const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
-				Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
-			}
+		this.headerTitle.value = this.userData.title;
+		this.setTitle(this.headerTitle.value);
+		this.headerDescription.value = this.userData.desc;
+		if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
+		else {
+			const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+			Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
 		}
 	}
 

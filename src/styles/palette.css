@@ -17,6 +17,14 @@
 	--theme-item--hover: var(--catppuccin-text);
 	--theme-item--focus: var(--catppuccin-sapphire);
 	--theme-item--selected: var(--catppuccin-blue);
+	/* ------------------------------- Row Colors ------------------------------- */
+	--theme-white: var(--catppuccin-text);
+	--theme-red: var(--catppuccin-red);
+	--theme-orange: var(--catppuccin-peach);
+	--theme-yellow: var(--catppuccin-yellow);
+	--theme-green: var(--catppuccin-green);
+	--theme-blue: var(--catppuccin-blue);
+	--theme-purple: var(--catppuccin-mauve);
 
 	/* ------------------------------ Color Palette ----------------------------- */
 	--catppuccin-rosewater: #f2d5cf;

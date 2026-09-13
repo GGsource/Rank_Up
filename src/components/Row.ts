@@ -37,9 +37,10 @@ export class Row extends HTMLElement {
 	 * @param page the RankUpPage instance holding this row
 	 * @param rowNumber index to initialize row's name with
 	 */
-	constructor(list: RowList, rowNumber = 0) {
+	constructor(list: RowList, rowName: string | null = null, rowColor: string | null = null) {
 		super();
-		this.rowHeader.className = "row-header";
+		this.className = rowColor ? `row-${rowColor}` : "";
+		this.rowHeader.className = `row-header`;
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab
 		this.rowTab.className = "row-tab closed";
@@ -60,7 +61,8 @@ export class Row extends HTMLElement {
 		this.addRowBelowButton.ondragstart = (event) => event.preventDefault();
 		this.rowTab.append(this.addRowAboveButton, this.dragHandle, this.addRowBelowButton);
 		this.rowTitle.className = "row-title";
-		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
+		if (rowName) this.rowTitle.value = rowName;
+		this.rowTitle.placeholder = "Row";
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.rowOptions.className = "row-options";
 		this.clearButton.className = "row-option clear-button";
