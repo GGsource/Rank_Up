@@ -62,7 +62,7 @@ export class Row extends HTMLElement {
 		this.rowTab.append(this.addRowAboveButton, this.dragHandle, this.addRowBelowButton);
 		this.rowTitle.className = "row-title";
 		if (rowName) this.rowTitle.value = rowName;
-		this.rowTitle.placeholder = "Row";
+		else this.rowTitle.placeholder = "New Row";
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.rowOptions.className = "row-options";
 		this.clearButton.className = "row-option clear-button";

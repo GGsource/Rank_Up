@@ -11,11 +11,11 @@ export interface ListPresets {
 
 export const GradePreset: ListPresets = {
 	rows: [
-		{ rowName: "Apple", rowColor: "red" },
-		{ rowName: "Orange", rowColor: "orange" },
-		{ rowName: "Banana", rowColor: "yellow" },
-		{ rowName: "Lime", rowColor: "green" },
-		{ rowName: "Blueberry", rowColor: "blue" },
-		{ rowName: "Grape", rowColor: "purple" },
+		{ rowName: "S", rowColor: "red" },
+		{ rowName: "A", rowColor: "orange" },
+		{ rowName: "B", rowColor: "yellow" },
+		{ rowName: "C", rowColor: "green" },
+		{ rowName: "D", rowColor: "blue" },
+		{ rowName: "F", rowColor: "purple" },
 	],
 };
