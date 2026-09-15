@@ -88,6 +88,15 @@ rankup-row {
 .rankup-view rankup-row.row-purple {
 	--row-color: var(--theme-purple);
 }
+.rankup-view rankup-row.row-white {
+	--row-color: var(--theme-white);
+}
+.rankup-view rankup-row.row-black {
+	--row-color: var(--theme-black);
+}
+.rankup-view rankup-row.row-pink {
+	--row-color: var(--theme-pink);
+}
 
 .rankup-view .row-header {
 	position: relative; /* Allows the row-options to be positioned relative to this */
@@ -214,6 +223,49 @@ rankup-row {
 
 .rankup-view .row-option.clear-button:active {
 	transform: scale(0.9) rotate(-1turn);
+}
+
+.rankup-view .color-palette {
+	width: 300%;
+	height: 300%;
+	background-color: aqua;
+	translate: 33% -33%;
+	/* position: absolute; */
+	display: grid;
+	grid-template-columns: auto auto auto;
+}
+
+.rankup-view .color-swatch {
+	--swatch-color: transparent;
+	background-color: var(--swatch-color);
+	border: 1px dashed var(--row-color);
+}
+.rankup-view .color-swatch.swatch-red {
+	--swatch-color: var(--theme-red);
+}
+.rankup-view .color-swatch.swatch-orange {
+	--swatch-color: var(--theme-orange);
+}
+.rankup-view .color-swatch.swatch-yellow {
+	--swatch-color: var(--theme-yellow);
+}
+.rankup-view .color-swatch.swatch-green {
+	--swatch-color: var(--theme-green);
+}
+.rankup-view .color-swatch.swatch-blue {
+	--swatch-color: var(--theme-blue);
+}
+.rankup-view .color-swatch.swatch-purple {
+	--swatch-color: var(--theme-purple);
+}
+.rankup-view .color-swatch.swatch-white {
+	--swatch-color: var(--theme-white);
+}
+.rankup-view .color-swatch.swatch-black {
+	--swatch-color: var(--theme-black);
+}
+.rankup-view .color-swatch.swatch-pink {
+	--swatch-color: var(--theme-pink);
 }
 
 .rankup-view .row-option.disabled {

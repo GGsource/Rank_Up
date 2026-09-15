@@ -9,6 +9,8 @@ export interface ListPresets {
 	}[];
 }
 
+export const fullColorPalette = ["red", "orange", "yellow", "green", "blue", "purple", "white", "black", "pink"];
+
 export const GradePreset: ListPresets = {
 	rows: [
 		{ rowName: "S", rowColor: "red" },
