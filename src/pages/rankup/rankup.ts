@@ -343,7 +343,5 @@ class RankUpPage extends Page implements RowList {
 	}
 }
 
-// Define row class as custom element
-customElements.define("rankup-row", Row);
 // Register this page to the renderer
 registerPage("rankup", RankUpPage);

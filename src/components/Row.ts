@@ -97,14 +97,16 @@ export class Row extends HTMLElement {
 			for (const color of fullColorPalette) {
 				const colorSwatch = document.createElement("div");
 				colorSwatch.className = `color-swatch swatch-${color}`;
-				colorSwatch.onclick = (event) => {
-					this.className = `row-${color}`;
-					console.log(`Set row color to ${color}`);
-					event.stopPropagation();
-				};
 				colorPalette.append(colorSwatch);
 			}
 		}
+		colorPalette.onclick = (event) => {
+			const target = event.target as HTMLElement;
+			const swatch = target.closest(".color-swatch");
+			if (!swatch) return;
+			const color = swatch.classList[swatch.classList.length - 1].split("-")[1];
+			this.className = `row-${color}`;
+		};
 		this.colorButton.append(colorPalette);
 	}
 
@@ -126,3 +128,6 @@ export class Row extends HTMLElement {
 		enable ? this.deleteButton.classList.remove("disabled") : this.deleteButton.classList.add("disabled");
 	}
 }
+
+// Define row class as custom element
+customElements.define("rankup-row", Row);
