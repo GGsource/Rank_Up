@@ -4,7 +4,6 @@ import dragHandleIcon from "@/assets/images/icons/drag-handle.png";
 import rowClearIcon from "@/assets/images/icons/row-clear.png";
 import colorIcon from "@/assets/images/icons/palette.svg";
 import rowDeleteIcon from "@/assets/images/icons/row-delete.png";
-import { fullColorPalette } from "@/utils/ListPresets";
 
 /**
  * Defines signature of abilities a list of rows must contain
@@ -18,6 +17,7 @@ export interface RowList {
 	draggedImageOverElement(event: DragEvent): void;
 	stopDraggingImage(): void;
 	draggedOverTextbox(event: DragEvent): void;
+	showColorPalette(row: Row): void;
 }
 
 export class Row extends HTMLElement {
@@ -73,7 +73,7 @@ export class Row extends HTMLElement {
 		this.clearButton.onclick = () => list.clearRow(this);
 		this.colorButton.className = "row-option color-button";
 		this.colorButton.style.backgroundImage = `url("${colorIcon}")`; // Set background image for clear button
-		this.colorButton.onclick = () => this.showColorPalette();
+		this.colorButton.onclick = () => list.showColorPalette(this);
 		this.deleteButton.className = "row-option";
 		this.deleteButton.style.backgroundImage = `url("${rowDeleteIcon}")`; // Set background image for delete button
 		this.deleteButton.onclick = () => list.deleteRow(this);
@@ -86,28 +86,21 @@ export class Row extends HTMLElement {
 	}
 
 	/**
-	 * Displays the color options to change the color of the current row
+	 * Apply a given color to the row
+	 *
+	 * @param color color to set
 	 */
-	showColorPalette() {
-		let colorPalette = document.getElementById("color-palette");
-		if (!colorPalette) {
-			colorPalette = document.createElement("div");
-			colorPalette.id = "color-palette";
-			colorPalette.className = "color-palette";
-			for (const color of fullColorPalette) {
-				const colorSwatch = document.createElement("div");
-				colorSwatch.className = `color-swatch swatch-${color}`;
-				colorPalette.append(colorSwatch);
-			}
-		}
-		colorPalette.onclick = (event) => {
-			const target = event.target as HTMLElement;
-			const swatch = target.closest(".color-swatch");
-			if (!swatch) return;
-			const color = swatch.classList[swatch.classList.length - 1].split("-")[1];
-			this.className = `row-${color}`;
-		};
-		this.colorButton.append(colorPalette);
+	setColor(color: string) {
+		this.className = `row-${color}`;
+	}
+
+	/**
+	 * Attaches palette to the rowHeader
+	 *
+	 * @param palette element being attached
+	 */
+	attachPalette(palette: HTMLElement) {
+		this.rowHeader.append(palette);
 	}
 
 	/**

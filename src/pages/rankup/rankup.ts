@@ -7,6 +7,7 @@ import { getUserData } from "@/state/UserData";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
 import { EMPTY_IMG } from "@/utils/const";
+import { fullColorPalette } from "@/utils/ListPresets";
 
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
@@ -23,6 +24,7 @@ class RankUpPage extends Page implements RowList {
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
 	private userData = getUserData();
+	private readonly colorPalette = this.initializeColorPalette();
 
 	/**
 	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
@@ -34,7 +36,10 @@ class RankUpPage extends Page implements RowList {
 		for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
 		this.makeRowsDraggable();
 		/* ---------------------------- Attach Listeners ---------------------------- */
-		this.rowView.addEventListener("click", () => this.deselectAllImages());
+		this.rowView.addEventListener("click", () => {
+			this.deselectAllImages();
+			this.removeColorPalette();
+		});
 		// Main container behaviors
 		this.starterContainer.ondragover = (event) => this.draggedImageOverElement(event);
 		this.starterContainer.ondragend = () => this.stopDraggingImage();
@@ -164,6 +169,7 @@ class RankUpPage extends Page implements RowList {
 	 */
 	clickImage(event: MouseEvent) {
 		event.stopPropagation(); // Stop event from moving up to prevent clearing
+		this.removeColorPalette();
 		const image = event.target as HTMLImageElement;
 		if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
 
@@ -340,6 +346,50 @@ class RankUpPage extends Page implements RowList {
 		image.ondragstart = (event) => this.startDraggingImage(event);
 		image.ondragend = () => this.stopDraggingImage();
 		this.starterContainer.appendChild(image);
+	}
+
+	/**
+	 * Initializes the color palette singleton
+	 *
+	 * @returns the color palette
+	 */
+	initializeColorPalette(): HTMLElement {
+		const colorPalette = document.createElement("div");
+		colorPalette.className = "color-palette";
+		for (const color of fullColorPalette) {
+			const colorSwatch = document.createElement("div");
+			colorSwatch.className = `color-swatch swatch-${color}`;
+			colorPalette.append(colorSwatch);
+		}
+		return colorPalette;
+	}
+
+	// TODO: Make story for enforcing return types
+	// FIXME: Palette stretches entire height of rowHeader, which can be long with many images. Keep it just a square probs
+
+	/**
+	 * Displays the color options to change the color of the current row
+	 */
+	showColorPalette(row: Row) {
+		this.colorPalette.onclick = (event) => {
+			const target = event.target as HTMLElement;
+			const swatch = target.closest(".color-swatch");
+			if (!swatch) return;
+			const color = swatch.classList[swatch.classList.length - 1].split("-")[1];
+			row.setColor(color);
+			this.removeColorPalette();
+			event.stopPropagation();
+		};
+		row.attachPalette(this.colorPalette);
+	}
+
+	/**
+	 * Detaches the color palette if it is currently visible
+	 */
+	removeColorPalette() {
+		if (this.colorPalette.isConnected) {
+			this.colorPalette.remove();
+		}
 	}
 }
 
