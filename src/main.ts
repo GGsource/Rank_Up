@@ -1,4 +1,4 @@
-import { renderPage } from "@/components/renderPage";
+import { renderPath } from "@/components/renderPage";
 import { getEl } from "@/utils/utils";
 import { MODE } from "@/utils/const";
 import "@/styles/global.css";
@@ -9,6 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (!MODE) modeBanner.remove();
 	else modeBanner.innerText = `${MODE} Mode`;
 
-	/* --------------------------- Render the homepage -------------------------- */
-	renderPage("home");
+	/* --------------------------- Render the requested page -------------------------- */
+	renderPath();
 });
+
+window.addEventListener("popstate", () => renderPath(false));
