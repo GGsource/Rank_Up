@@ -60,7 +60,7 @@ class RankUpPage extends Page implements RowList {
 	/**
 	 * Applies dragging behavior to all rows in the rankup page list via Sortable JS
 	 */
-	makeRowsDraggable() {
+	private makeRowsDraggable() {
 		new Sortable(this.rowList, {
 			draggable: "rankup-row", // The thing to be dragged
 			handle: ".drag-handle", // The thing to grab to drag by
@@ -168,7 +168,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param event the mouse click event on the image
 	 */
-	clickImage(event: MouseEvent) {
+	private clickImage(event: MouseEvent) {
 		event.stopPropagation(); // Stop event from moving up to prevent clearing
 		this.removeColorPalette();
 		const image = event.target as HTMLImageElement;
@@ -215,7 +215,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param image image to deselect
 	 */
-	deselectImage(image: HTMLImageElement) {
+	private deselectImage(image: HTMLImageElement) {
 		this.selectedImages.delete(image);
 		image.classList.remove("selected");
 	}
@@ -241,7 +241,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param event the dragging event
 	 */
-	startDraggingImage(event: DragEvent) {
+	private startDraggingImage(event: DragEvent) {
 		this.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 		const draggedImage = event.target as HTMLImageElement;
 		if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
@@ -263,37 +263,52 @@ class RankUpPage extends Page implements RowList {
 	 * @param event The drag event of the element being dragged upon
 	 */
 	draggedImageOverElement(event: DragEvent) {
-		// For change to be necessary one of these must have changed: target changed, targetside changed.
 		event.preventDefault();
-
-		const targetElement = event.target as HTMLElement; // The element being dragged into.
-		if (!targetElement) console.error("ev.target is is null in DragImageOver");
-
-		if (targetElement.classList.contains("image-container")) {
-			// Dragging over an image container element
-			this.selectedImages.forEach((selectedImage) => {
-				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
-				targetElement.append(selectedImage);
-			});
-		} else if (targetElement.classList.contains("rankup-image")) {
-			// Dragging over a rankup image element - figure out which side to place on
-			const targetImage = targetElement as HTMLImageElement;
-			if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
-			// Check if the image was dragged to the left or right of the target image
-			const targetImageRect = targetImage.getBoundingClientRect();
-			const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
-			// If the user dragged the image to the left of the target image, insert the image before the target image
-			const isCurSideLeft = event.clientX < targetImageCenter;
-			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
-			if (isCurSideLeft) {
-				this.selectedImages.forEach((selectedImage) => {
-					if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
-				});
-			} else this.insertAllAfter(targetImage);
-
-			this.isPrevSideLeft = isCurSideLeft;
+		const targetElement = event.target;
+		if (targetElement instanceof HTMLImageElement) {
+			this.draggedImageOverImage(event, targetElement);
+		} else if (targetElement instanceof HTMLElement) {
+			this.draggedImageOverContainer(targetElement);
+		} else {
+			console.warn("draggedImageOverContainer resulted in a drag over a non-HTMLElement. Aborting.");
+			return;
 		}
 		this.prevTarget = targetElement;
+	}
+	/**
+	 * Called when an image is dragged over an image container
+	 *
+	 * @param targetContainer conainter image is being dropped into
+	 */
+	private draggedImageOverContainer(targetContainer: HTMLElement) {
+		// Dragging over an image container element
+		this.selectedImages.forEach((selectedImage) => {
+			if (this.prevTarget == targetContainer && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
+			targetContainer.append(selectedImage);
+		});
+	}
+	/**
+	 * Called when an image is dragged over another image
+	 *
+	 * @param event The drag even of the image being dragged upon
+	 * @param targetImage the image we are dragging on top of
+	 */
+	private draggedImageOverImage(event: DragEvent, targetImage: HTMLImageElement) {
+		// Dragging over a rankup image element - figure out which side to place on
+		if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
+		// Check if the image was dragged to the left or right of the target image
+		const targetImageRect = targetImage.getBoundingClientRect();
+		const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
+		// If the user dragged the image to the left of the target image, insert the image before the target image
+		const isCurSideLeft = event.clientX < targetImageCenter;
+		if (this.prevTarget == targetImage && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
+		if (isCurSideLeft) {
+			this.selectedImages.forEach((selectedImage) => {
+				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
+			});
+		} else this.insertAllAfter(targetImage);
+
+		this.isPrevSideLeft = isCurSideLeft;
 	}
 
 	/**
@@ -312,7 +327,7 @@ class RankUpPage extends Page implements RowList {
 	/**
 	 * Called when user stops dragging an image
 	 */
-	stopDraggingImage() {
+	private stopDraggingImage() {
 		this.prevTarget = null;
 		this.isPrevSideLeft = false;
 		this.rowView.classList.add("allow-image-hover");

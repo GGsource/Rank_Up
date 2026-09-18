@@ -9,7 +9,7 @@ class NotFoundPage extends Page {
 
 	constructor() {
 		super();
-		this.setTitle();
+		this.setTitle("Lost Girl");
 		const nfBody = getEl("404-body");
 		const path = window.location.pathname.replace(/\/+$/, "");
 		nfBody.innerText = `No page exists by the name of ${path}`;
