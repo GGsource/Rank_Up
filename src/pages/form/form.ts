@@ -5,6 +5,7 @@ import { setUserData } from "@/state/UserData";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
+import { GradePreset } from "@/utils/ListPresets";
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
 	static rawHTML = formHTMLRaw;
@@ -19,6 +20,7 @@ class FormPage extends Page {
 	private collectedURLs: string[] = []; // List of uploaded images
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
+	private listPreset = GradePreset;
 
 	/**
 	 * Default constructor attaches event listeners
@@ -78,7 +80,7 @@ class FormPage extends Page {
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
 				this.toggleablePlaceHolders = false; // No longer allowed to toggle
-				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs);
+				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs, this.listPreset);
 				renderPage("rankup");
 			}
 		});

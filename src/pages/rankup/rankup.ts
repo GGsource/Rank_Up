@@ -1,17 +1,13 @@
 import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
-import emptyImage from "@/assets/images/icons/empty.png";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
 import { getUserData } from "@/state/UserData";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
-
-const STARTING_ROW_COUNT = 5;
-const EMPTY_IMG = Object.assign(new Image(), {
-	src: emptyImage,
-});
+import { EMPTY_IMG } from "@/utils/const";
+import { fullColorPalette } from "@/utils/ListPresets";
 
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
@@ -28,17 +24,22 @@ class RankUpPage extends Page implements RowList {
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
 	private userData = getUserData();
+	private readonly colorPalette = this.initializeColorPalette();
 
 	/**
 	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
 	 */
 	constructor() {
 		super();
+		if (!this.userData) throw new Error("Failed to retrieve user data from form");
 		/* ------------------------------- Attach Rows ------------------------------ */
-		for (let rowNum: number = 1; rowNum <= STARTING_ROW_COUNT; rowNum++) this.rowList.append(new Row(this, rowNum));
+		for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
 		this.makeRowsDraggable();
 		/* ---------------------------- Attach Listeners ---------------------------- */
-		this.rowView.addEventListener("click", () => this.deselectAllImages());
+		this.rowView.addEventListener("click", () => {
+			this.deselectAllImages();
+			this.removeColorPalette();
+		});
 		// Main container behaviors
 		this.starterContainer.ondragover = (event) => this.draggedImageOverElement(event);
 		this.starterContainer.ondragend = () => this.stopDraggingImage();
@@ -46,15 +47,13 @@ class RankUpPage extends Page implements RowList {
 		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
 		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
 		/* ------------------------------ Insert images ----------------------------- */
-		if (this.userData) {
-			this.headerTitle.value = this.userData.title;
-			this.setTitle(this.headerTitle.value);
-			this.headerDescription.value = this.userData.desc;
-			if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-			else {
-				const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
-				Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
-			}
+		this.headerTitle.value = this.userData.title;
+		this.setTitle(this.headerTitle.value);
+		this.headerDescription.value = this.userData.desc;
+		if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
+		else {
+			const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+			Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
 		}
 	}
 
@@ -115,6 +114,7 @@ class RankUpPage extends Page implements RowList {
 			this.deselectImage(image);
 			this.starterContainer.append(image);
 		});
+		if (row.contains(this.colorPalette)) this.removeColorPalette();
 	}
 
 	/**
@@ -170,6 +170,7 @@ class RankUpPage extends Page implements RowList {
 	 */
 	clickImage(event: MouseEvent) {
 		event.stopPropagation(); // Stop event from moving up to prevent clearing
+		this.removeColorPalette();
 		const image = event.target as HTMLImageElement;
 		if (!image) throw new Error("Fatal Error: Clicked image but it is null...");
 
@@ -347,9 +348,47 @@ class RankUpPage extends Page implements RowList {
 		image.ondragend = () => this.stopDraggingImage();
 		this.starterContainer.appendChild(image);
 	}
+
+	/**
+	 * Initializes the color palette singleton
+	 *
+	 * @returns the color palette
+	 */
+	initializeColorPalette(): HTMLElement {
+		const colorPalette = document.createElement("div");
+		colorPalette.className = "color-palette";
+		for (const color of fullColorPalette) {
+			const colorSwatch = document.createElement("div");
+			colorSwatch.className = `color-swatch swatch-${color}`;
+			colorPalette.append(colorSwatch);
+		}
+		return colorPalette;
+	}
+
+	/**
+	 * Displays the color options to change the color of the current row
+	 */
+	showColorPalette(row: Row) {
+		this.colorPalette.onclick = (event) => {
+			const target = event.target as HTMLElement;
+			const swatch = target.closest(".color-swatch");
+			if (!swatch) return;
+			const color = swatch.classList[swatch.classList.length - 1].split("-")[1];
+			row.setColor(color);
+			this.removeColorPalette();
+		};
+		row.attachPalette(this.colorPalette);
+	}
+
+	/**
+	 * Detaches the color palette if it is currently visible
+	 */
+	removeColorPalette() {
+		if (this.colorPalette.isConnected) {
+			this.colorPalette.remove();
+		}
+	}
 }
 
-// Define row class as custom element
-customElements.define("rankup-row", Row);
 // Register this page to the renderer
 registerPage("rankup", RankUpPage);

@@ -14,9 +14,9 @@ This should be a concise summary of what this branch aims to do in 2-3 words
 
 Types include: `feature/`, `bugfix/`, `refactor/`, `infra/`, or `chore/`
 
-#### Feature
+#### Feat
 
-A new enhancement that is a wholly new addition
+A new enhancement or feature that is a wholly new addition
 
 #### Bugfix
 

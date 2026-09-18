@@ -2,6 +2,7 @@ import addRowAboveIcon from "@/assets/images/icons/row-add-above.png";
 import addRowBelowIcon from "@/assets/images/icons/row-add-below.png";
 import dragHandleIcon from "@/assets/images/icons/drag-handle.png";
 import rowClearIcon from "@/assets/images/icons/row-clear.png";
+import colorIcon from "@/assets/images/icons/palette.svg";
 import rowDeleteIcon from "@/assets/images/icons/row-delete.png";
 
 /**
@@ -16,6 +17,7 @@ export interface RowList {
 	draggedImageOverElement(event: DragEvent): void;
 	stopDraggingImage(): void;
 	draggedOverTextbox(event: DragEvent): void;
+	showColorPalette(row: Row): void;
 }
 
 export class Row extends HTMLElement {
@@ -27,8 +29,9 @@ export class Row extends HTMLElement {
 	private addRowBelowButton = document.createElement("img"); // Adds new row below current
 	private rowTitle = document.createElement("input"); // Title for current row
 	private rowOptions = document.createElement("div"); // Contains buttons for changing row's status
-	private deleteButton = document.createElement("div"); // Deletes the current row
 	private clearButton = document.createElement("div"); // Clears out current row
+	private colorButton = document.createElement("div"); // Changes color of current row
+	private deleteButton = document.createElement("div"); // Deletes the current row
 	private rowBody = document.createElement("div"); // Contains the actual images for this row
 
 	/**
@@ -37,9 +40,10 @@ export class Row extends HTMLElement {
 	 * @param page the RankUpPage instance holding this row
 	 * @param rowNumber index to initialize row's name with
 	 */
-	constructor(list: RowList, rowNumber = 0) {
+	constructor(list: RowList, rowName: string | null = null, rowColor: string | null = null) {
 		super();
-		this.rowHeader.className = "row-header";
+		this.className = rowColor ? `row-${rowColor}` : "";
+		this.rowHeader.className = `row-header`;
 		this.rowHeader.onmouseover = () => list.showTab(this.rowTab); // show the rowTab
 		this.rowHeader.onmouseout = () => list.hideTab(this.rowTab); // hide the rowTab
 		this.rowTab.className = "row-tab closed";
@@ -60,21 +64,43 @@ export class Row extends HTMLElement {
 		this.addRowBelowButton.ondragstart = (event) => event.preventDefault();
 		this.rowTab.append(this.addRowAboveButton, this.dragHandle, this.addRowBelowButton);
 		this.rowTitle.className = "row-title";
-		this.rowTitle.placeholder = rowNumber ? "Row " + rowNumber : "New Row";
+		if (rowName) this.rowTitle.value = rowName;
+		else this.rowTitle.placeholder = "New Row";
 		this.rowTitle.ondrop = (event) => list.draggedOverTextbox(event);
 		this.rowOptions.className = "row-options";
 		this.clearButton.className = "row-option clear-button";
 		this.clearButton.style.backgroundImage = `url("${rowClearIcon}")`; // Set background image for clear button
 		this.clearButton.onclick = () => list.clearRow(this);
+		this.colorButton.className = "row-option color-button";
+		this.colorButton.style.backgroundImage = `url("${colorIcon}")`; // Set background image for clear button
+		this.colorButton.onclick = () => list.showColorPalette(this);
 		this.deleteButton.className = "row-option";
 		this.deleteButton.style.backgroundImage = `url("${rowDeleteIcon}")`; // Set background image for delete button
 		this.deleteButton.onclick = () => list.deleteRow(this);
-		this.rowOptions.append(this.clearButton, this.deleteButton);
+		this.rowOptions.append(this.clearButton, this.colorButton, this.deleteButton);
 		this.rowOptions.onclick = (event) => event.stopPropagation();
 		this.rowHeader.append(this.rowTab, this.rowTitle, this.rowOptions);
 		this.rowBody.className = "row-body image-container";
 		this.rowBody.ondragover = (event) => list.draggedImageOverElement(event);
 		this.append(this.rowHeader, this.rowBody);
+	}
+
+	/**
+	 * Apply a given color to the row
+	 *
+	 * @param color color to set
+	 */
+	setColor(color: string) {
+		this.className = `row-${color}`;
+	}
+
+	/**
+	 * Attaches palette to the rowHeader
+	 *
+	 * @param palette element being attached
+	 */
+	attachPalette(palette: HTMLElement) {
+		this.rowHeader.append(palette);
 	}
 
 	/**
@@ -95,3 +121,6 @@ export class Row extends HTMLElement {
 		enable ? this.deleteButton.classList.remove("disabled") : this.deleteButton.classList.add("disabled");
 	}
 }
+
+// Define row class as custom element
+customElements.define("rankup-row", Row);

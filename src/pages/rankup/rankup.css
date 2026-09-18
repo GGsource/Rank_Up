@@ -68,6 +68,40 @@ rankup-row {
 	flex-direction: row;
 	width: 100%;
 	justify-content: center;
+	position: relative;
+	--row-color: var(--theme-white);
+}
+
+rankup-row > * {
+	outline: 2px var(--row-color) solid;
+}
+
+.rankup-view rankup-row.row-red {
+	--row-color: var(--theme-red);
+}
+.rankup-view rankup-row.row-orange {
+	--row-color: var(--theme-orange);
+}
+.rankup-view rankup-row.row-yellow {
+	--row-color: var(--theme-yellow);
+}
+.rankup-view rankup-row.row-green {
+	--row-color: var(--theme-green);
+}
+.rankup-view rankup-row.row-blue {
+	--row-color: var(--theme-blue);
+}
+.rankup-view rankup-row.row-purple {
+	--row-color: var(--theme-purple);
+}
+.rankup-view rankup-row.row-white {
+	--row-color: var(--theme-white);
+}
+.rankup-view rankup-row.row-black {
+	--row-color: var(--theme-black);
+}
+.rankup-view rankup-row.row-pink {
+	--row-color: var(--theme-pink);
 }
 
 .rankup-view .row-header {
@@ -76,7 +110,7 @@ rankup-row {
 	/* Make its contents be listed horizontally */
 	display: flex;
 	flex-direction: row;
-	background-color: var(--theme-failure);
+	background-color: var(--row-color);
 }
 
 .rankup-view .row-tab {
@@ -197,6 +231,65 @@ rankup-row {
 	transform: scale(0.9) rotate(-1turn);
 }
 
+.rankup-view .color-palette {
+	width: var(--image-res);
+	height: var(--image-res);
+	position: absolute;
+	display: grid;
+	grid-template-columns: auto auto auto;
+	z-index: 50;
+	align-self: center;
+}
+
+.rankup-view .color-swatch {
+	--swatch-color: transparent;
+	border: 2px solid var(--row-color);
+	background-color: var(--swatch-color);
+}
+.rankup-view .color-swatch.swatch-red {
+	--swatch-color: var(--theme-red);
+}
+.rankup-view .color-swatch.swatch-orange {
+	--swatch-color: var(--theme-orange);
+}
+.rankup-view .color-swatch.swatch-yellow {
+	--swatch-color: var(--theme-yellow);
+}
+.rankup-view .color-swatch.swatch-green {
+	--swatch-color: var(--theme-green);
+}
+.rankup-view .color-swatch.swatch-blue {
+	--swatch-color: var(--theme-blue);
+}
+.rankup-view .color-swatch.swatch-purple {
+	--swatch-color: var(--theme-purple);
+}
+.rankup-view .color-swatch.swatch-white {
+	--swatch-color: var(--theme-white);
+}
+.rankup-view .color-swatch.swatch-black {
+	--swatch-color: var(--theme-black);
+}
+.rankup-view .color-swatch.swatch-pink {
+	--swatch-color: var(--theme-pink);
+}
+
+.rankup-view .color-swatch {
+	border-radius: var(--radius--light);
+}
+.rankup-view .color-swatch:nth-child(1) {
+	border-radius: var(--radius) var(--radius--light) var(--radius--light) var(--radius--light);
+}
+.rankup-view .color-swatch:nth-child(3) {
+	border-radius: var(--radius--light) var(--radius) var(--radius--light) var(--radius--light);
+}
+.rankup-view .color-swatch:nth-child(7) {
+	border-radius: var(--radius--light) var(--radius--light) var(--radius--light) var(--radius);
+}
+.rankup-view .color-swatch:nth-child(9) {
+	border-radius: var(--radius--light) var(--radius--light) var(--radius) var(--radius--light);
+}
+
 .rankup-view .row-option.disabled {
 	opacity: 0.2;
 	pointer-events: none;
@@ -207,8 +300,6 @@ rankup-row {
 	width: var(--row-body-width);
 	min-height: var(--image-res);
 	background-color: var(--catppuccin-base);
-	border: 2px var(--theme-failure) solid;
-	box-sizing: content-box;
 	/* Align items within to the left */
 	display: flex;
 	flex-direction: row;

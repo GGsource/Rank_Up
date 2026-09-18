@@ -5,8 +5,9 @@
 /* Global Variables */
 :root {
 	/* ---------------------------------- Sizes --------------------------------- */
+	--row-image-fit-count: 8; /* The amount of images that can fit horizontally in one row */
 	--image-res: 10vh; /* The size of each image */
-	--row-body-width: calc(var(--image-res) * 8); /* The calculated width of the row's body, defaulting to 8 image width */
+	--row-body-width: calc(var(--image-res) * var(--row-image-fit-count)); /* The calculated width of the row's body */
 	--row-width: calc(var(--row-body-width) + var(--image-res)); /* Total width of body + header */
 	--radius: 1.8vh;
 	--radius--light: 0.8vh;
