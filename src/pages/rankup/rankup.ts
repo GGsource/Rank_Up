@@ -364,9 +364,6 @@ class RankUpPage extends Page implements RowList {
 		return colorPalette;
 	}
 
-	// TODO: Make story for enforcing return types
-	// FIXME: Palette stretches entire height of rowHeader, which can be long with many images. Keep it just a square probs
-
 	/**
 	 * Displays the color options to change the color of the current row
 	 */
@@ -378,7 +375,6 @@ class RankUpPage extends Page implements RowList {
 			const color = swatch.classList[swatch.classList.length - 1].split("-")[1];
 			row.setColor(color);
 			this.removeColorPalette();
-			event.stopPropagation();
 		};
 		row.attachPalette(this.colorPalette);
 	}
