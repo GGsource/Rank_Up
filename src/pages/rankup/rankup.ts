@@ -263,28 +263,45 @@ class RankUpPage extends Page implements RowList {
 	 * @param event The drag event of the element being dragged upon
 	 */
 	draggedImageOverElement(event: DragEvent) {
-		// For change to be necessary one of these must have changed: target changed, targetside changed.
 		event.preventDefault();
-
-		const targetElement = event.target as HTMLElement; // The element being dragged into.
-		if (!targetElement) console.error("ev.target is is null in DragImageOver");
-
-		if (targetElement.classList.contains("image-container")) {
+		const targetElement = event.target;
+		if (targetElement instanceof HTMLImageElement) {
+			this.draggedImageOverImage(event, targetElement);
+		} else if (targetElement instanceof HTMLElement) {
+			this.draggedImageOverContainer(targetElement);
+		} else {
+			console.warn("draggedImageOverContainer resulted in a drag over a non-HTMLElement. Aborting.");
+			return;
+		}
+		this.prevTarget = targetElement;
+	}
+	/**
+	 * Called when an image is dragged over an image container
+	 *
+	 * @param targetContainer conainter image is being dropped into
+	 */
+	private draggedImageOverContainer(targetContainer: HTMLElement) {
 		// Dragging over an image container element
 		this.selectedImages.forEach((selectedImage) => {
-				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
-				targetElement.append(selectedImage);
+			if (this.prevTarget == targetContainer && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
+			targetContainer.append(selectedImage);
 		});
-		} else if (targetElement.classList.contains("rankup-image")) {
+	}
+	/**
+	 * Called when an image is dragged over another image
+	 *
+	 * @param event The drag even of the image being dragged upon
+	 * @param targetImage the image we are dragging on top of
+	 */
+	private draggedImageOverImage(event: DragEvent, targetImage: HTMLImageElement) {
 		// Dragging over a rankup image element - figure out which side to place on
-			const targetImage = targetElement as HTMLImageElement;
 		if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
 		// Check if the image was dragged to the left or right of the target image
 		const targetImageRect = targetImage.getBoundingClientRect();
 		const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
 		// If the user dragged the image to the left of the target image, insert the image before the target image
 		const isCurSideLeft = event.clientX < targetImageCenter;
-			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
+		if (this.prevTarget == targetImage && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
 		if (isCurSideLeft) {
 			this.selectedImages.forEach((selectedImage) => {
 				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
@@ -292,8 +309,6 @@ class RankUpPage extends Page implements RowList {
 		} else this.insertAllAfter(targetImage);
 
 		this.isPrevSideLeft = isCurSideLeft;
-		}
-		this.prevTarget = targetElement;
 	}
 
 	/**
