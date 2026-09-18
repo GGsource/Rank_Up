@@ -114,6 +114,7 @@ class RankUpPage extends Page implements RowList {
 			this.deselectImage(image);
 			this.starterContainer.append(image);
 		});
+		if (row.contains(this.colorPalette)) this.removeColorPalette();
 	}
 
 	/**
