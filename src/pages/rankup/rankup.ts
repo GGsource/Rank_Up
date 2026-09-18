@@ -60,7 +60,7 @@ class RankUpPage extends Page implements RowList {
 	/**
 	 * Applies dragging behavior to all rows in the rankup page list via Sortable JS
 	 */
-	makeRowsDraggable() {
+	private makeRowsDraggable() {
 		new Sortable(this.rowList, {
 			draggable: "rankup-row", // The thing to be dragged
 			handle: ".drag-handle", // The thing to grab to drag by
@@ -168,7 +168,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param event the mouse click event on the image
 	 */
-	clickImage(event: MouseEvent) {
+	private clickImage(event: MouseEvent) {
 		event.stopPropagation(); // Stop event from moving up to prevent clearing
 		this.removeColorPalette();
 		const image = event.target as HTMLImageElement;
@@ -215,7 +215,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param image image to deselect
 	 */
-	deselectImage(image: HTMLImageElement) {
+	private deselectImage(image: HTMLImageElement) {
 		this.selectedImages.delete(image);
 		image.classList.remove("selected");
 	}
@@ -241,7 +241,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param event the dragging event
 	 */
-	startDraggingImage(event: DragEvent) {
+	private startDraggingImage(event: DragEvent) {
 		this.rowView.classList.remove("allow-image-hover"); // Disallow hover effects, we're holding it
 		const draggedImage = event.target as HTMLImageElement;
 		if (!draggedImage) throw new Error("Fatal Error: Failed to drag image because it is null...");
@@ -270,28 +270,28 @@ class RankUpPage extends Page implements RowList {
 		if (!targetElement) console.error("ev.target is is null in DragImageOver");
 
 		if (targetElement.classList.contains("image-container")) {
-			// Dragging over an image container element
-			this.selectedImages.forEach((selectedImage) => {
+		// Dragging over an image container element
+		this.selectedImages.forEach((selectedImage) => {
 				if (this.prevTarget == targetElement && selectedImage.nextElementSibling == null) return; //Same container & position, nothin should change.
 				targetElement.append(selectedImage);
-			});
+		});
 		} else if (targetElement.classList.contains("rankup-image")) {
-			// Dragging over a rankup image element - figure out which side to place on
+		// Dragging over a rankup image element - figure out which side to place on
 			const targetImage = targetElement as HTMLImageElement;
-			if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
-			// Check if the image was dragged to the left or right of the target image
-			const targetImageRect = targetImage.getBoundingClientRect();
-			const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
-			// If the user dragged the image to the left of the target image, insert the image before the target image
-			const isCurSideLeft = event.clientX < targetImageCenter;
+		if (this.selectedImages.has(targetImage)) return; //Selected imgs need to ignore eachother
+		// Check if the image was dragged to the left or right of the target image
+		const targetImageRect = targetImage.getBoundingClientRect();
+		const targetImageCenter = targetImageRect.left + targetImageRect.width / 2;
+		// If the user dragged the image to the left of the target image, insert the image before the target image
+		const isCurSideLeft = event.clientX < targetImageCenter;
 			if (this.prevTarget == targetElement && isCurSideLeft == this.isPrevSideLeft) return; // Prevent repeatedly doing the same move
-			if (isCurSideLeft) {
-				this.selectedImages.forEach((selectedImage) => {
-					if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
-				});
-			} else this.insertAllAfter(targetImage);
+		if (isCurSideLeft) {
+			this.selectedImages.forEach((selectedImage) => {
+				if (isCurSideLeft) targetImage.insertAdjacentElement("beforebegin", selectedImage);
+			});
+		} else this.insertAllAfter(targetImage);
 
-			this.isPrevSideLeft = isCurSideLeft;
+		this.isPrevSideLeft = isCurSideLeft;
 		}
 		this.prevTarget = targetElement;
 	}
@@ -312,7 +312,7 @@ class RankUpPage extends Page implements RowList {
 	/**
 	 * Called when user stops dragging an image
 	 */
-	stopDraggingImage() {
+	private stopDraggingImage() {
 		this.prevTarget = null;
 		this.isPrevSideLeft = false;
 		this.rowView.classList.add("allow-image-hover");

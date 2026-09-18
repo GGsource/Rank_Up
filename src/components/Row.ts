@@ -6,7 +6,7 @@ import colorIcon from "@/assets/images/icons/palette.svg";
 import rowDeleteIcon from "@/assets/images/icons/row-delete.png";
 
 /**
- * Defines signature of abilities a list of rows must contain
+ * Defines signature of public-facing abilities a list of rows must contain
  */
 export interface RowList {
 	showTab(tab: HTMLDivElement): void;
@@ -15,7 +15,6 @@ export interface RowList {
 	clearRow(row: Row): void;
 	deleteRow(row: Row): void;
 	draggedImageOverElement(event: DragEvent): void;
-	stopDraggingImage(): void;
 	draggedOverTextbox(event: DragEvent): void;
 	showColorPalette(row: Row): void;
 }
