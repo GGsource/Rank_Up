@@ -1,4 +1,5 @@
 import { PageClass } from "@/pages/Page";
+import { canonicalNavPaths, pageNames } from "@/utils/const";
 import { getEl } from "@/utils/utils";
 
 const pageRegistry = new Map<string, PageClass>();
@@ -18,7 +19,7 @@ export function registerPage(pageName: string, pageClass: PageClass) {
  *
  * @param pageName name of the page to show
  */
-export async function renderPage(pageName: string) {
+export async function renderPage(pageName: pageNames, pushState = true) {
 	// Get the container
 	const pageContainer = getEl("page-container");
 
@@ -40,4 +41,29 @@ export async function renderPage(pageName: string) {
 		throw new Error(`Fatal Error: Page ${pageKey} imported but never registered.`);
 	}
 	pageClass.mountTo(pageContainer);
+
+	if (pushState) {
+		history.pushState(null, "", canonicalNavPaths[pageName]);
+	}
+}
+
+/**
+ *
+ * @param pushState whether or not to push a new state to browser
+ */
+export function renderPath(pushState = true) {
+	let page: pageNames = "home";
+	const path = window.location.pathname.replace(/\/+$/, "");
+	switch (path) {
+		case "":
+			break;
+		case "/create":
+			page = "form";
+			break;
+		default:
+			page = "404";
+			pushState = false;
+			break;
+	}
+	renderPage(page, pushState);
 }
