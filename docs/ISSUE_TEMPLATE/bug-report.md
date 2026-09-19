@@ -1,4 +1,9 @@
-<!-- Provide a general summary of the issue in the Title above -->
+---
+name: Bug
+about: Report something that's broken
+title: "[BUG]: "
+labels: bug
+---
 
 ## Expected Behavior
 
