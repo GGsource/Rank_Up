@@ -4,5 +4,18 @@
 	"assets": {
 		"directory": "./dist",
 		"not_found_handling": "single-page-application"
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "RANKUP_DB",
+			"database_name": "rankup-database",
+			"database_id": "2cf76ce8-458b-4bd7-a635-facae9dcec95"
+		}
+	],
+	"r2_buckets": [
+		{
+			"bucket_name": "rankup-bucket",
+			"binding": "RANKUP_BUCKET"
+		}
+	]
 }
