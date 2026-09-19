@@ -1,4 +1,9 @@
-<!-- Provide a general summary of the issue in the Title above -->
+---
+name: Feature
+about: A new enhancement
+title: "[FEAT]: "
+labels: enhancement
+---
 
 ## Feature Description
 
