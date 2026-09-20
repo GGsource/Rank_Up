@@ -17,7 +17,7 @@ class FormPage extends Page {
 	private uploadsContainer = getEl("upload-image-container");
 	private uploadIndicators = getEl("upload-indicators");
 	private clearUploadsButton = getEl<HTMLButtonElement>("clear-uploads");
-	private collectedURLs: string[] = []; // List of uploaded images
+	private formImages: File[] = []; // List of uploaded images
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
 	private listPreset = GradePreset;
@@ -74,7 +74,7 @@ class FormPage extends Page {
 		// Form Submission
 		this.formView.addEventListener("submit", (event) => {
 			event.preventDefault(); // Prevent submission auto-send
-			if (!this.enablePlaceHolders && this.collectedURLs.length < 2) {
+			if (!this.enablePlaceHolders && this.formImages.length < 2) {
 				ToastBox.showToast("At least 2 images must be selected!", "Failure");
 				this.formUploadContainer.classList.add("input--errored");
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
@@ -83,7 +83,7 @@ class FormPage extends Page {
 				let rankupData = new FormData(); // Populate formdata with info we want to save
 				rankupData.append("title", this.titleInput.value);
 				rankupData.append("desc", this.descInput.value);
-				this.collectedURLs.forEach((image) => rankupData.append("rankupImage", image));
+				this.formImages.forEach((image) => rankupData.append("rankupImage", image));
 				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
 				const rankupId = createRankUp(rankupData);
 				if (rankupId !== null) {
@@ -93,7 +93,7 @@ class FormPage extends Page {
 			}
 		});
 		// Invalid Submission
-		this.titleInput.addEventListener("invalid", (event) => {
+		this.titleInput.addEventListener("invalid", () => {
 			this.titleInput.classList.add("input--errored");
 			setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
 			ToastBox.showToast("Title is required for a new RankUp!", "Failure");
@@ -120,18 +120,18 @@ class FormPage extends Page {
 				console.warn(`Tried to upload non-image: ${file.name}`);
 				continue; // Skip non-images
 			}
+			this.formImages.push(file); // Keep track of uploaded images
 
 			// Make a wrapper to contain image elements
 			const imageWrapper = document.createElement("div") as HTMLDivElement;
 			imageWrapper.className = "image-wrapper";
 			this.uploadsContainer.append(imageWrapper);
 
-			// Make the image file into an HTML Image element to insert
+			// Make the image file into an HTML Image element to display on page
 			const newImage = document.createElement("img") as HTMLImageElement;
 			newImage.className = "uploaded-image";
 			const imageURL = URL.createObjectURL(file);
 			newImage.src = imageURL;
-			this.collectedURLs.push(imageURL);
 			imageWrapper.append(newImage);
 
 			// Make the delete button
@@ -142,8 +142,8 @@ class FormPage extends Page {
 				event.stopPropagation();
 				imageWrapper.remove();
 				URL.revokeObjectURL(newImage.src);
-				const index = this.collectedURLs.indexOf(imageURL);
-				if (index !== -1) this.collectedURLs.splice(index, 1);
+				const index = this.formImages.indexOf(file);
+				if (index !== -1) this.formImages.splice(index, 1);
 				if (!this.uploadsContainer.hasChildNodes()) this.hideIndicators(false);
 			});
 			imageWrapper.append(deleteButton);
