@@ -1,11 +1,11 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
 import { registerPage, renderPage } from "@/components/renderPage";
-import { setUserData } from "@/state/UserData";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
 import { GradePreset } from "@/utils/ListPresets";
+import { createRankUp } from "@/data/rankups";
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
 	static rawHTML = formHTMLRaw;
@@ -79,8 +79,13 @@ class FormPage extends Page {
 				this.formUploadContainer.classList.add("input--errored");
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
-				this.toggleablePlaceHolders = false; // No longer allowed to toggle
-				setUserData(this.titleInput.value, this.descInput.value, this.collectedURLs, this.listPreset);
+				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
+				let rankupData = new FormData(); // Populate formdata with info we want to save
+				rankupData.append("title", this.titleInput.value);
+				rankupData.append("desc", this.descInput.value);
+				this.collectedURLs.forEach((image) => rankupData.append("rankupImage", image));
+				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
+				createRankUp(rankupData);
 				renderPage("rankup");
 			}
 		});
