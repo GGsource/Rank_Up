@@ -85,8 +85,11 @@ class FormPage extends Page {
 				rankupData.append("desc", this.descInput.value);
 				this.collectedURLs.forEach((image) => rankupData.append("rankupImage", image));
 				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
-				createRankUp(rankupData);
-				renderPage("rankup");
+				const rankupId = createRankUp(rankupData);
+				if (rankupId !== null) {
+					renderPage("rankup");
+					// TODO: Create a renderRankUpPage(rankupId) function
+				}
 			}
 		});
 		// Invalid Submission
