@@ -2,33 +2,36 @@ export default {
 	async fetch(request: Request, env: Env) {
 		const url = new URL(request.url);
 		if (url.pathname.startsWith("/api/")) {
-			// your D1/R2 logic goes here, routed by hand — e.g. check
-			// url.pathname and request.method yourself, no onRequestX convention
-			/**
-			 * Functions here are called when the user makes a rankup request without the need of a specific ID
-			 */
-
-			// POST to make a new rankup entry in table
-			// export const onRequestPost: PagesFunction<Env> = async (context) => {
-			console.log(request);
-			const rankupData = await request.formData();
-			console.log(rankupData);
-			let response: Response;
-			// First insert insert images into the R2 bucket
-			if (true) {
-				// env.BUCKET.
-				// If image insertion was successful, we can now create a new entry in the rankup table
-				// env.DB.prepare()
-				// env.DB.exec()
-				// If our rankup was sucessfully created, now save the image information to the rankup_images table
-				// env.DB.prepare()
-				// env.DB.exec()
-				const newRankUpId = ""; // TODO: Actually get it back from db
-				return Response.json({ rankupId: newRankUpId }, { status: 201 });
+			if (url.pathname === "/api/rankups" && request.method === "POST") {
+				// POST to make a new rankup entry in table
+				/**
+				 * Functions here are called when the user makes a rankup request without the need of a specific ID
+				 */
+				// TODO: Move me to a separate function below
+				const rankupData = await request.formData();
+				const title = rankupData.get("title"); // TODO: Make sure this isn't null
+				const desc = rankupData.get("desc"); // TODO: Does this work if null?
+				const rankupImages = rankupData.getAll("rankupImages"); // TODO: Make sure this is File objects
+				const listPreset = Number(rankupData.get("listPreset"));
+				let response: Response;
+				// First insert insert images into the R2 bucket
+				const key = ":D"; // TODO: Generate a unique UUID for this image as key
+				rankupImages.forEach((rankupImage) => env.RANKUP_BUCKET.put(key, rankupImage)); // TODO: Look into how this could throw an error and how to catch it to return failure below
+				if (request.body) {
+					// If image insertion was successful, we can now create a new entry in the rankup table
+					// env.DB.prepare()
+					// env.DB.exec()
+					// If our rankup was sucessfully created, now save the image information to the rankup_images table
+					// env.DB.prepare()
+					// env.DB.exec()
+					const newRankUpId = ""; // TODO: Actually get it back from db
+					return Response.json({ rankupId: newRankUpId }, { status: 201 });
+				}
+				return new Response("Failed to insert: Error here", { status: -999 }); // TODO: Check what the appropriate thing to send here is
 			}
-			return new Response("Failed to insert: Error here", { status: -999 });
+			return new Response("Not Found", { status: 404 }); // requested path not found
 		}
-		return env.RANKUP_ASSETS.fetch(request); // fall through to your SPA
+		return env.RANKUP_ASSETS.fetch(request); // non-api call, fallback
 	},
 };
 
