@@ -3,7 +3,6 @@ import Sortable from "sortablejs";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
-import { getUserData } from "@/state/UserData";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
 import { EMPTY_IMG } from "@/utils/const";
@@ -23,7 +22,6 @@ class RankUpPage extends Page implements RowList {
 	private lastSelectedImage: HTMLImageElement | null = null;
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
-	private userData = getUserData();
 	private readonly colorPalette = this.initializeColorPalette();
 
 	/**
@@ -31,30 +29,30 @@ class RankUpPage extends Page implements RowList {
 	 */
 	constructor() {
 		super();
-		if (!this.userData) throw new Error("Failed to retrieve user data from form");
-		/* ------------------------------- Attach Rows ------------------------------ */
-		for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
-		this.makeRowsDraggable();
-		/* ---------------------------- Attach Listeners ---------------------------- */
-		this.rowView.addEventListener("click", () => {
-			this.deselectAllImages();
-			this.removeColorPalette();
-		});
-		// Main container behaviors
-		this.starterContainer.ondragover = (event) => this.draggedImageOverElement(event);
-		this.starterContainer.ondragend = () => this.stopDraggingImage();
-		// Text boxes behaviors
-		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
-		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
-		/* ------------------------------ Insert images ----------------------------- */
-		this.headerTitle.value = this.userData.title;
-		this.setTitle(this.headerTitle.value);
-		this.headerDescription.value = this.userData.desc;
-		if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-		else {
-			const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
-			Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
-		}
+		// if (!this.userData) throw new Error("Failed to retrieve user data from form");
+		// /* ------------------------------- Attach Rows ------------------------------ */
+		// for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
+		// this.makeRowsDraggable();
+		// /* ---------------------------- Attach Listeners ---------------------------- */
+		// this.rowView.addEventListener("click", () => {
+		// 	this.deselectAllImages();
+		// 	this.removeColorPalette();
+		// });
+		// // Main container behaviors
+		// this.starterContainer.ondragover = (event) => this.draggedImageOverElement(event);
+		// this.starterContainer.ondragend = () => this.stopDraggingImage();
+		// // Text boxes behaviors
+		// this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
+		// this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
+		// /* ------------------------------ Insert images ----------------------------- */
+		// this.headerTitle.value = this.userData.title;
+		// this.setTitle(this.headerTitle.value);
+		// this.headerDescription.value = this.userData.desc;
+		// if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
+		// else {
+		// 	const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+		// 	Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
+		// }
 	}
 
 	/**

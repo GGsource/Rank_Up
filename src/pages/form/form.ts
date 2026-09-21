@@ -72,7 +72,7 @@ class FormPage extends Page {
 			);
 		});
 		// Form Submission
-		this.formView.addEventListener("submit", (event) => {
+		this.formView.addEventListener("submit", async (event) => {
 			event.preventDefault(); // Prevent submission auto-send
 			if (!this.enablePlaceHolders && this.formImages.length < 2) {
 				ToastBox.showToast("At least 2 images must be selected!", "Failure");
@@ -85,9 +85,9 @@ class FormPage extends Page {
 				rankupData.append("desc", this.descInput.value);
 				this.formImages.forEach((image) => rankupData.append("rankupImage", image));
 				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
-				const rankupId = createRankUp(rankupData);
+				const rankupId = await createRankUp(rankupData);
 				if (rankupId !== null) {
-					renderPage("rankup");
+					// renderPage("rankup");
 					// TODO: Create a renderRankUpPage(rankupId) function
 				}
 			}

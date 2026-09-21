@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": [
+			"esnext"
+		],
+		"types": [],
+		"composite": true
+	},
+	"include": [
+		"src/worker.ts",
+		"worker-configuration.d.ts"
+	]
+}
