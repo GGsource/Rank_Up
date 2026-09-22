@@ -7,16 +7,48 @@ export default {
 				/**
 				 * Functions here are called when the user makes a rankup request without the need of a specific ID
 				 */
-				// TODO: Move me to a separate function below
+				// TODO: Move me to a separate function below?
 				const rankupData = await request.formData();
-				const title = rankupData.get("title"); // TODO: Make sure this isn't null
-				const desc = rankupData.get("desc"); // TODO: Does this work if null?
 				const rankupImages = rankupData.getAll("rankupImages"); // TODO: Make sure this is File objects
-				const listPreset = Number(rankupData.get("listPreset"));
-				let response: Response;
-				// First insert insert images into the R2 bucket
-				const key = ":D"; // TODO: Generate a unique UUID for this image as key
-				rankupImages.forEach((rankupImage) => env.RANKUP_BUCKET.put(key, rankupImage)); // TODO: Look into how this could throw an error and how to catch it to return failure below
+
+				// First insert images into the R2 bucket
+				let r2Keys: string[] = [];
+				try {
+					await Promise.allSettled(
+						rankupImages.map((rankupImage) => {
+							const newKey = crypto.randomUUID();
+							r2Keys.push(newKey);
+							env.RANKUP_BUCKET.put(newKey, rankupImage);
+						}),
+					);
+				} catch (err) {
+					// Failed to insert all images, remove any that might be orphaned
+					await Promise.allSettled(r2Keys.map((key) => env.RANKUP_BUCKET.delete(key)));
+					return new Response("Failed to upload images to R2 Bucket", { status: 503 });
+				}
+
+				// Now insert rankup into rankups table
+				try {
+					// Validate the data's shape is as required
+					let rankUpShape: RankUpShape = {
+						title: getFormString(rankupData, "title"),
+						desc: getOptionalFormString(rankupData, "desc"),
+						listPreset: getFormNumber(rankupData, "listPreset"),
+					};
+
+					// Shape is correct, so let's insert
+					let statement = env.RANKUP_DB.prepare(":D my queryyyy");
+					statement.bind(rankUpShape.title, rankUpShape.desc, rankUpShape.listPreset); // give the statement my variables
+					// TODO: Ensure null can ACTUALLY be received for description AND gets saved to the db
+					const result = statement.run();
+					// NOTE: If this was successful, result should now contain my new ID
+					// TODO: Retrieve this ID for use in the next step
+					// TODO: Catch if the statement failed to run. result should have an "ok" equivalent
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "Unknown validation error";
+					return new Response(`Failed to insert rankup into database: ${message}`, { status: 400 });
+				}
+
 				if (request.body) {
 					// If image insertion was successful, we can now create a new entry in the rankup table
 					// env.DB.prepare()
@@ -34,6 +66,36 @@ export default {
 		return env.RANKUP_ASSETS.fetch(request); // non-api call, fallback
 	},
 };
+
+// Shape of the received rankup data
+interface RankUpShape {
+	title: string;
+	desc: string | null;
+	listPreset: number;
+}
+
+function getFormString(formData: FormData, fieldName: string): string {
+	const field = formData.get(fieldName);
+	if (typeof field !== "string") {
+		throw new Error(`${fieldName} is required and must be a string`);
+	}
+	return field;
+}
+function getOptionalFormString(formData: FormData, fieldName: string): string | null {
+	const field = formData.get(fieldName);
+	if (field instanceof File) {
+		throw new Error(`${fieldName} is should be either a string or null`);
+	}
+	return field;
+}
+function getFormNumber(formData: FormData, fieldName: string): number {
+	const field = formData.get(fieldName);
+	const fieldNum = Number(field);
+	if (typeof field !== "string" || Number.isNaN(fieldNum)) {
+		throw new Error(`${fieldName} is required and must be a number`);
+	}
+	return fieldNum;
+}
 
 // GET to return from ALL rankups in table
 
