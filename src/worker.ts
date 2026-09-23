@@ -37,11 +37,14 @@ export default {
 					};
 
 					// Shape is correct, so let's insert
-					let statement = env.RANKUP_DB.prepare(":D my queryyyy");
-					statement.bind(rankUpShape.title, rankUpShape.desc, rankUpShape.listPreset); // give the statement my variables
+					// TODO: Look into making request a transaction so the same request cannot be run twice
+					let statement = env.RANKUP_DB.prepare(
+						"insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)",
+					);
+					const rankupId = crypto.randomUUID();
+					statement.bind(rankupId, rankUpShape.title, rankUpShape.desc, rankUpShape.listPreset); // give the statement my variables
 					// TODO: Ensure null can ACTUALLY be received for description AND gets saved to the db
-					const result = statement.run();
-					// NOTE: If this was successful, result should now contain my new ID
+					// NOTE: If this was successful, can now use rankupId for next part
 					// TODO: Retrieve this ID for use in the next step
 					// TODO: Catch if the statement failed to run. result should have an "ok" equivalent
 				} catch (error) {
