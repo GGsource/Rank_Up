@@ -14,7 +14,7 @@ export default {
 						idempotencyKey: getFormString(rankupData, "idempotencyKey"),
 						title: getFormString(rankupData, "title"),
 						desc: getOptionalFormString(rankupData, "desc"),
-						listPreset: getFormNumber(rankupData, "listPreset"),
+						listPreset: getFormInt(rankupData, "listPreset"),
 						rankupImages: getFormFiles(rankupData, "rankupImage"),
 					};
 				} catch (error) {
@@ -43,7 +43,7 @@ export default {
 				}
 
 				/* ----------------- First insert images into the R2 bucket ----------------- */
-				let r2Keys: string[] = [];
+				const r2Keys: string[] = [];
 				const insertR2Results = await Promise.allSettled(
 					rankupShape.rankupImages.map((img) => {
 						const newKey = crypto.randomUUID();
@@ -52,7 +52,7 @@ export default {
 					}),
 				);
 
-				let failures = insertR2Results.filter((r) => r.status === "rejected");
+				const failures = insertR2Results.filter((r) => r.status === "rejected");
 				if (failures.length > 0) {
 					await revokeR2Images(env, r2Keys); // Remove all to prevent orphans
 					await revokeIdempotency(env, rankupShape.idempotencyKey); // Remove hold on this request
@@ -64,15 +64,16 @@ export default {
 				const rankupId = crypto.randomUUID();
 
 				try {
-					await env.RANKUP_DB.prepare("insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)")
-						.bind(rankupId, rankupShape.title, rankupShape.desc, rankupShape.listPreset)
-						.run();
+					const insertRankUpStmnt = env.RANKUP_DB.prepare(
+						"insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)",
+					).bind(rankupId, rankupShape.title, rankupShape.desc, rankupShape.listPreset);
 					// TESTME: Ensure null can ACTUALLY be received for description AND gets saved to the db
 
 					// Also save rankup_id to idempotency keys
-					await env.RANKUP_DB.prepare("update idempotency_keys set rankup_id = ? where idempotency_key = ?")
-						.bind(rankupId, rankupShape.idempotencyKey)
-						.run();
+					const updateIdempotencyStmnt = env.RANKUP_DB.prepare(
+						"update idempotency_keys set rankup_id = ? where idempotency_key = ?",
+					).bind(rankupId, rankupShape.idempotencyKey);
+					env.RANKUP_DB.batch([insertRankUpStmnt, updateIdempotencyStmnt]);
 				} catch (error) {
 					await revokeR2Images(env, r2Keys);
 					await revokeIdempotency(env, rankupShape.idempotencyKey); // Remove hold on this request
@@ -119,7 +120,7 @@ interface RankUpShape {
 
 function getFormString(formData: FormData, fieldName: string): string {
 	const field = formData.get(fieldName);
-	if (typeof field !== "string") {
+	if (typeof field !== "string" || field === "") {
 		throw new Error(`${fieldName} is required and must be a string`);
 	}
 	return field;
@@ -131,17 +132,18 @@ function getOptionalFormString(formData: FormData, fieldName: string): string | 
 	}
 	return field;
 }
-function getFormNumber(formData: FormData, fieldName: string): number {
+
+function getFormInt(formData: FormData, fieldName: string): number {
 	const field = formData.get(fieldName);
 	const fieldNum = Number(field);
-	if (typeof field !== "string" || Number.isNaN(fieldNum)) {
-		throw new Error(`${fieldName} is required and must be a number`);
+	if (typeof field !== "string" || field === "" || !Number.isInteger(fieldNum)) {
+		throw new Error(`${fieldName} is required and must be an integer`);
 	}
 	return fieldNum;
 }
 function getFormFiles(formData: FormData, fieldName: string): File[] {
 	const files = formData.getAll(fieldName);
-	if (!files.every((f): f is File => f instanceof File)) {
+	if (files.length === 0 || !files.every((f): f is File => f instanceof File)) {
 		throw new Error(`${fieldName} are required and must be a File object array`);
 	}
 	return files;
