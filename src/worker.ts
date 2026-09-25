@@ -73,7 +73,7 @@ export default {
 					const updateIdempotencyStmnt = env.RANKUP_DB.prepare(
 						"update idempotency_keys set rankup_id = ? where idempotency_key = ?",
 					).bind(rankupId, rankupShape.idempotencyKey);
-					env.RANKUP_DB.batch([insertRankUpStmnt, updateIdempotencyStmnt]);
+					await env.RANKUP_DB.batch([insertRankUpStmnt, updateIdempotencyStmnt]);
 				} catch (error) {
 					await revokeR2Images(env, r2Keys);
 					await revokeIdempotency(env, rankupShape.idempotencyKey); // Remove hold on this request
@@ -120,7 +120,7 @@ interface RankUpShape {
 
 function getFormString(formData: FormData, fieldName: string): string {
 	const field = formData.get(fieldName);
-	if (typeof field !== "string" || field === "") {
+	if (typeof field !== "string" || field.trim() === "") {
 		throw new Error(`${fieldName} is required and must be a string`);
 	}
 	return field;
@@ -136,7 +136,7 @@ function getOptionalFormString(formData: FormData, fieldName: string): string | 
 function getFormInt(formData: FormData, fieldName: string): number {
 	const field = formData.get(fieldName);
 	const fieldNum = Number(field);
-	if (typeof field !== "string" || field === "" || !Number.isInteger(fieldNum)) {
+	if (typeof field !== "string" || field.trim() === "" || !Number.isInteger(fieldNum)) {
 		throw new Error(`${fieldName} is required and must be an integer`);
 	}
 	return fieldNum;
