@@ -3,6 +3,7 @@
  */
 
 export interface ListPresets {
+	presetIndex: number;
 	rows: {
 		rowName: string;
 		rowColor: string;
@@ -12,6 +13,7 @@ export interface ListPresets {
 export const fullColorPalette = ["red", "orange", "yellow", "green", "blue", "purple", "white", "black", "pink"];
 
 export const GradePreset: ListPresets = {
+	presetIndex: 0,
 	rows: [
 		{ rowName: "S", rowColor: "red" },
 		{ rowName: "A", rowColor: "orange" },
