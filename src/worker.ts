@@ -153,7 +153,8 @@ async function revokeR2Images(env: Env, r2Keys: string[]) {
 	await Promise.allSettled(r2Keys.map((key) => env.RANKUP_BUCKET.delete(key)));
 }
 /**
- * Revokes the rankup row that was just inserted into D1, as the process was aborted before completion
+ * Revokes the rankup row that was just inserted into D1, as the process was aborted before completion.
+ * This also deletes rows from other tables associated with this row, which is crucial behavior.
  *
  * @param env Environment contect
  * @param rankupId the rankups table ID of the row to remove
