@@ -6,29 +6,12 @@ export default {
 				/* -------------------------------------------------------------------------- */
 				/*                POST to store a new rankup entry in database                */
 				/* -------------------------------------------------------------------------- */
-				const rankupData = await request.formData();
-				/* ------ Protect against duplicate requests via idempotency key check ------ */
-				const idempotencyKey = getFormString(rankupData, "idempotencyKey");
-				try {
-					await env.RANKUP_DB.prepare("insert into idempotency_keys (idempotency_key) values (?)").bind(idempotencyKey).run();
-				} catch (error) {
-					const message = error instanceof Error ? error.message : "";
-					if (message.includes("UNIQUE constraint failed")) {
-						const existing = await env.RANKUP_DB.prepare("select rankup_id from idempotency_keys where idempotency_key = ?")
-							.bind(idempotencyKey)
-							.first<{ rankup_id: string | null }>();
-
-						if (existing?.rankup_id) {
-							return Response.json({ rankupId: existing.rankup_id }, { status: 201 }); // already done — hand back the same result
-						}
-						return new Response("Duplicate submission already in progress", { status: 409 }); // genuinely racing
-					}
-					return new Response(`Failed to process request: ${message || "Unknown error"}`, { status: 503 });
-				}
 				/* ---------------- Validate the data's shape is as required ---------------- */
+				const rankupData = await request.formData();
 				let rankupShape: RankUpShape;
 				try {
 					rankupShape = {
+						idempotencyKey: getFormString(rankupData, "idempotencyKey"),
 						title: getFormString(rankupData, "title"),
 						desc: getOptionalFormString(rankupData, "desc"),
 						listPreset: getFormNumber(rankupData, "listPreset"),
@@ -37,6 +20,26 @@ export default {
 				} catch (error) {
 					const message = error instanceof Error ? error.message : "Unknown rankup data shape validation error";
 					return new Response(`Shape of rankup data received is invalid: ${message}`, { status: 422 });
+				}
+
+				/* ------ Protect against duplicate requests via idempotency key check ------ */
+				try {
+					await env.RANKUP_DB.prepare("insert into idempotency_keys (idempotency_key) values (?)")
+						.bind(rankupShape.idempotencyKey)
+						.run();
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "";
+					if (message.includes("UNIQUE constraint failed")) {
+						const existing = await env.RANKUP_DB.prepare("select rankup_id from idempotency_keys where idempotency_key = ?")
+							.bind(rankupShape.idempotencyKey)
+							.first<{ rankup_id: string | null }>();
+
+						if (existing?.rankup_id) {
+							return Response.json({ rankupId: existing.rankup_id }, { status: 201 }); // already done — hand back the same result
+						}
+						return new Response("Duplicate submission already in progress", { status: 409 }); // genuinely racing
+					}
+					return new Response(`Failed to process request: ${message || "Unknown error"}`, { status: 503 });
 				}
 
 				/* ----------------- First insert images into the R2 bucket ----------------- */
@@ -52,6 +55,7 @@ export default {
 				let failures = insertR2Results.filter((r) => r.status === "rejected");
 				if (failures.length > 0) {
 					await revokeR2Images(env, r2Keys); // Remove all to prevent orphans
+					await revokeIdempotency(env, rankupShape.idempotencyKey); // Remove hold on this request
 					const failureMessage = failures[0].reason instanceof Error ? failures[0].reason.message : "Unknown R2 insertion error";
 					return new Response(`Failed to upload ${failures.length} image(s) into R2 bucket: ${failureMessage}`, { status: 503 });
 				}
@@ -64,8 +68,14 @@ export default {
 						.bind(rankupId, rankupShape.title, rankupShape.desc, rankupShape.listPreset)
 						.run();
 					// TESTME: Ensure null can ACTUALLY be received for description AND gets saved to the db
+
+					// Also save rankup_id to idempotency keys
+					await env.RANKUP_DB.prepare("update idempotency_keys set rankup_id = ? where idempotency_key = ?")
+						.bind(rankupId, rankupShape.idempotencyKey)
+						.run();
 				} catch (error) {
 					await revokeR2Images(env, r2Keys);
+					await revokeIdempotency(env, rankupShape.idempotencyKey); // Remove hold on this request
 					const message = error instanceof Error ? error.message : "Unknown rankups insertion error";
 					return new Response(`Failed to insert rankup into database: ${message}`, { status: 503 });
 				}
@@ -77,13 +87,6 @@ export default {
 							r2Key,
 							rankupId,
 							idx,
-						),
-					);
-					// Also save rankup_id to idempotency keys
-					statements.push(
-						env.RANKUP_DB.prepare("update idempotency_keys set rankup_id = ? where idempotency_key = ?").bind(
-							rankupId,
-							idempotencyKey,
 						),
 					);
 					await env.RANKUP_DB.batch(statements);
@@ -107,6 +110,7 @@ export default {
 
 // Shape of the received rankup data
 interface RankUpShape {
+	idempotencyKey: string;
 	title: string;
 	desc: string | null;
 	listPreset: number;
@@ -146,7 +150,7 @@ function getFormFiles(formData: FormData, fieldName: string): File[] {
 /**
  * Revokes any images that were just inserted into R2, as the process was aborted part way through
  *
- * @param env Environment contect
+ * @param env Environment context
  * @param r2Keys r2 keys for the images we were inserting
  */
 async function revokeR2Images(env: Env, r2Keys: string[]) {
@@ -156,14 +160,21 @@ async function revokeR2Images(env: Env, r2Keys: string[]) {
  * Revokes the rankup row that was just inserted into D1, as the process was aborted before completion.
  * This also deletes rows from other tables associated with this row, which is crucial behavior.
  *
- * @param env Environment contect
+ * @param env Environment context
  * @param rankupId the rankups table ID of the row to remove
  */
 async function revokeD1Rankup(env: Env, rankupId: string) {
-	let rowStatement = env.RANKUP_DB.prepare("DELETE FROM rankups WHERE rankup_id = ?").bind(rankupId);
-	await rowStatement.run();
+	await env.RANKUP_DB.prepare("DELETE FROM rankups WHERE rankup_id = ?").bind(rankupId).run();
 }
 
+/**
+ *
+ * @param env Environment context
+ * @param idempotencyKey the unique key for this request
+ */
+async function revokeIdempotency(env: Env, idempotencyKey: string) {
+	await env.RANKUP_DB.prepare("DELETE FROM idempotency_keys WHERE idempotency_key = ?").bind(idempotencyKey).run();
+}
 // GET to return from ALL rankups in table
 
 // NOTE: Rankups should eventually contain basics for a "finished state", i.e. information about the final rows, how many, titles, colors, and if images were placed in them
