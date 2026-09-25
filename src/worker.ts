@@ -30,14 +30,16 @@ export default {
 				} catch (error) {
 					const message = error instanceof Error ? error.message : "";
 					if (message.includes("UNIQUE constraint failed")) {
-						const existing = await env.RANKUP_DB.prepare("select rankup_id from idempotency_keys where idempotency_key = ?")
+						const existingRankup = await env.RANKUP_DB.prepare(
+							"select rankup_id from idempotency_keys where idempotency_key = ?",
+						)
 							.bind(rankupShape.idempotencyKey)
 							.first<{ rankup_id: string | null }>();
 
-						if (existing?.rankup_id) {
-							return Response.json({ rankupId: existing.rankup_id }, { status: 201 }); // already done — hand back the same result
+						if (existingRankup && existingRankup.rankup_id) {
+							return Response.json({ rankupId: existingRankup.rankup_id }, { status: 201 }); // hand back existing rankup
 						}
-						return new Response("Duplicate submission already in progress", { status: 409 }); // genuinely racing
+						return new Response("Duplicate submission already in progress", { status: 409 }); // captured race doncition
 					}
 					return new Response(`Failed to process request: ${message || "Unknown error"}`, { status: 503 });
 				}
@@ -48,7 +50,7 @@ export default {
 					rankupShape.rankupImages.map((img) => {
 						const newKey = crypto.randomUUID();
 						r2Keys.push(newKey);
-						return env.RANKUP_BUCKET.put(newKey, img); // remember the earlier fix — needs a return
+						return env.RANKUP_BUCKET.put(newKey, img);
 					}),
 				);
 
@@ -81,6 +83,7 @@ export default {
 					return new Response(`Failed to insert rankup into database: ${message}`, { status: 503 });
 				}
 
+				// REVISIT: Can this last part just be batched with the above? Should it?
 				/* --------- Finally connect images to rankup in rankup_images table -------- */
 				try {
 					const statements = r2Keys.map((r2Key, idx) =>
@@ -100,7 +103,6 @@ export default {
 					});
 				}
 
-				// REVISIT: Is this the success return we want?
 				return Response.json({ rankupId: rankupId }, { status: 201 });
 			}
 			return new Response("Not Found", { status: 404 }); // requested path not found
