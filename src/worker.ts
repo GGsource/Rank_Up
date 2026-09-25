@@ -3,66 +3,101 @@ export default {
 		const url = new URL(request.url);
 		if (url.pathname.startsWith("/api/")) {
 			if (url.pathname === "/api/rankups" && request.method === "POST") {
-				// POST to make a new rankup entry in table
-				/**
-				 * Functions here are called when the user makes a rankup request without the need of a specific ID
-				 */
-				// TODO: Move me to a separate function below?
+				/* -------------------------------------------------------------------------- */
+				/*                POST to store a new rankup entry in database                */
+				/* -------------------------------------------------------------------------- */
 				const rankupData = await request.formData();
-				const rankupImages = rankupData.getAll("rankupImages"); // TODO: Make sure this is File objects
-
-				// First insert images into the R2 bucket
-				let r2Keys: string[] = [];
+				/* ------ Protect against duplicate requests via idempotency key check ------ */
+				const idempotencyKey = getFormString(rankupData, "idempotencyKey");
 				try {
-					await Promise.allSettled(
-						rankupImages.map((rankupImage) => {
-							const newKey = crypto.randomUUID();
-							r2Keys.push(newKey);
-							env.RANKUP_BUCKET.put(newKey, rankupImage);
-						}),
-					);
-				} catch (err) {
-					// Failed to insert all images, remove any that might be orphaned
-					await Promise.allSettled(r2Keys.map((key) => env.RANKUP_BUCKET.delete(key)));
-					return new Response("Failed to upload images to R2 Bucket", { status: 503 });
+					await env.RANKUP_DB.prepare("insert into idempotency_keys (idempotency_key) values (?)").bind(idempotencyKey).run();
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "";
+					if (message.includes("UNIQUE constraint failed")) {
+						const existing = await env.RANKUP_DB.prepare("select rankup_id from idempotency_keys where idempotency_key = ?")
+							.bind(idempotencyKey)
+							.first<{ rankup_id: string | null }>();
+
+						if (existing?.rankup_id) {
+							return Response.json({ rankupId: existing.rankup_id }, { status: 201 }); // already done — hand back the same result
+						}
+						return new Response("Duplicate submission already in progress", { status: 409 }); // genuinely racing
+					}
+					return new Response(`Failed to process request: ${message || "Unknown error"}`, { status: 503 });
 				}
-
-				// Now insert rankup into rankups table
+				/* ---------------- Validate the data's shape is as required ---------------- */
+				let rankupShape: RankUpShape;
 				try {
-					// Validate the data's shape is as required
-					let rankUpShape: RankUpShape = {
+					rankupShape = {
 						title: getFormString(rankupData, "title"),
 						desc: getOptionalFormString(rankupData, "desc"),
 						listPreset: getFormNumber(rankupData, "listPreset"),
+						rankupImages: getFormFiles(rankupData, "rankupImage"),
 					};
-
-					// Shape is correct, so let's insert
-					// TODO: Look into making request a transaction so the same request cannot be run twice
-					let statement = env.RANKUP_DB.prepare(
-						"insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)",
-					);
-					const rankupId = crypto.randomUUID();
-					statement.bind(rankupId, rankUpShape.title, rankUpShape.desc, rankUpShape.listPreset); // give the statement my variables
-					// TODO: Ensure null can ACTUALLY be received for description AND gets saved to the db
-					// NOTE: If this was successful, can now use rankupId for next part
-					// TODO: Retrieve this ID for use in the next step
-					// TODO: Catch if the statement failed to run. result should have an "ok" equivalent
 				} catch (error) {
-					const message = error instanceof Error ? error.message : "Unknown validation error";
-					return new Response(`Failed to insert rankup into database: ${message}`, { status: 400 });
+					const message = error instanceof Error ? error.message : "Unknown rankup data shape validation error";
+					return new Response(`Shape of rankup data received is invalid: ${message}`, { status: 422 });
 				}
 
-				if (request.body) {
-					// If image insertion was successful, we can now create a new entry in the rankup table
-					// env.DB.prepare()
-					// env.DB.exec()
-					// If our rankup was sucessfully created, now save the image information to the rankup_images table
-					// env.DB.prepare()
-					// env.DB.exec()
-					const newRankUpId = ""; // TODO: Actually get it back from db
-					return Response.json({ rankupId: newRankUpId }, { status: 201 });
+				/* ----------------- First insert images into the R2 bucket ----------------- */
+				let r2Keys: string[] = [];
+				const insertR2Results = await Promise.allSettled(
+					rankupShape.rankupImages.map((img) => {
+						const newKey = crypto.randomUUID();
+						r2Keys.push(newKey);
+						return env.RANKUP_BUCKET.put(newKey, img); // remember the earlier fix — needs a return
+					}),
+				);
+
+				let failures = insertR2Results.filter((r) => r.status === "rejected");
+				if (failures.length > 0) {
+					await revokeR2Images(env, r2Keys); // Remove all to prevent orphans
+					const failureMessage = failures[0].reason instanceof Error ? failures[0].reason.message : "Unknown R2 insertion error";
+					return new Response(`Failed to upload ${failures.length} image(s) into R2 bucket: ${failureMessage}`, { status: 503 });
 				}
-				return new Response("Failed to insert: Error here", { status: -999 }); // TODO: Check what the appropriate thing to send here is
+
+				/* ------------------ Next insert rankup into rankups table ----------------- */
+				const rankupId = crypto.randomUUID();
+
+				try {
+					await env.RANKUP_DB.prepare("insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)")
+						.bind(rankupId, rankupShape.title, rankupShape.desc, rankupShape.listPreset)
+						.run();
+					// TESTME: Ensure null can ACTUALLY be received for description AND gets saved to the db
+				} catch (error) {
+					await revokeR2Images(env, r2Keys);
+					const message = error instanceof Error ? error.message : "Unknown rankups insertion error";
+					return new Response(`Failed to insert rankup into database: ${message}`, { status: 503 });
+				}
+
+				/* --------- Finally connect images to rankup in rankup_images table -------- */
+				try {
+					const statements = r2Keys.map((r2Key, idx) =>
+						env.RANKUP_DB.prepare("insert into rankup_images (storage_key, rankup_id, position_index) values (?, ?, ?)").bind(
+							r2Key,
+							rankupId,
+							idx,
+						),
+					);
+					// Also save rankup_id to idempotency keys
+					statements.push(
+						env.RANKUP_DB.prepare("update idempotency_keys set rankup_id = ? where idempotency_key = ?").bind(
+							rankupId,
+							idempotencyKey,
+						),
+					);
+					await env.RANKUP_DB.batch(statements);
+				} catch (error) {
+					await revokeR2Images(env, r2Keys);
+					await revokeD1Rankup(env, rankupId);
+					const message = error instanceof Error ? error.message : "Unknown rankup_images insertion error";
+					return new Response(`Failed to insert image rows into D1 rankup_images table: ${message}`, {
+						status: 503,
+					});
+				}
+
+				// REVISIT: Is this the success return we want?
+				return Response.json({ rankupId: rankupId }, { status: 201 });
 			}
 			return new Response("Not Found", { status: 404 }); // requested path not found
 		}
@@ -75,6 +110,7 @@ interface RankUpShape {
 	title: string;
 	desc: string | null;
 	listPreset: number;
+	rankupImages: File[];
 }
 
 function getFormString(formData: FormData, fieldName: string): string {
@@ -87,7 +123,7 @@ function getFormString(formData: FormData, fieldName: string): string {
 function getOptionalFormString(formData: FormData, fieldName: string): string | null {
 	const field = formData.get(fieldName);
 	if (field instanceof File) {
-		throw new Error(`${fieldName} is should be either a string or null`);
+		throw new Error(`${fieldName} should be either a string or null`);
 	}
 	return field;
 }
@@ -98,6 +134,33 @@ function getFormNumber(formData: FormData, fieldName: string): number {
 		throw new Error(`${fieldName} is required and must be a number`);
 	}
 	return fieldNum;
+}
+function getFormFiles(formData: FormData, fieldName: string): File[] {
+	const files = formData.getAll(fieldName);
+	if (!files.every((f): f is File => f instanceof File)) {
+		throw new Error(`${fieldName} are required and must be a File object array`);
+	}
+	return files;
+}
+
+/**
+ * Revokes any images that were just inserted into R2, as the process was aborted part way through
+ *
+ * @param env Environment contect
+ * @param r2Keys r2 keys for the images we were inserting
+ */
+async function revokeR2Images(env: Env, r2Keys: string[]) {
+	await Promise.allSettled(r2Keys.map((key) => env.RANKUP_BUCKET.delete(key)));
+}
+/**
+ * Revokes the rankup row that was just inserted into D1, as the process was aborted before completion
+ *
+ * @param env Environment contect
+ * @param rankupId the rankups table ID of the row to remove
+ */
+async function revokeD1Rankup(env: Env, rankupId: string) {
+	let rowStatement = env.RANKUP_DB.prepare("DELETE FROM rankups WHERE rankup_id = ?").bind(rankupId);
+	await rowStatement.run();
 }
 
 // GET to return from ALL rankups in table
