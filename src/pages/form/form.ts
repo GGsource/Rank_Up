@@ -5,7 +5,7 @@ import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
 import { GradePreset } from "@/utils/ListPresets";
-import { createRankUp } from "@/data/rankups";
+import { createRankUp } from "@/data/rankupsApi";
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
 	static rawHTML = formHTMLRaw;
@@ -21,6 +21,7 @@ class FormPage extends Page {
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
 	private listPreset = GradePreset;
+	private sessionKey = crypto.randomUUID();
 
 	/**
 	 * Default constructor attaches event listeners
@@ -80,13 +81,8 @@ class FormPage extends Page {
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
 				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
-				let rankupData = new FormData(); // Populate formdata with info we want to save
-				rankupData.append("title", this.titleInput.value);
-				rankupData.append("desc", this.descInput.value);
-				this.formImages.forEach((image) => rankupData.append("rankupImage", image));
-				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
 				// NOTE: If placeholder is enabled, no images will be sent!
-				const rankupId = await createRankUp(rankupData);
+				const rankupId = await createRankUp(this.getRankupData());
 				if (rankupId !== null) {
 					// renderPage("rankup");
 					// TODO: Create a renderRankUpPage(rankupId) function
@@ -161,6 +157,21 @@ class FormPage extends Page {
 		this.uploadIndicators.hidden = newState;
 		this.uploadsContainer.hidden = !newState;
 		this.clearUploadsButton.disabled = !newState;
+	}
+
+	/**
+	 * Retreives and packages all Rankup data for rankup creation
+	 *
+	 * @returns FormData object containing all rankup information
+	 */
+	private getRankupData(): FormData {
+		const rankupData = new FormData();
+		rankupData.append("title", this.titleInput.value);
+		rankupData.append("desc", this.descInput.value);
+		this.formImages.forEach((image) => rankupData.append("rankupImage", image));
+		rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
+		rankupData.append("idempotencyKey", this.sessionKey);
+		return rankupData;
 	}
 }
 
