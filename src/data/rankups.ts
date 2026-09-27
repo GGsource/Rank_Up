@@ -18,9 +18,9 @@ import { ToastBox } from "@/components/Toast";
  * @returns id of the rankup if creation was successful, otherwise null
  */
 export async function createRankUp(rankupData: FormData): Promise<string | null> {
-	const newRankUpId = await fetch("/api/rankups", { method: "POST", body: rankupData });
-	if (!newRankUpId.ok) {
-		ToastBox.showToast("Error: Failed to create new rankup!", "Failure");
+	const response = await fetch("/api/rankups", { method: "POST", body: rankupData });
+	if (!response.ok) {
+		ToastBox.showToast(`Failed to create new rankup: ${await response.text()}`, "Failure");
 		return null;
 	}
 

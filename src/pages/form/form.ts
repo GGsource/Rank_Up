@@ -85,6 +85,7 @@ class FormPage extends Page {
 				rankupData.append("desc", this.descInput.value);
 				this.formImages.forEach((image) => rankupData.append("rankupImage", image));
 				rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
+				// NOTE: If placeholder is enabled, no images will be sent!
 				const rankupId = await createRankUp(rankupData);
 				if (rankupId !== null) {
 					// renderPage("rankup");
