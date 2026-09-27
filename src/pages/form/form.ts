@@ -81,7 +81,7 @@ class FormPage extends Page {
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
 				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
-				// NOTE: If placeholder is enabled, no images will be sent!
+				// FIXME: If placeholder is enabled, it still attempts to create one and fails. Make a branching path that doesn't touch DB or just retrieves a specific one
 				const rankupId = await createRankup(this.getRankupData());
 				if (rankupId !== null) {
 					// TODO: Now navigate the user to rankups/their-new-id which should then call retrieveRankup
