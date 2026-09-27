@@ -177,3 +177,6 @@ class FormPage extends Page {
 
 // Register this page to the page renderer
 registerPage("form", FormPage);
+
+// FIXME: CTRL + SHIFT + P is the default print option in most browsers... change placeholder shortcut to something not taken.
+// FEAT: Upgrade Toasts to have a title field and a body field. And maybe an icon too :D and linger longer. And clear them on submit, add a clearall function.

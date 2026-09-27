@@ -6,6 +6,7 @@ export default {
 				/* -------------------------------------------------------------------------- */
 				/*                POST to store a new rankup entry in database                */
 				/* -------------------------------------------------------------------------- */
+				// TODO: Split me out into on function in handlers/receiveRankUp.ts
 				/* ---------------- Validate the data's shape is as required ---------------- */
 				const rankupData = await request.formData();
 				let rankupShape: RankUpShape;
