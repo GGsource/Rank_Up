@@ -167,7 +167,7 @@ class FormPage extends Page {
 	private getRankupData(): FormData {
 		const rankupData = new FormData();
 		rankupData.append("title", this.titleInput.value);
-		rankupData.append("desc", this.descInput.value);
+		if (this.descInput.value !== "") rankupData.append("desc", this.descInput.value);
 		this.formImages.forEach((image) => rankupData.append("rankupImage", image));
 		rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
 		rankupData.append("idempotencyKey", this.sessionKey);
@@ -180,3 +180,4 @@ registerPage("form", FormPage);
 
 // FIXME: CTRL + SHIFT + P is the default print option in most browsers... change placeholder shortcut to something not taken.
 // FEAT: Upgrade Toasts to have a title field and a body field. And maybe an icon too :D and linger longer. And clear them on submit, add a clearall function.
+// FEAT: Tiny images are enlarged by default, making them blurry. Keep nearest neighbor filtering instead
