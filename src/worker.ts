@@ -70,7 +70,6 @@ export default {
 					const insertRankUpStmnt = env.RANKUP_DB.prepare(
 						"insert into rankups (rankup_id, title, description, style_preset) values (?, ?, ?, ?)",
 					).bind(rankupId, rankupShape.title, rankupShape.desc, rankupShape.listPreset);
-					// TESTME: Ensure null can ACTUALLY be received for description AND gets saved to the db
 
 					// Also save rankup_id to idempotency keys
 					const updateIdempotencyStmnt = env.RANKUP_DB.prepare(

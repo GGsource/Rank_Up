@@ -23,8 +23,18 @@ export async function createRankUp(rankupData: FormData): Promise<string | null>
 		ToastBox.showToast(`Failed to create new rankup: ${await response.text()}`, "Failure");
 		return null;
 	}
+	const rankupInfo = await response.json();
+	return rankupInfo.rankupId;
+}
 
-	// TODO: Implement me
-	throw new Error("Implement proper return");
-	return "";
+/**
+ * Retrieves all info related to given rankup id
+ *
+ * @param rankupId id of the Rankup to retrieve
+ * @returns all rankup info
+ */
+export async function retrieveRankup(rankupId: string): Promise<String | null> {
+	ToastBox.showToast(`Loading Rankup '${rankupId}'...`, "Info");
+	return null;
+	// TODO: Implement me: Call GET to api
 }

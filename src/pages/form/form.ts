@@ -1,11 +1,11 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
-import { registerPage, renderPage } from "@/components/renderPage";
+import { registerPage } from "@/components/renderPage";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
 import { GradePreset } from "@/utils/ListPresets";
-import { createRankUp } from "@/data/rankupsApi";
+import { createRankUp as createRankup, retrieveRankup } from "@/data/rankupsApi";
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
 	static rawHTML = formHTMLRaw;
@@ -82,10 +82,12 @@ class FormPage extends Page {
 			} else {
 				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
 				// NOTE: If placeholder is enabled, no images will be sent!
-				const rankupId = await createRankUp(this.getRankupData());
+				const rankupId = await createRankup(this.getRankupData());
 				if (rankupId !== null) {
-					// renderPage("rankup");
-					// TODO: Create a renderRankUpPage(rankupId) function
+					// TODO: Now navigate the user to rankups/their-new-id which should then call retrieveRankup
+					// retrieveRankup(rankupId);
+				} else {
+					// TODO: Something went wrong! Do we need to do anything? Is it fine to just leave the user on this screen to attempt resubmission?
 				}
 			}
 		});
