@@ -2,7 +2,7 @@
  * Available presets for the default starting Row List
  */
 
-export interface ListPresets {
+export interface PresetTemplate {
 	presetIndex: number;
 	rows: {
 		rowName: string;
@@ -12,7 +12,7 @@ export interface ListPresets {
 
 export const fullColorPalette = ["red", "orange", "yellow", "green", "blue", "purple", "white", "black", "pink"];
 
-export const GradePreset: ListPresets = {
+export const GradePreset: PresetTemplate = {
 	presetIndex: 0,
 	rows: [
 		{ rowName: "S", rowColor: "red" },
@@ -23,3 +23,5 @@ export const GradePreset: ListPresets = {
 		{ rowName: "F", rowColor: "purple" },
 	],
 };
+
+export const ListPresets = [GradePreset];

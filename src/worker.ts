@@ -104,6 +104,10 @@ export default {
 				}
 
 				return Response.json({ rankupId: rankupId }, { status: 201 });
+			} else if (url.pathname.startsWith("/api/rankups/") && request.method === "GET") {
+				const rankupId = url.pathname.split("/")[3];
+				console.log(`Worker received a request to retrieve info on rankup "${rankupId}"`);
+				// TODO: NOW ACTUALLY RETURN THE RANKUP INFO :D
 			}
 			return new Response("Not Found", { status: 404 }); // requested path not found
 		}

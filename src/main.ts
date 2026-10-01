@@ -1,4 +1,4 @@
-import { renderPath } from "@/components/renderPage";
+import { parseUrl } from "@/components/renderPage";
 import { getEl } from "@/utils/utils";
 import { MODE } from "@/utils/const";
 import "@/styles/global.css";
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	else modeBanner.innerText = `${MODE} Mode`;
 
 	/* --------------------------- Render the requested page -------------------------- */
-	renderPath();
+	parseUrl();
 });
 
-window.addEventListener("popstate", () => renderPath(false));
+window.addEventListener("popstate", () => parseUrl(false));

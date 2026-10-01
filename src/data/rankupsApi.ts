@@ -3,6 +3,7 @@
  */
 
 import { ToastBox } from "@/components/Toast";
+import { RankupData } from "@/shared/RankupData";
 
 // TODO: getRankUp(rankupId)
 // TODO: updateRankUp(rankupId)
@@ -33,8 +34,14 @@ export async function createRankUp(rankupData: FormData): Promise<string | null>
  * @param rankupId id of the Rankup to retrieve
  * @returns all rankup info
  */
-export async function retrieveRankup(rankupId: string): Promise<String | null> {
+export async function retrieveRankup(rankupId: string): Promise<RankupData | null> {
 	ToastBox.showToast(`Loading Rankup '${rankupId}'...`, "Info");
-	return null;
 	// TODO: Implement me: Call GET to api
+	const response = await fetch(`/api/rankups/${rankupId}`);
+	if (!response.ok) {
+		ToastBox.showToast(`Failed to retrieve rankup ${rankupId}: ${await response.text()}`, "Failure");
+		return null;
+	}
+	const rankupReturn = await response.json();
+	return { title: rankupReturn.title, desc: rankupReturn.desc, listPreset: rankupReturn.listPreset, rankupUrls: rankupReturn.rankupUrls };
 }
