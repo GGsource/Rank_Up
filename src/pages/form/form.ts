@@ -1,6 +1,6 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
-import { registerPage, renderPage } from "@/components/renderPage";
+import { registerPage, renderRankup } from "@/components/renderPage";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
@@ -84,7 +84,7 @@ class FormPage extends Page {
 				// FIXME: If placeholder is enabled, it still attempts to create one and fails. Make a branching path that doesn't touch DB or just retrieves a specific one
 				const rankupId = await createRankup(this.getRankupData());
 				if (rankupId !== null) {
-					renderPage("rankup", { rankupId: rankupId });
+					renderRankup(rankupId);
 				} else {
 					// TODO: Something went wrong! Do we need to do anything? Is it fine to just leave the user on this screen to attempt resubmission?
 				}

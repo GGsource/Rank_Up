@@ -14,12 +14,22 @@ export function registerPage(pageName: string, pageClass: PageClass) {
 	pageRegistry.set(pageName, pageClass);
 }
 
+// DOCS:
+export function renderRankup(rankupId: string) {
+	renderPage("rankup", `/rankups/${rankupId}`, { rankupId: rankupId });
+}
+
 /**
  * Attaches the given page to the container to display it
  *
  * @param pageName name of the page to show
  */
-export async function renderPage(page: PageNames, args: Record<string, string> = {}, pushState = true) {
+export async function renderPage(
+	page: PageNames,
+	path: string | undefined = pageRoutes.find((route) => route.page === page)?.path,
+	args: Record<string, string> = {},
+	pushState = true,
+) {
 	// Get the container
 	const pageContainer = getEl("page-container");
 
@@ -42,7 +52,8 @@ export async function renderPage(page: PageNames, args: Record<string, string> =
 	pageClass.mountTo(pageContainer, args);
 
 	if (pushState) {
-		history.pushState(null, "", args["path"]);
+		if (path == undefined) throw new Error("Received undefined path :(");
+		history.pushState(null, "", path);
 	}
 }
 
@@ -57,7 +68,8 @@ export function parseUrl(pushState = true) {
 	const pathParts = userPath.split("/");
 	// Set defaults in case we don't find it.
 	let page: PageNames = "404";
-	let pageArgs: Record<string, string> = { path: "/404" };
+	let pageArgs: Record<string, string> = {};
+	let path = "/404";
 	// Find which page the user is actually trying to navigate to
 	for (const route of pageRoutes) {
 		const routeParts = route.path.split("/");
@@ -69,7 +81,7 @@ export function parseUrl(pushState = true) {
 		}
 		// We found a match
 		page = route.page;
-		pageArgs["path"] = `/${pathParts.slice(1).join("/")}`;
+		path = `/${pathParts.slice(1).join("/")}`;
 
 		// Check for any arguments on path
 		routeParts.forEach((part, ndx) => {
@@ -81,7 +93,7 @@ export function parseUrl(pushState = true) {
 		break;
 	}
 
-	renderPage(page, pageArgs, pushState);
+	renderPage(page, path, pageArgs, pushState);
 }
 
 // TODO: Before submitting this PR, ensure these migrations are applied to the REMOTE database, not just local. Attempt form creation in branch URL
