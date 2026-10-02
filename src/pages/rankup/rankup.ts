@@ -5,7 +5,7 @@ import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage } from "@/components/renderPage";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
-import { EMPTY_IMG } from "@/utils/const";
+import { EMPTY_IMG, imagesEndpoint } from "@/utils/const";
 import { fullColorPalette, ListPresets } from "@/utils/ListPresets";
 import { retrieveRankup } from "@/data/rankupsApi";
 
@@ -79,7 +79,7 @@ class RankUpPage extends Page implements RowList {
 		const chosenPreset = ListPresets[rankupData.listPreset];
 		for (const row of chosenPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
 		/* ------------------------------ Insert images ----------------------------- */
-		rankupData.rankupUrls.forEach((url) => this.addImageToContainer(url));
+		rankupData.imageKeys.forEach((key) => this.addImageToContainer(`${imagesEndpoint}/${key}`));
 	}
 
 	/**

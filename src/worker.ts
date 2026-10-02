@@ -1,3 +1,5 @@
+import { RankupData } from "./shared/RankupData";
+
 export default {
 	async fetch(request: Request, env: Env) {
 		const url = new URL(request.url);
@@ -51,9 +53,22 @@ export default {
 					rankupShape.rankupImages.map((img) => {
 						const newKey = crypto.randomUUID();
 						r2Keys.push(newKey);
-						return env.RANKUP_BUCKET.put(newKey, img);
+						console.log("UPLOADING:", {
+							type: img.type,
+							size: img.size,
+						});
+						return env.RANKUP_BUCKET.put(newKey, img, { httpMetadata: { contentType: img.type } });
 					}),
 				);
+				for (const result of insertR2Results) {
+					if (result.status === "fulfilled") {
+						console.log("R2 STORED:", {
+							key: result.value?.key,
+							size: result.value?.size,
+							contentType: result.value?.httpMetadata?.contentType,
+						});
+					}
+				}
 
 				const failures = insertR2Results.filter((r) => r.status === "rejected");
 				if (failures.length > 0) {
@@ -102,12 +117,44 @@ export default {
 						status: 503,
 					});
 				}
-
-				return Response.json({ rankupId: rankupId }, { status: 201 });
+				return Response.json({ rankupId: rankupId }, { status: 201 }); // SUCCESS saving rankup to DB :D
 			} else if (url.pathname.startsWith("/api/rankups/") && request.method === "GET") {
 				const rankupId = url.pathname.split("/")[3];
 				console.log(`Worker received a request to retrieve info on rankup "${rankupId}"`);
-				// TODO: NOW ACTUALLY RETURN THE RANKUP INFO :D
+
+				let results: [D1Result<RankupRow>, D1Result<RankupImagesRow>] | null;
+				try {
+					const retrieveRankupStmnt = env.RANKUP_DB.prepare("SELECT * from rankups where rankup_id = ?").bind(rankupId);
+					const retrieveImageKeysStmnt = env.RANKUP_DB.prepare("SELECT * from rankup_images where rankup_id = ?").bind(rankupId);
+					results = (await env.RANKUP_DB.batch([retrieveRankupStmnt, retrieveImageKeysStmnt])) as [
+						D1Result<RankupRow>,
+						D1Result<RankupImagesRow>,
+					];
+				} catch (error) {
+					const message = error instanceof Error ? error.message : "Unknown rankup retrieval error";
+					return new Response(`Failed to retrieve information for rankup ${rankupId}: ${message}`, {
+						status: 404, // TODO: Be more specific on what went wrong. Was rankup_id not in the db? did something else go wrong when trying to select?
+					});
+				}
+				const rankupData: RankupData = {
+					title: results[0].results[0].title,
+					desc: results[0].results[0].description,
+					listPreset: results[0].results[0].style_preset,
+					imageKeys: results[1].results.map((image) => image.storage_key),
+					// REVISIT: Do we need to actually store position at all? Finished rankups will likely go into their own DB pointing to the original instance anyways
+				};
+
+				return Response.json(rankupData); // Success returning rankup info :D
+			} else if (url.pathname.startsWith("/api/images/") && request.method === "GET") {
+				const imageKey = url.pathname.replace("/api/images/", "");
+				const image = await env.RANKUP_BUCKET.get(imageKey);
+				if (!image) return new Response(`Failed to retrieve local rankup image ${imageKey}`, { status: 404 });
+
+				// Create header for the image
+				const headers = new Headers();
+				image.writeHttpMetadata(headers);
+
+				return new Response(image.body, { headers }); // Successfully returning image :D
 			}
 			return new Response("Not Found", { status: 404 }); // requested path not found
 		}
@@ -122,6 +169,17 @@ interface RankUpShape {
 	desc: string | null;
 	listPreset: number;
 	rankupImages: File[];
+}
+
+interface RankupRow {
+	title: string;
+	description: string;
+	style_preset: number;
+}
+interface RankupImagesRow {
+	storage_key: string;
+	rankup_id: string;
+	position_index: number;
 }
 
 function getFormString(formData: FormData, fieldName: string): string {

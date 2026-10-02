@@ -35,13 +35,11 @@ export async function createRankUp(rankupData: FormData): Promise<string | null>
  * @returns all rankup info
  */
 export async function retrieveRankup(rankupId: string): Promise<RankupData | null> {
-	ToastBox.showToast(`Loading Rankup '${rankupId}'...`, "Info");
-	// TODO: Implement me: Call GET to api
 	const response = await fetch(`/api/rankups/${rankupId}`);
 	if (!response.ok) {
 		ToastBox.showToast(`Failed to retrieve rankup ${rankupId}: ${await response.text()}`, "Failure");
 		return null;
 	}
-	const rankupReturn = await response.json();
-	return { title: rankupReturn.title, desc: rankupReturn.desc, listPreset: rankupReturn.listPreset, rankupUrls: rankupReturn.rankupUrls };
+	const rankupReturn = (await response.json()) as RankupData;
+	return rankupReturn;
 }
