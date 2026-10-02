@@ -2,7 +2,7 @@ import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
-import { registerPage } from "@/components/renderPage";
+import { registerPage, renderPage } from "@/components/renderPage";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
 import { EMPTY_IMG, imagesEndpoint } from "@/utils/const";
@@ -70,7 +70,11 @@ class RankUpPage extends Page implements RowList {
 	// DOCS:
 	private async loadRankup(rankupId: string) {
 		const rankupData = await retrieveRankup(rankupId);
-		if (!rankupData) throw new Error(`Tried loading rankup ID ${rankupId} but received null.`);
+		if (!rankupData) {
+			renderPage("404", `/404/${rankupId}`);
+			// TODO: Make a cusotm 404 for rankup not found vs random directory not found?
+			return;
+		}
 		/* ------------------------------ Set text data ----------------------------- */
 		this.headerTitle.value = rankupData.title;
 		this.setTitle(this.headerTitle.value);

@@ -38,6 +38,7 @@ export async function retrieveRankup(rankupId: string): Promise<RankupData | nul
 	const response = await fetch(`/api/rankups/${rankupId}`);
 	if (!response.ok) {
 		ToastBox.showToast(`Failed to retrieve rankup ${rankupId}: ${await response.text()}`, "Failure");
+		// FIXME: this error text is a huge HTML, should not be in an error popup
 		return null;
 	}
 	const rankupReturn = (await response.json()) as RankupData;

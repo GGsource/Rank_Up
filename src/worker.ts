@@ -136,6 +136,9 @@ export default {
 						status: 404, // TODO: Be more specific on what went wrong. Was rankup_id not in the db? did something else go wrong when trying to select?
 					});
 				}
+				if (results[0].results.length === 0) {
+					return new Response(`Rankup not found.`, { status: 404 });
+				}
 				const rankupData: RankupData = {
 					title: results[0].results[0].title,
 					desc: results[0].results[0].description,
