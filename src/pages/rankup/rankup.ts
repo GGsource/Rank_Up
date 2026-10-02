@@ -65,6 +65,7 @@ class RankUpPage extends Page implements RowList {
 	private showLoading() {
 		// TODO: Display some loading stuff
 		this.headerTitle.value = "Loading...";
+		// FIXME: Page still loads for 1 or 2 seconds before going to 404 if page doesn't exist
 	}
 
 	// DOCS:
