@@ -1,0 +1,33 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Vite",
+			"type": "msedge",
+			"request": "launch",
+			"url": "http://localhost:5173",
+			"userDataDir": true
+		},
+		{
+			"name": "Attach to Worker",
+			"type": "node",
+			"request": "attach",
+			"websocketAddress": "ws://localhost:9229/rank-up",
+			"resolveSourceMapLocations": null,
+			"attachExistingChildren": false,
+			"autoAttachChildProcesses": false,
+			"sourceMaps": true
+		}
+	],
+	"compounds": [
+		{
+			"name": "Debug Vite + Worker",
+			"configurations": [
+				"Debug Vite",
+				"Attach to Worker"
+			],
+			"preLaunchTask": "Start Vite Dev Server",
+			"stopAll": true
+		}
+	]
+}

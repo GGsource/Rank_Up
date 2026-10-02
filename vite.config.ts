@@ -4,6 +4,7 @@
 
 import { defineConfig } from "vite";
 import { fileURLToPath } from "url";
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 export default defineConfig({
 	server: {
@@ -15,4 +16,5 @@ export default defineConfig({
 			"@": fileURLToPath(new URL("./src", import.meta.url)),
 		},
 	},
+	plugins: [cloudflare()],
 });

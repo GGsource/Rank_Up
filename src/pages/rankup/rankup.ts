@@ -2,12 +2,12 @@ import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import Sortable from "sortablejs";
 import { getEl } from "@/utils/utils";
 import rankupHTMLRaw from "./rankup.html?raw";
-import { registerPage } from "@/components/renderPage";
-import { getUserData } from "@/state/UserData";
+import { registerPage, renderPage } from "@/components/renderPage";
 import { Row, RowList } from "@/components/Row";
 import { Page } from "@/pages/Page";
-import { EMPTY_IMG } from "@/utils/const";
-import { fullColorPalette } from "@/utils/ListPresets";
+import { EMPTY_IMG, imagesEndpoint } from "@/utils/const";
+import { fullColorPalette, ListPresets } from "@/utils/ListPresets";
+import { retrieveRankup } from "@/data/rankupsApi";
 
 class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
@@ -23,18 +23,16 @@ class RankUpPage extends Page implements RowList {
 	private lastSelectedImage: HTMLImageElement | null = null;
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
-	private userData = getUserData();
 	private readonly colorPalette = this.initializeColorPalette();
-
+	private isPlaceholdersEnabled = false;
 	/**
 	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
 	 */
-	constructor() {
+	constructor(urlParams: Record<string, string>) {
 		super();
-		if (!this.userData) throw new Error("Failed to retrieve user data from form");
-		/* ------------------------------- Attach Rows ------------------------------ */
-		for (const row of this.userData.listPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
-		this.makeRowsDraggable();
+		this.isPlaceholdersEnabled = false; // TODO: Receive this from form view
+		const rankupId: string | undefined = urlParams["rankupId"];
+		this.makeRowsDraggable(); // VERIFY: Does this still work being called before loading the rows?
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => {
 			this.deselectAllImages();
@@ -46,15 +44,47 @@ class RankUpPage extends Page implements RowList {
 		// Text boxes behaviors
 		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
 		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
-		/* ------------------------------ Insert images ----------------------------- */
-		this.headerTitle.value = this.userData.title;
-		this.setTitle(this.headerTitle.value);
-		this.headerDescription.value = this.userData.desc;
-		if (this.userData.imageURLs.length > 0) this.userData.imageURLs.forEach((url) => this.addImageToContainer(url));
-		else {
-			const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
-			Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
+
+		/* --------------------------- Load in Rankup Data -------------------------- */
+
+		if (this.isPlaceholdersEnabled) this.insertPlaceholders();
+		else if (rankupId !== undefined) {
+			this.showLoading(); // Display something while waiting on actual load-in
+			this.loadRankup(rankupId);
+		} else throw new Error("Did not receive a rankup ID to load and placeholders were not enabled. Aborting.");
+	}
+
+	// DOCS:
+	private insertPlaceholders() {
+		// TODO: Either this path needs defaults for title, desc, list preset, etc, or mechanism should be reconsidered to allow those to pass through, or just have a dedicated my.site.com/rankups/placeholders that calls a specific rankup
+		const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
+		Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
+	}
+
+	// DOCS:
+	private showLoading() {
+		// TODO: Display some loading stuff
+		this.headerTitle.value = "Loading...";
+		// FIXME: Page still loads for 1 or 2 seconds before going to 404 if page doesn't exist
+	}
+
+	// DOCS:
+	private async loadRankup(rankupId: string) {
+		const rankupData = await retrieveRankup(rankupId);
+		if (!rankupData) {
+			renderPage("404", `/404/${rankupId}`);
+			// TODO: Make a cusotm 404 for rankup not found vs random directory not found?
+			return;
 		}
+		/* ------------------------------ Set text data ----------------------------- */
+		this.headerTitle.value = rankupData.title;
+		this.setTitle(this.headerTitle.value);
+		if (rankupData.desc) this.headerDescription.value = rankupData.desc;
+		/* ------------------------------- Attach rows ------------------------------ */
+		const chosenPreset = ListPresets[rankupData.listPreset];
+		for (const row of chosenPreset.rows) this.rowList.append(new Row(this, row.rowName, row.rowColor));
+		/* ------------------------------ Insert images ----------------------------- */
+		rankupData.imageKeys.forEach((key) => this.addImageToContainer(`${imagesEndpoint}/${key}`));
 	}
 
 	/**

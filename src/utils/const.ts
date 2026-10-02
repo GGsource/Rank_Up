@@ -4,16 +4,18 @@ export const EMPTY_IMG = Object.assign(new Image(), {
 	src: emptyImage,
 });
 
+// Whether we're running in dev mode, build preview mode, or on the actual main website
 export const MODE: string | null = window.location.hostname.startsWith("rankup.ggsource") ? null : import.meta.env.DEV ? "Dev" : "Build";
 
-export const canonicalNavPaths = {
-	home: "",
-	form: "/create",
-	"404": "404",
-	rankup: "rankups=instance",
-	// This last one currently cannot be navigated back and forth from
-	// as it is an instance. Future story will fix this by implementing
-	// unique URLs for each rankup.
-};
+// Whether we should be running with a local database or a remote one
+const isLocal = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+export const imagesEndpoint = isLocal ? `/api/images` : `https://img.ggsource.dev`;
 
-export type pageNames = keyof typeof canonicalNavPaths;
+export const pageRoutes = [
+	{ page: "home", path: "" },
+	{ page: "form", path: "/create" },
+	{ page: "rankup", path: "/rankups/:rankupId" },
+	{ page: "404", path: "/404" },
+] as const;
+
+export type PageNames = (typeof pageRoutes)[number]["page"];
