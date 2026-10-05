@@ -8,7 +8,6 @@ export default {
 				/* -------------------------------------------------------------------------- */
 				/*                POST to store a new rankup entry in database                */
 				/* -------------------------------------------------------------------------- */
-				// TODO: Split me out into on function in handlers/receiveRankUp.ts
 				/* ---------------- Validate the data's shape is as required ---------------- */
 				const rankupData = await request.formData();
 				let rankupShape: RankUpShape;
@@ -42,7 +41,7 @@ export default {
 						if (existingRankup && existingRankup.rankup_id) {
 							return Response.json({ rankupId: existingRankup.rankup_id }, { status: 201 }); // hand back existing rankup
 						}
-						return new Response("Duplicate submission already in progress", { status: 409 }); // captured race doncition
+						return new Response("Duplicate submission already in progress", { status: 409 }); // captured race condition
 					}
 					return new Response(`Failed to process request: ${message || "Unknown error"}`, { status: 503 });
 				}
@@ -98,7 +97,6 @@ export default {
 					return new Response(`Failed to insert rankup into database: ${message}`, { status: 503 });
 				}
 
-				// REVISIT: Can this last part just be batched with the above? Should it?
 				/* --------- Finally connect images to rankup in rankup_images table -------- */
 				try {
 					const statements = r2Keys.map((r2Key, idx) =>
@@ -132,9 +130,7 @@ export default {
 					];
 				} catch (error) {
 					const message = error instanceof Error ? error.message : "Unknown rankup retrieval error";
-					return new Response(`Failed to retrieve information for rankup ${rankupId}: ${message}`, {
-						status: 404, // TODO: Be more specific on what went wrong. Was rankup_id not in the db? did something else go wrong when trying to select?
-					});
+					return new Response(`Failed to retrieve information for rankup ${rankupId}: ${message}`, { status: 404 });
 				}
 				if (results[0].results.length === 0) {
 					return new Response(`Rankup not found.`, { status: 404 });
@@ -144,7 +140,6 @@ export default {
 					desc: results[0].results[0].description,
 					listPreset: results[0].results[0].style_preset,
 					imageKeys: results[1].results.map((image) => image.storage_key),
-					// REVISIT: Do we need to actually store position at all? Finished rankups will likely go into their own DB pointing to the original instance anyways
 				};
 
 				return Response.json(rankupData); // Success returning rankup info :D
@@ -165,7 +160,9 @@ export default {
 	},
 };
 
-// Shape of the received rankup data
+/**
+ * Expected shape of the RankupData being received
+ */
 interface RankUpShape {
 	idempotencyKey: string;
 	title: string;
@@ -174,17 +171,31 @@ interface RankUpShape {
 	rankupImages: File[];
 }
 
+/**
+ * Types for a row in the `rankups` table
+ */
 interface RankupRow {
 	title: string;
 	description: string;
 	style_preset: number;
 }
+/**
+ * Types for a row in the `rankup_images` table
+ */
 interface RankupImagesRow {
 	storage_key: string;
 	rankup_id: string;
 	position_index: number;
 }
 
+/**
+ * Retrieves a specified string from the form data
+ *
+ * @param formData Data received from HTTP request
+ * @param fieldName field we're retrieving
+ * @returns the field as a string
+ * @throws if the the field is not a string or is empty
+ */
 function getFormString(formData: FormData, fieldName: string): string {
 	const field = formData.get(fieldName);
 	if (typeof field !== "string" || field.trim() === "") {
@@ -192,6 +203,15 @@ function getFormString(formData: FormData, fieldName: string): string {
 	}
 	return field;
 }
+
+/**
+ * Retrieves a specified string from the form data ONLY if it exists, otherwise returns null
+ *
+ * @param formData Data received from HTTP request
+ * @param fieldName field we're retrieving
+ * @returns the field as a string if it exists
+ * @throws if the the field is anything other than string or null
+ */
 function getOptionalFormString(formData: FormData, fieldName: string): string | null {
 	const field = formData.get(fieldName);
 	if (field instanceof File) {
@@ -200,6 +220,14 @@ function getOptionalFormString(formData: FormData, fieldName: string): string | 
 	return field;
 }
 
+/**
+ * Retrieves a specified int from the form data
+ *
+ * @param formData Data received from HTTP request
+ * @param fieldName field we're retrieving
+ * @returns the field as an int
+ * @throws if the field is not an integer or is missing
+ */
 function getFormInt(formData: FormData, fieldName: string): number {
 	const field = formData.get(fieldName);
 	const fieldNum = Number(field);
@@ -208,6 +236,15 @@ function getFormInt(formData: FormData, fieldName: string): number {
 	}
 	return fieldNum;
 }
+
+/**
+ * Retrieves all files with a specified field name from the form data
+ *
+ * @param formData Data received from HTTP request
+ * @param fieldName field we're retrieving
+ * @returns a list of files
+ * @throws if a non-file is retrieved or no files are retrieved
+ */
 function getFormFiles(formData: FormData, fieldName: string): File[] {
 	const files = formData.getAll(fieldName);
 	if (files.length === 0 || !files.every((f): f is File => f instanceof File)) {
@@ -246,8 +283,6 @@ async function revokeIdempotency(env: Env, idempotencyKey: string) {
 }
 // GET to return from ALL rankups in table
 
-// NOTE: Rankups should eventually contain basics for a "finished state", i.e. information about the final rows, how many, titles, colors, and if images were placed in them
-
 /**
  * Functions here are called when the user makes a rankup request with a specific rankup ID
  */
@@ -263,8 +298,6 @@ async function revokeIdempotency(env: Env, idempotencyKey: string) {
  */
 
 // POST to insert a new image associated with an existing rankup
-
-// IDEA: Image entries in rankup_images should eventually contain a lot more metadata such as title, desc, xPos, yPos, width, height, credit
 
 /**
  * Functions here are called when the user makes a request pertaining to a specific image in a existing rankup

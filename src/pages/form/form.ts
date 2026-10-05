@@ -4,8 +4,8 @@ import { registerPage, renderRankup } from "@/components/renderPage";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
-import { GradePreset } from "@/utils/ListPresets";
-import { createRankUp as createRankup } from "@/data/rankupsApi";
+import { createRankup } from "@/data/rankupsApi";
+import { getPresetIndex } from "@/utils/ListPresets";
 class FormPage extends Page {
 	/* ------------------------------ Page elements ----------------------------- */
 	static rawHTML = formHTMLRaw;
@@ -20,7 +20,7 @@ class FormPage extends Page {
 	private formImages: File[] = []; // List of uploaded images
 	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
-	private listPreset = GradePreset;
+	private listPresetIndex: number;
 	private sessionKey = crypto.randomUUID();
 
 	/**
@@ -29,6 +29,7 @@ class FormPage extends Page {
 	constructor() {
 		super();
 		this.setTitle("Creation Form");
+		this.listPresetIndex = getPresetIndex.Grade; // Temporary hardcoding of list preset until its made an option
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
 		window.addEventListener("keydown", (event) => {
@@ -81,12 +82,9 @@ class FormPage extends Page {
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
 			} else {
 				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
-				// FIXME: If placeholder is enabled, it still attempts to create one and fails. Make a branching path that doesn't touch DB or just retrieves a specific one
 				const rankupId = await createRankup(this.getRankupData());
 				if (rankupId !== null) {
 					renderRankup(rankupId);
-				} else {
-					// TODO: Something went wrong! Do we need to do anything? Is it fine to just leave the user on this screen to attempt resubmission?
 				}
 			}
 		});
@@ -170,7 +168,7 @@ class FormPage extends Page {
 		rankupData.append("title", this.titleInput.value);
 		if (this.descInput.value !== "") rankupData.append("desc", this.descInput.value);
 		this.formImages.forEach((image) => rankupData.append("rankupImage", image));
-		rankupData.append("listPreset", `${this.listPreset.presetIndex}`);
+		rankupData.append("listPreset", `${this.listPresetIndex}`);
 		rankupData.append("idempotencyKey", this.sessionKey);
 		return rankupData;
 	}
@@ -178,7 +176,3 @@ class FormPage extends Page {
 
 // Register this page to the page renderer
 registerPage("form", FormPage);
-
-// FIXME: CTRL + SHIFT + P is the default print option in most browsers... change placeholder shortcut to something not taken.
-// FEAT: Upgrade Toasts to have a title field and a body field. And maybe an icon too :D and linger longer. And clear them on submit, add a clearall function.
-// FEAT: Tiny images are enlarged by default, making them blurry. Keep nearest neighbor filtering instead

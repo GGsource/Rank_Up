@@ -14,7 +14,11 @@ export function registerPage(pageName: string, pageClass: PageClass) {
 	pageRegistry.set(pageName, pageClass);
 }
 
-// DOCS:
+/**
+ * Takes a rankup id and renders it onto the screen with the correct URL in browser history
+ *
+ * @param rankupId the id of the rankup to render
+ */
 export function renderRankup(rankupId: string) {
 	renderPage("rankup", `/rankups/${rankupId}`, { rankupId: rankupId });
 }
@@ -24,12 +28,13 @@ export function renderRankup(rankupId: string) {
  *
  * @param pageName name of the page to show
  */
-export async function renderPage(
-	page: PageNames,
-	path: string | undefined = pageRoutes.find((route) => route.page === page)?.path,
-	args: Record<string, string> = {},
-	pushState = true,
-) {
+export async function renderPage(page: PageNames, path: string | null = null, args: Record<string, string> = {}, pushState = true) {
+	if (path === null) {
+		const canonicalPath = pageRoutes.find((route) => route.page === page);
+		if (canonicalPath === undefined) throw new Error("Path is undefined :(");
+		path = canonicalPath.path;
+	}
+
 	// Get the container
 	const pageContainer = getEl("page-container");
 
@@ -52,7 +57,6 @@ export async function renderPage(
 	pageClass.mountTo(pageContainer, args);
 
 	if (pushState) {
-		if (path == undefined) throw new Error("Received undefined path :(");
 		history.pushState(null, "", path);
 	}
 }
@@ -95,6 +99,3 @@ export function parseUrl(pushState = true) {
 
 	renderPage(page, path, pageArgs, pushState);
 }
-
-// TODO: Before submitting this PR, ensure these migrations are applied to the REMOTE database, not just local. Attempt form creation in branch URL
-// TODO: Check if upgrade dev/build mode story exists, if not, make one. Should expand mode from "Build" to be Preview, maybe with the branch name or something in there
