@@ -52,22 +52,9 @@ export default {
 					rankupShape.rankupImages.map((img) => {
 						const newKey = crypto.randomUUID();
 						r2Keys.push(newKey);
-						console.log("UPLOADING:", {
-							type: img.type,
-							size: img.size,
-						});
 						return env.RANKUP_BUCKET.put(newKey, img, { httpMetadata: { contentType: img.type } });
 					}),
 				);
-				for (const result of insertR2Results) {
-					if (result.status === "fulfilled") {
-						console.log("R2 STORED:", {
-							key: result.value?.key,
-							size: result.value?.size,
-							contentType: result.value?.httpMetadata?.contentType,
-						});
-					}
-				}
 
 				const failures = insertR2Results.filter((r) => r.status === "rejected");
 				if (failures.length > 0) {
@@ -118,8 +105,6 @@ export default {
 				return Response.json({ rankupId: rankupId }, { status: 201 }); // SUCCESS saving rankup to DB :D
 			} else if (url.pathname.startsWith("/api/rankups/") && request.method === "GET") {
 				const rankupId = url.pathname.split("/")[3];
-				console.log(`Worker received a request to retrieve info on rankup "${rankupId}"`);
-
 				let results: [D1Result<RankupRow>, D1Result<RankupImagesRow>] | null;
 				try {
 					const retrieveRankupStmnt = env.RANKUP_DB.prepare("SELECT * from rankups where rankup_id = ?").bind(rankupId);
