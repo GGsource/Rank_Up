@@ -4,7 +4,7 @@ import { MODE } from "@/utils/const";
  * Defines the shape of a Page subclass extending Page
  */
 export interface PageClass {
-	mountTo(container: HTMLElement): Page;
+	mountTo(container: HTMLElement, urlParams: Record<string, string>): Page;
 	rawHTML: string;
 }
 
@@ -27,8 +27,12 @@ export abstract class Page {
 	 * @param mountingTarget Element onto which to mount this page
 	 * @returns the created instance of this class that has been mounted
 	 */
-	static mountTo<T extends Page>(this: { new (): T; rawHTML: string }, mountingTarget: HTMLElement): T {
+	static mountTo<T extends Page>(
+		this: { new (params: Record<string, string>): T; rawHTML: string },
+		mountingTarget: HTMLElement,
+		urlParams: Record<string, string> = {},
+	): T {
 		mountingTarget.innerHTML = this.rawHTML;
-		return new this();
+		return new this(urlParams);
 	}
 }
