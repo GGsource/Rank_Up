@@ -33,7 +33,7 @@ class FormPage extends Page {
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
 		window.addEventListener("keydown", (event) => {
-			if (this.toggleablePlaceHolders && event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p") {
+			if (this.toggleablePlaceHolders && event.ctrlKey && event.altKey && event.key.toLowerCase() === "p") {
 				this.enablePlaceHolders = !this.enablePlaceHolders;
 				ToastBox.showToast(
 					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
