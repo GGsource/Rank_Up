@@ -76,25 +76,28 @@ export function parseUrl(pushState = true) {
 	let path = "/404";
 	// Find which page the user is actually trying to navigate to
 	for (const route of pageRoutes) {
+		let badMatch = false;
 		const routeParts = route.path.split("/");
-		if (
-			routeParts.length != pathParts.length || // Mismatch of directory count, skip
-			(routeParts.length > 1 && routeParts[1].toLowerCase() !== pathParts[1].toLowerCase()) // Root page present and mistmatched
-		) {
-			continue; // Skip this one
+		if (routeParts.length === pathParts.length) {
+			for (let i = 0; i < routeParts.length; i++) {
+				const part = routeParts[i];
+				if (part.startsWith(":")) {
+					// This is a URL argument
+					pageArgs[part.slice(1)] = pathParts[i];
+				} else if (routeParts[i] !== pathParts[i]) {
+					badMatch = true;
+					break;
+				}
+			}
+		} else {
+			continue;
 		}
 		// We found a match
-		page = route.page;
-		path = `/${pathParts.slice(1).join("/")}`;
-
-		// Check for any arguments on path
-		routeParts.forEach((part, ndx) => {
-			if (part.startsWith(":")) {
-				// This is a URL argument
-				pageArgs[part.slice(1)] = pathParts[ndx];
-			}
-		});
-		break;
+		if (!badMatch) {
+			page = route.page;
+			path = `/${pathParts.slice(1).join("/")}`;
+			break;
+		}
 	}
 
 	renderPage(page, path, pageArgs, pushState);

@@ -1,6 +1,6 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
-import { registerPage, renderRankup } from "@/components/renderPage";
+import { registerPage, renderPage, renderRankup } from "@/components/renderPage";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
@@ -39,9 +39,14 @@ class FormPage extends Page {
 					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
 					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
 				);
-				this.formUploadContainer.inert = this.enablePlaceHolders; // Disable if placeholders are on
-				this.formUploadContainer.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				const formElements = [this.titleInput, this.descInput, this.formUploadContainer];
+				for (const el of formElements) {
+					el.inert = this.enablePlaceHolders;
+					el.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				}
 				if (this.enablePlaceHolders) {
+					this.titleInput.value = "";
+					this.descInput.value = "";
 					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
 				}
 			}
@@ -76,7 +81,9 @@ class FormPage extends Page {
 		// Form Submission
 		this.formView.addEventListener("submit", async (event) => {
 			event.preventDefault(); // Prevent submission auto-send
-			if (!this.enablePlaceHolders && this.formImages.length < 2) {
+			if (this.enablePlaceHolders) {
+				renderPage("placeholders");
+			} else if (this.formImages.length < 2) {
 				ToastBox.showToast("At least 2 images must be selected!", "Failure");
 				this.formUploadContainer.classList.add("input--errored");
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
@@ -90,9 +97,13 @@ class FormPage extends Page {
 		});
 		// Invalid Submission
 		this.titleInput.addEventListener("invalid", () => {
-			this.titleInput.classList.add("input--errored");
-			setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
-			ToastBox.showToast("Title is required for a new RankUp!", "Failure");
+			if (this.enablePlaceHolders) {
+				renderPage("placeholders");
+			} else {
+				this.titleInput.classList.add("input--errored");
+				setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
+				ToastBox.showToast("Title is required for a new RankUp!", "Failure");
+			}
 		});
 	}
 
