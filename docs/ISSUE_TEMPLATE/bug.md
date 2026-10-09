@@ -1,15 +1,14 @@
 ---
 name: Bug
-about: Report something that's broken
-title: "[BUG]: "
+about: Something that's broken
 labels: bug
 ---
 
-## Expected Behavior
+## Current Behavior
 
 <!-- Explain what should happen -->
 
-## Current Behavior
+## Expected Behavior
 
 <!-- Explain what happens instead of the expected behavior -->
 

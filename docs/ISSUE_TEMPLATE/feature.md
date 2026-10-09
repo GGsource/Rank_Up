@@ -1,7 +1,6 @@
 ---
 name: Feature
 about: A new enhancement
-title: "[FEAT]: "
 labels: enhancement
 ---
 
