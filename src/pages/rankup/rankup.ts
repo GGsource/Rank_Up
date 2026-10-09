@@ -1,21 +1,21 @@
-import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
-import Sortable from "sortablejs";
-import { getEl } from "@/utils/utils";
-import rankupHTMLRaw from "./rankup.html?raw";
 import { registerPage, renderPage } from "@/components/renderPage";
 import { Row, RowList } from "@/components/Row";
+import { retrieveRankup } from "@/data/rankupsApi";
 import { Page } from "@/pages/Page";
+import "@/pages/rankup/rankup.css"; // Styling for our Rankup Page
 import { EMPTY_IMG, imagesEndpoint } from "@/utils/const";
 import { fullColorPalette, getPresetByIndex } from "@/utils/ListPresets";
-import { retrieveRankup } from "@/data/rankupsApi";
+import { getEl } from "@/utils/utils";
+import Sortable from "sortablejs";
+import rankupHTMLRaw from "./rankup.html?raw";
 
-class RankUpPage extends Page implements RowList {
+export class RankUpPage extends Page implements RowList {
 	static rawHTML = rankupHTMLRaw;
 	private rowView = getEl("rankup-view");
-	private rowList = getEl("row-list");
+	protected rowList = getEl("row-list");
 	private starterContainer = getEl("starter-container");
-	private headerTitle = getEl<HTMLInputElement>("header-title");
-	private headerDescription = getEl<HTMLInputElement>("header-description");
+	protected headerTitle = getEl<HTMLInputElement>("header-title");
+	protected headerDescription = getEl<HTMLInputElement>("header-description");
 	private isRowBeingDragged = false;
 	private timeoutIds = new Map<HTMLDivElement, number>();
 	private lastShownTab: HTMLDivElement | null = null;
@@ -24,14 +24,11 @@ class RankUpPage extends Page implements RowList {
 	private prevTarget: HTMLElement | null = null;
 	private isPrevSideLeft: boolean = false;
 	private readonly colorPalette = this.initializeColorPalette();
-	private isPlaceholdersEnabled = false;
 	/**
 	 * RankUpPage constructor to make an instance. Attaches rows, listeners, and images in starter container
 	 */
 	constructor(urlParams: Record<string, string>) {
 		super();
-		this.isPlaceholdersEnabled = false;
-		const rankupId: string | undefined = urlParams["rankupId"];
 		this.makeRowsDraggable();
 		/* ---------------------------- Attach Listeners ---------------------------- */
 		this.rowView.addEventListener("click", () => {
@@ -45,25 +42,20 @@ class RankUpPage extends Page implements RowList {
 		this.headerTitle.ondragover = (event) => this.draggedOverTextbox(event);
 		this.headerDescription.ondragover = (event) => this.draggedOverTextbox(event);
 
+		this.initializeData(urlParams);
+	}
+	protected initializeData(urlParams: Record<string, string>) {
 		/* --------------------------- Load in Rankup Data -------------------------- */
-
-		if (this.isPlaceholdersEnabled) this.insertPlaceholders();
-		else if (rankupId !== undefined) {
-			this.showLoading(); // Display something while waiting on actual load-in
-			this.loadRankup(rankupId);
-		} else throw new Error("Did not receive a rankup ID to load and placeholders were not enabled. Aborting.");
+		const rankupId: string | undefined = urlParams["rankupId"];
+		if (rankupId === undefined) {
+			throw new Error("Did not receive a rankup ID to load. Aborting.");
+		}
+		this.showLoading(); // Display something while waiting on actual load-in
+		this.loadRankup(rankupId);
 	}
 
 	/**
-	 * Inserts the placeholder images into the rankup starter container
-	 */
-	private insertPlaceholders() {
-		const placeholderImages = import.meta.glob("../../assets/images/placeholders/*.png", { eager: true, import: "default" });
-		Object.values(placeholderImages).forEach((name) => this.addImageToContainer(name as string));
-	}
-
-	/**
-	 * Displays temporary loading placeholders while we fetch information from the database
+	 * Displays temporary loading values while we fetch information from the database
 	 */
 	private showLoading() {
 		this.headerTitle.value = "Loading...";
@@ -388,7 +380,7 @@ class RankUpPage extends Page implements RowList {
 	 *
 	 * @param url the URL of the image to add
 	 */
-	private addImageToContainer(url: string) {
+	protected addImageToContainer(url: string) {
 		const image = document.createElement("img") as HTMLImageElement;
 		image.className = "rankup-image";
 		image.src = url;

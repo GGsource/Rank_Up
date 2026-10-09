@@ -1,6 +1,6 @@
 import formHTMLRaw from "./form.html?raw";
 import "./form.css";
-import { registerPage, renderRankup } from "@/components/renderPage";
+import { registerPage, renderPage, renderRankup } from "@/components/renderPage";
 import { ToastBox } from "@/components/Toast";
 import { getEl } from "@/utils/utils";
 import { Page } from "../Page";
@@ -33,15 +33,20 @@ class FormPage extends Page {
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
 		window.addEventListener("keydown", (event) => {
-			if (this.toggleablePlaceHolders && event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "p") {
+			if (this.toggleablePlaceHolders && event.ctrlKey && event.altKey && event.key.toLowerCase() === "p") {
 				this.enablePlaceHolders = !this.enablePlaceHolders;
 				ToastBox.showToast(
 					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
 					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
 				);
-				this.formUploadContainer.inert = this.enablePlaceHolders; // Disable if placeholders are on
-				this.formUploadContainer.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				const formElements = [this.titleInput, this.descInput, this.formUploadContainer];
+				for (const el of formElements) {
+					el.inert = this.enablePlaceHolders;
+					el.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+				}
+				this.titleInput.value = this.enablePlaceHolders ? "Placeholders" : "";
 				if (this.enablePlaceHolders) {
+					this.descInput.value = "";
 					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
 				}
 			}
@@ -76,7 +81,9 @@ class FormPage extends Page {
 		// Form Submission
 		this.formView.addEventListener("submit", async (event) => {
 			event.preventDefault(); // Prevent submission auto-send
-			if (!this.enablePlaceHolders && this.formImages.length < 2) {
+			if (this.enablePlaceHolders) {
+				renderPage("placeholders");
+			} else if (this.formImages.length < 2) {
 				ToastBox.showToast("At least 2 images must be selected!", "Failure");
 				this.formUploadContainer.classList.add("input--errored");
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);

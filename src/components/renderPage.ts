@@ -29,12 +29,6 @@ export function renderRankup(rankupId: string) {
  * @param pageName name of the page to show
  */
 export async function renderPage(page: PageNames, path: string | null = null, args: Record<string, string> = {}, pushState = true) {
-	if (path === null) {
-		const canonicalPath = pageRoutes.find((route) => route.page === page);
-		if (canonicalPath === undefined) throw new Error("Path is undefined :(");
-		path = canonicalPath.path;
-	}
-
 	// Get the container
 	const pageContainer = getEl("page-container");
 
@@ -57,45 +51,59 @@ export async function renderPage(page: PageNames, path: string | null = null, ar
 	pageClass.mountTo(pageContainer, args);
 
 	if (pushState) {
+		if (path === null) {
+			const canonicalPath = pageRoutes.find((route) => route.page === page);
+			if (canonicalPath === undefined) throw new Error("Path is undefined :(");
+			path = canonicalPath.path;
+		}
 		history.pushState(null, "", path);
 	}
 }
 
 /**
- * Called when user navigates directly to a directory on the site, this parses where to take them
- *
- * @param pushState whether or not to push a new state to browser
+ * Locates the page the user intended to navigate to along with any url arguments
+ 
+* @returns page and its arguments if applicable
  */
-export function parseUrl(pushState = true) {
+function matchUrl(): { page: PageNames; pageArgs: Record<string, string> } {
 	// Grab from URL
 	const userPath = window.location.pathname.replace(/\/+$/, "");
 	const pathParts = userPath.split("/");
 	// Set defaults in case we don't find it.
 	let page: PageNames = "404";
 	let pageArgs: Record<string, string> = {};
-	let path = "/404";
 	// Find which page the user is actually trying to navigate to
 	for (const route of pageRoutes) {
+		let badMatch = false;
 		const routeParts = route.path.split("/");
-		if (
-			routeParts.length != pathParts.length || // Mismatch of directory count, skip
-			(routeParts.length > 1 && routeParts[1].toLowerCase() !== pathParts[1].toLowerCase()) // Root page present and mistmatched
-		) {
-			continue; // Skip this one
+		if (routeParts.length === pathParts.length) {
+			for (let i = 0; i < routeParts.length; i++) {
+				const part = routeParts[i];
+				if (part.startsWith(":")) {
+					// This is a URL argument
+					pageArgs[part.slice(1)] = pathParts[i];
+				} else if (routeParts[i].toLowerCase() !== pathParts[i].toLowerCase()) {
+					badMatch = true;
+					pageArgs = {};
+					break;
+				}
+			}
+		} else {
+			continue;
 		}
 		// We found a match
-		page = route.page;
-		path = `/${pathParts.slice(1).join("/")}`;
-
-		// Check for any arguments on path
-		routeParts.forEach((part, ndx) => {
-			if (part.startsWith(":")) {
-				// This is a URL argument
-				pageArgs[part.slice(1)] = pathParts[ndx];
-			}
-		});
-		break;
+		if (!badMatch) {
+			page = route.page;
+			break;
+		}
 	}
+	return { page, pageArgs };
+}
 
-	renderPage(page, path, pageArgs, pushState);
+/**
+ * Called when user navigates directly to a directory on the site. Figures out where to go and takes user there.
+ */
+export function renderUrl() {
+	const { page, pageArgs } = matchUrl();
+	renderPage(page, null, pageArgs, false);
 }
