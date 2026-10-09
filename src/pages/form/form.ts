@@ -18,11 +18,28 @@ class FormPage extends Page {
 	private uploadIndicators = getEl("upload-indicators");
 	private clearUploadsButton = getEl<HTMLButtonElement>("clear-uploads");
 	private formImages: File[] = []; // List of uploaded images
-	private toggleablePlaceHolders = true; // Whether placeholders can be toggled
 	private enablePlaceHolders = false; // Whether placeholders are on or off
 	private listPresetIndex: number;
 	private sessionKey = crypto.randomUUID();
-
+	private readonly placeholderListener = (event: KeyboardEvent) => {
+		if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "p") {
+			this.enablePlaceHolders = !this.enablePlaceHolders;
+			ToastBox.showToast(
+				`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
+				this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
+			);
+			const formElements = [this.titleInput, this.descInput, this.formUploadContainer];
+			for (const el of formElements) {
+				el.inert = this.enablePlaceHolders;
+				el.style.opacity = this.enablePlaceHolders ? "0.2" : "";
+			}
+			this.titleInput.value = this.enablePlaceHolders ? "Placeholders" : "";
+			if (this.enablePlaceHolders) {
+				this.descInput.value = "";
+				this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
+			}
+		}
+	};
 	/**
 	 * Default constructor attaches event listeners
 	 */
@@ -32,25 +49,8 @@ class FormPage extends Page {
 		this.listPresetIndex = getPresetIndex.Grade; // Temporary hardcoding of list preset until its made an option
 		/* ------------------------- Add Event Interactions ------------------------- */
 		// Global listener for placeholder shortcut
-		window.addEventListener("keydown", (event) => {
-			if (this.toggleablePlaceHolders && event.ctrlKey && event.altKey && event.key.toLowerCase() === "p") {
-				this.enablePlaceHolders = !this.enablePlaceHolders;
-				ToastBox.showToast(
-					`Placeholders ${this.enablePlaceHolders ? "enabled" : "disabled"}!`, // Message to display
-					this.enablePlaceHolders ? "Success" : "Warning", // Styling to give the message
-				);
-				const formElements = [this.titleInput, this.descInput, this.formUploadContainer];
-				for (const el of formElements) {
-					el.inert = this.enablePlaceHolders;
-					el.style.opacity = this.enablePlaceHolders ? "0.2" : "";
-				}
-				this.titleInput.value = this.enablePlaceHolders ? "Placeholders" : "";
-				if (this.enablePlaceHolders) {
-					this.descInput.value = "";
-					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
-				}
-			}
-		});
+		window.addEventListener("keydown", this.placeholderListener);
+
 		// Form description input
 		this.descInput.addEventListener("keydown", (event) => {
 			if (event.key === "Enter" && event.ctrlKey) {
@@ -87,13 +87,14 @@ class FormPage extends Page {
 				ToastBox.showToast("At least 2 images must be selected!", "Failure");
 				this.formUploadContainer.classList.add("input--errored");
 				setTimeout(() => this.formUploadContainer.classList.remove("input--errored"), 800);
+				return; // Don't remove listener yet in this path
 			} else {
-				this.toggleablePlaceHolders = false; // Disable ability to toggle placeholders
 				const rankupId = await createRankup(this.getRankupData());
 				if (rankupId !== null) {
 					renderRankup(rankupId);
 				}
 			}
+			window.removeEventListener("keydown", this.placeholderListener);
 		});
 		// Invalid Submission
 		this.titleInput.addEventListener("invalid", () => {
