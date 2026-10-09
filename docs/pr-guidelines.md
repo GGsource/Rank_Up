@@ -12,13 +12,13 @@ This should be a concise summary of what this branch aims to do in 2-3 words
 
 ### Types
 
-Types include: `feature/`, `bugfix/`, `refactor/`, `infra/`, or `chore/`
+Types include: `feat/`, `bug/`, `refactor/`, `infra/`, `docs/` or `chore/`
 
 #### Feat
 
 A new enhancement or feature that is a wholly new addition
 
-#### Bugfix
+#### Bug
 
 A fix for an existing issue
 
@@ -30,9 +30,13 @@ A rework of code that isn't necessarily broken but needs improvement
 
 Any work relating to the GitHub/CloudFlare infrastructure Ex: deployment actions or Continuous Integration workflows.
 
+### Docs
+
+Documentation aiding in communication of various parts of this repo
+
 #### Chore
 
-Miscellaneous tasks that are required but not directly relevant to the project. Ex: version or dependency updates
+Miscellaneous maintenance tasks that are required but not directly relevant to the project. Ex: version or dependency updates
 
 ## Pull Requests
 
