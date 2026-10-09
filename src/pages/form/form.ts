@@ -44,8 +44,8 @@ class FormPage extends Page {
 					el.inert = this.enablePlaceHolders;
 					el.style.opacity = this.enablePlaceHolders ? "0.2" : "";
 				}
+				this.titleInput.value = this.enablePlaceHolders ? "Placeholders" : "";
 				if (this.enablePlaceHolders) {
-					this.titleInput.value = "";
 					this.descInput.value = "";
 					this.clearUploadsButton.click(); // Empty out the images if we're using placeholders
 				}
@@ -97,13 +97,9 @@ class FormPage extends Page {
 		});
 		// Invalid Submission
 		this.titleInput.addEventListener("invalid", () => {
-			if (this.enablePlaceHolders) {
-				renderPage("placeholders");
-			} else {
-				this.titleInput.classList.add("input--errored");
-				setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
-				ToastBox.showToast("Title is required for a new RankUp!", "Failure");
-			}
+			this.titleInput.classList.add("input--errored");
+			setTimeout(() => this.titleInput.classList.remove("input--errored"), 800);
+			ToastBox.showToast("Title is required for a new RankUp!", "Failure");
 		});
 	}
 
