@@ -17,6 +17,6 @@
 
 ## Related Issues
 
-<!-- Link related tickets or issues. Use "Closes #123" to auto-close. -->
+<!-- Link related tickets or issues. Use "Closes #ABC" to auto-close. -->
 
 - Closes #\_\_\_
